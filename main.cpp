@@ -25,6 +25,13 @@
 #include "Engine/Render/RenderNode/ChromaticAberration/ChromaticAberrationNode.h"
 #include "Engine/Render/RenderNode/RadialBlur/RadialBlurNode.h"
 
+//
+#include "Game/Player.h"
+#include "Game/PlayerUI.h"
+#include "Game/Input/Input.h"
+#include "Game/Effect/EffectManager.h"
+
+
 // クライアント領域サイズ
 const std::int32_t kClientWidth = 1280;
 const std::int32_t kClientHight = 720;
@@ -35,7 +42,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Camera2D::Initialize();
 
 	TextureManager::RegisterLoadQue("./Engine/Resources", "uvChecker.png");
+	TextureManager::RegisterLoadQue("./Engine/Resources", "HP_bar.png");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Sphere.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
 	BackgroundLoader::WaitEndExecute();
 
 	std::shared_ptr<Object3DNode> object3DNode{ new Object3DNode };
@@ -77,11 +87,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::string selectMesh;
 	char name[1024]{};
 
+	// ------------------------------------------------------------------------ //
+	std::unique_ptr<Player> player = std::make_unique<Player>();
+	player->reset_object("player.obj");
+
+	std::unique_ptr<PlayerUI> playerUI = std::make_unique<PlayerUI>();
+
+	std::unique_ptr<EffectManager> effectManager = std::make_unique<EffectManager>();
+
+	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
+
+	// ------------------------------------------------------------------------ //
+
 	while (!WinApp::IsEndApp()) {
 		WinApp::BeginFrame();
+
+		Input::GetInstance()->Update();
+
 #ifdef _DEBUG
 		// カメラ、ライトのImGui
 		DirectXCore::ShowDebugTools();
+
+		player->Update();
+		playerUI->Update();
+
+		effectManager->Update();
 
 		// メインImGuiウィンドウ
 		//ImGui::SetNextWindowSize(ImVec2{ 330,130 }, ImGuiCond_Once);
@@ -97,6 +127,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else {
 				objName = name;
 			}
+
 			if (!objectList.contains(objName)) {
 				objects.emplace_back(selectMesh);
 				objectNames.emplace_back(objName);
@@ -150,12 +181,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		radialBlurNode->debug_gui();
 		ImGui::End();
 
+		ImGui::Begin("Player", nullptr);
+		player->debug_gui();
+		ImGui::End();
+
 #endif // _DEBUG
 
 		Camera2D::CameraUpdate();
 		Camera3D::CameraUpdate();
 
 		RenderPathManager::BeginFrame();
+
+		// ------------------------------------------------------------------------ //
+		player->begin_rendering();
+		player->draw();
+
+		effectManager->BeginRendering();
+		effectManager->Draw();
+
+		// ------------------------------------------------------------------------ //
 
 		for (int i = 0; i < objects.size(); ++i) {
 			objects[i].begin_rendering();
@@ -165,6 +209,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			objects[i].draw();
 		}
 		sprite.begin_rendering();
+		playerUI->BeginRendering();
 
 		if (isShowGrid) {
 			DirectXCore::ShowGrid();
@@ -185,6 +230,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		RenderPathManager::Next();
 
 		sprite.draw();
+		playerUI->Draw();
 
 		RenderPathManager::Next();
 

@@ -100,7 +100,7 @@ void WinApp::Finalize() {
 }
 
 void WinApp::init_app(const std::string& programName) {
-	WNDCLASS wc{}; // ウィンドウの設定
+	// ウィンドウの設定
 	wc.lpfnWndProc = WindowProc;// ウィンドウプロシージャ
 	auto&& name = ConvertString(programName);
 	wc.lpszClassName = name.c_str();
