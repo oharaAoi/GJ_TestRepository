@@ -2,8 +2,8 @@
 #include "Game/Effect/EffectManager.h"
 #include "externals/imgui/imgui.h"
 
-Emitter::Emitter(EffectManager* effectManager) {
-	Init(effectManager);
+Emitter::Emitter(EffectManager* effectManager, const std::string& emitterName) {
+	Init(effectManager, emitterName);
 }
 
 Emitter::~Emitter() {
@@ -13,22 +13,27 @@ Emitter::~Emitter() {
 // ↓　初期化関数
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Emitter::Init(EffectManager* effectManager) {
+void Emitter::Init(EffectManager* effectManager, const std::string& emitterName) {
 	effectManager_ = effectManager;
 
-	centerPos_ = { 0,0,0 };
-	direction_ = { 0,1,0 };
-	range_ = { 1,1,1 };
-	particleScale_ = { 1,1,1 };
+	LoadEmitter(emitterName);
 
-	lifeTime_ = 120;
-	createTime_ = 120;
-	frameCreateCount_ = 120;
-	createCount_ = 3;
+	centerPos_ = GetValue<Vector3>(emitterName, "centerPos");
+	direction_ = GetValue<Vector3>(emitterName, "direction");
+	range_ = GetValue<Vector3>(emitterName, "range");;
 
-	speed_ = 1.0f;
-	radius_ = 1.0f;
-	angle_ = 0;
+	lifeTime_ = GetValue<uint32_t>(emitterName, "lifeTime");
+	createTime_ = GetValue<uint32_t>(emitterName, "createTime");
+	createCount_ = GetValue<uint32_t>(emitterName, "createCount");
+
+	speed_ = GetValue<float>(emitterName, "speed");
+	radius_ = GetValue<float>(emitterName, "radius");
+	angle_ = GetValue<float>(emitterName, "angle");
+
+	useObjName_ = GetValue<std::string>(emitterName, "useObjectName");
+	emitterName_ = GetValue<std::string>(emitterName, "emitterName");
+
+	frameCreateCount_ = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,8 +41,6 @@ void Emitter::Init(EffectManager* effectManager) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Emitter::Update() {
-	EditImGui();
-
 	if (--frameCreateCount_ <= 0) {
 		Emit();
 		frameCreateCount_ = createTime_;
@@ -79,6 +82,7 @@ void Emitter::Emit() {
 // ------------------- ImGuiを編集する ------------------- //
 void Emitter::EditImGui() {
 #ifdef _DEBUG
+
 	if (ImGui::TreeNode("CreateEmitter")) {
 		ImGui::DragScalar("frameCreateCount", ImGuiDataType_U32, &frameCreateCount_);
 		ImGui::DragFloat3("centerPos", &centerPos_.x, 0.01f);
@@ -96,7 +100,7 @@ void Emitter::EditImGui() {
 		// std::stringからバッファにコピー
 		strncpy_s(buffer, emitterName_.c_str(), sizeof(buffer));
 		// ImGuiで文字を入力
-		if (ImGui::InputText("Label", buffer, IM_ARRAYSIZE(buffer))) {
+		if (ImGui::InputText("Emitter", buffer, IM_ARRAYSIZE(buffer))) {
 			// バッファからstd::stringにコピー
 			emitterName_ = buffer;
 		}
@@ -108,14 +112,17 @@ void Emitter::EditImGui() {
 			AddItem(emitterName_, "direction", direction_);
 			AddItem(emitterName_, "range", range_);
 			AddItem(emitterName_, "createTime", createTime_);
-			AddItem(emitterName_, "frameCreateCount", frameCreateCount_);
 			AddItem(emitterName_, "createCount", createCount_);
 			AddItem(emitterName_, "lifeTime", lifeTime_);
 			AddItem(emitterName_, "speed", speed_);
 			AddItem(emitterName_, "radius", radius_);
 			AddItem(emitterName_, "angle", angle_);
-			/*AddItem(emitterName_, "useObjectName", useObjName_);
-			AddItem(emitterName_, "emitterName", emitterData_);*/
+			AddItem(emitterName_, "useObjectName", useObjName_);
+			AddItem(emitterName_, "emitterName", emitterName_);
+			// 保存する
+			SaveFileEmitter(emitterName_);
+			std::string message = std::format("{}.json saved.", emitterName_);
+			MessageBoxA(nullptr, message.c_str(), "Adjustment", 0);
 		}
 		
 		ImGui::TreePop();
@@ -169,6 +176,10 @@ void Emitter::SaveFileEmitter(const std::string& groupName) {
 			// bool
 		} else if (std::holds_alternative<bool>(item.value)) {
 			root[groupName][itemName] = std::get<bool>(item.value);
+
+			// std::string型
+		} else if (std::holds_alternative<std::string>(item.value)) {
+			root[groupName][itemName] = std::get<std::string>(item.value);
 		}
 	}
 
@@ -257,6 +268,11 @@ void Emitter::LoadEmitter(const std::string& groupName) {
 		} else if (itItem->is_boolean()) {
 			bool flag = itItem->get<bool>();
 			SetValue(groupName, itemName, flag);
-		} 
+
+			// std::string
+		} else if (itItem->is_string()) {
+			std::string name = itItem->get<std::string>();
+			SetValue(groupName, itemName, name);
+		}
 	}
 }

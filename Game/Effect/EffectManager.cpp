@@ -13,7 +13,7 @@ EffectManager::~EffectManager() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void EffectManager::Init() {
-	emitterList_.emplace_back(this);
+	emitterList_.emplace_back(this, "test");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,10 @@ void EffectManager::Draw() const {
 
 void EffectManager::EditImGui() {
 	ImGui::Begin("EffectManager");
-	
+	for (std::list<Emitter>::iterator emitter = emitterList_.begin(); emitter != emitterList_.end();) {
+		emitter->EditImGui();
+		emitter++;
+	}
 	ImGui::End();
 }
 

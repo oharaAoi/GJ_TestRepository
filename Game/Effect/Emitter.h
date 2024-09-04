@@ -39,13 +39,13 @@ public:
 
 public:
 
-	Emitter(EffectManager* effectManager);
+	Emitter(EffectManager* effectManager, const std::string& emitterName);
 	~Emitter();
 
 	/// <summary>
 	/// 初期化関数
 	/// </summary>
-	void Init(EffectManager* effectManager);
+	void Init(EffectManager* effectManager, const std::string& emitterName);
 
 	/// <summary>
 	/// 更新関数
