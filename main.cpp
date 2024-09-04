@@ -7,12 +7,12 @@
 #include "externals/imgui/imgui.h"
 
 #include "Engine/DirectX/DirectXCore.h"
-#include "Engine/DirectX/DirectXResourceObject/Texture/TextureManager/TextureManager.h"
-#include "Engine/GameObject/GameObject.h"
-#include "Engine/GameObject/PolygonMesh/PolygonMeshManager/PolygonMeshManager.h"
-#include "Engine/GameObject/SpriteObject.h"
-#include "Engine/Math/Camera2D.h"
-#include "Engine/Math/Camera3D.h"
+#include "Engine/Game/GameObject/GameObject.h"
+#include "Engine/Game/Managers/TextureManager/TextureManager.h"
+#include "Engine/Game/Managers/PolygonMeshManager/PolygonMeshManager.h"
+#include "Engine/Game/GameObject/SpriteObject.h"
+#include "Engine/Game/Camera/Camera2D.h"
+#include "Engine/Game/Camera/Camera3D.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 #include "Engine/Utility/BackgroundLoader/BackgroundLoader.h"
 #include "Engine/Utility/ImGuiLoadManager/ImGuiLoadManager.h"
@@ -32,20 +32,26 @@
 #include "Game/Effect/EffectManager.h"
 
 
+#include "Engine/Game/Managers/AudioManager/AudioManager.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
+
 // クライアント領域サイズ
 const std::int32_t kClientWidth = 1280;
 const std::int32_t kClientHight = 720;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp::Initialize("DirectXGame", kClientWidth, kClientHight);
-	Camera3D::Initialize();
+	auto camera3D = std::make_unique<Camera3D>();
+	camera3D->initialize();
+	camera3D->set_transform({
+		CVector3::BASIS,
+		Quaternion::EulerDegree(45, 0, 0),
+		{ 0, 10, -10 }
+		});
 	Camera2D::Initialize();
 
 	TextureManager::RegisterLoadQue("./Engine/Resources", "uvChecker.png");
-	TextureManager::RegisterLoadQue("./Engine/Resources", "HP_bar.png");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Sphere.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
 	BackgroundLoader::WaitEndExecute();
 
 	std::shared_ptr<Object3DNode> object3DNode{ new Object3DNode };
@@ -71,8 +77,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	RenderPath path;
 	path.initialize({ object3DNode, grayscaleNode, radialBlurNode, chromaticAberrationNode, spriteNode });
 
-	RenderPathManager::RegisterPath("GrayScale1", std::move(path));
-	RenderPathManager::SetPath("GrayScale1");
+	RenderPathManager::RegisterPath("PostEffectTest", std::move(path));
+	RenderPathManager::SetPath("PostEffectTest");
 
 	std::vector<GameObject> objects;
 	std::vector<std::string> objectNames;
@@ -80,7 +86,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	objectNames.emplace_back("Sphere");
 	std::unordered_multiset<std::string> objectList;
 	objectList.emplace("Sphere");
-	SpriteObject sprite{ "uvChecker.png", {0.5f,0.5f} };
+
+	SpriteObject sprite{ "alphaTester.png", {0.5f,0.5f} };
+	SpriteObject sprite2{ "Error.png", {0.5f,0.5f} };
+
+	float volume = 1.0f;
+	bool isLoop = false;
+	AudioPlayer testAudio;
+	testAudio.initialize("Alarm01.wav", volume, isLoop);
 
 	bool isShowGrid = true;
 
@@ -108,18 +121,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// カメラ、ライトのImGui
 		DirectXCore::ShowDebugTools();
 
-		player->Update();
-		playerUI->Update();
-
-		effectManager->Update();
-
 		// メインImGuiウィンドウ
 		//ImGui::SetNextWindowSize(ImVec2{ 330,130 }, ImGuiCond_Once);
 		//ImGui::SetNextWindowPos(ImVec2{ 20, 205 }, ImGuiCond_Once);
 		ImGui::Begin("Main", nullptr);
 		PolygonMeshManager::MeshListGui(selectMesh);
 		ImGui::InputText("Name", const_cast<char*>(name), 1024);
-		if (ImGui::Button("CreateObject") && !selectMesh.empty() ) {
+		if (ImGui::Button("CreateObject") && !selectMesh.empty()) {
 			std::string objName;
 			if (name[0] == '\0') {
 				objName = selectMesh;
@@ -157,13 +165,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sprite.debug_gui();
 		ImGui::End();
 
+		ImGui::SetNextWindowDockID(objectDock, ImGuiCond_FirstUseEver);
+		ImGui::Begin("Sprite2", nullptr);
+		sprite2.debug_gui();
+		ImGui::End();
+
 		for (int i = 0; i < objects.size(); ) {
 			ImGui::SetNextWindowDockID(objectDock, ImGuiCond_FirstUseEver);
 			//ImGui::SetNextWindowSize(ImVec2{ 345,445 }, ImGuiCond_FirstUseEver);
 			//ImGui::SetNextWindowPos(ImVec2{ 900, 20 }, ImGuiCond_FirstUseEver);
 			ImGui::Begin(objectNames[i].c_str(), nullptr);
 			objects[i].debug_gui();
-			if (ImGui::Button("Delete")) {
+			if (ImGui::Button("Destroy")) {
 				objects.erase(objects.begin() + i);
 				objectNames.erase(objectNames.begin() + i);
 			}
@@ -181,14 +194,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		radialBlurNode->debug_gui();
 		ImGui::End();
 
-		ImGui::Begin("Player", nullptr);
-		player->debug_gui();
-		ImGui::End();
-
 #endif // _DEBUG
 
 		Camera2D::CameraUpdate();
-		Camera3D::CameraUpdate();
+		camera3D->update_matrix();
+		camera3D->update();
 
 		RenderPathManager::BeginFrame();
 
@@ -202,17 +212,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// ------------------------------------------------------------------------ //
 
 		for (int i = 0; i < objects.size(); ++i) {
-			objects[i].begin_rendering();
+			objects[i].begin_rendering(*camera3D);
 		}
 
 		for (int i = 0; i < objects.size(); ++i) {
 			objects[i].draw();
 		}
 		sprite.begin_rendering();
-		playerUI->BeginRendering();
 
 		if (isShowGrid) {
-			DirectXCore::ShowGrid();
+			DirectXCore::ShowGrid(*camera3D);
 		}
 
 		RenderPathManager::Next();
@@ -230,12 +239,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		RenderPathManager::Next();
 
 		sprite.draw();
-		playerUI->Draw();
 
 		RenderPathManager::Next();
 
 		WinApp::EndFrame();
 	}
+
+	//testAudio.finalize();
 
 	WinApp::Finalize();
 }

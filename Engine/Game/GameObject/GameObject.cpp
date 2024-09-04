@@ -5,11 +5,11 @@
 #include "Engine/DirectX/DirectXCommand/DirectXCommand.h"
 #include "Engine/DirectX/DirectXResourceObject/ConstantBuffer/TransformMatrix/TransformMatrix.h"
 #include "Engine/DirectX/DirectXResourceObject/Texture/Texture.h"
-#include "Engine/DirectX/DirectXResourceObject/Texture/TextureManager/TextureManager.h"
-#include "Engine/GameObject/PolygonMesh/PolygonMesh.h"
-#include "Engine/GameObject/PolygonMesh/PolygonMeshManager/PolygonMeshManager.h"
-#include "Engine/GameObject/Transform3D/Transform3D.h"
-#include "Engine/Math/Camera3D.h"
+#include "Engine/Game/Managers/TextureManager/TextureManager.h"
+#include "Engine/Game/PolygonMesh/PolygonMesh.h"
+#include "Engine/Game/Managers/PolygonMeshManager/PolygonMeshManager.h"
+#include "Engine/Game/Transform3D/Transform3D.h"
+#include "Engine/Game/Camera/Camera3D.h"
 #include "Engine/Utility/Utility.h"
 
 #ifdef _DEBUG
@@ -41,11 +41,11 @@ const Transform3D& GameObject::get_transform() noexcept {
 void GameObject::update() {
 }
 
-void GameObject::begin_rendering() noexcept {
+void GameObject::begin_rendering(const Camera3D& camera) noexcept {
 	// 各情報をGPUに転送
 	transformMatrix->set_transformation_matrix_data(
 		transform->get_matrix(),
-		static_cast<Matrix4x4>(transform->get_matrix() * Camera3D::GetVPMatrix())
+		static_cast<Matrix4x4>(transform->get_matrix() * camera.vp_matrix())
 	);
 	for (int i = 0; i < meshMaterials.size(); ++i) {
 		meshMaterials[i].material.set_uv_transform(meshMaterials[i].uvTransform.get_matrix4x4_transform());
@@ -116,26 +116,30 @@ void GameObject::debug_gui() {
 	if (ImGui::Button("ResetMaterialData")) {
 		default_material();
 	}
+	ImGui::Separator();
 	transform->debug_gui();
+	ImGui::Separator();
 	auto&& meshLocked = mesh.lock();
 	for (int i = 0; i < meshMaterials.size(); ++i) {
-		std::string treeNodeNmae = meshLocked->model_name(i).empty() ? "UnknownMaterialName" : meshLocked->model_name(i);
-		if (ImGui::TreeNodeEx(treeNodeNmae.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-			meshMaterials[i].uvTransform.debug_gui();
-			meshMaterials[i].color.debug_gui();
+		std::string treeNodeName = meshLocked->model_name(i).empty() ? "UnknownMaterialName" : meshLocked->model_name(i);
+		if (ImGui::TreeNodeEx(treeNodeName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 			if (TextureManager::TextureListGui(meshMaterials[i].textureName)) {
 				meshMaterials[i].texture = TextureManager::GetTexture(meshMaterials[i].textureName);
 			}
-			ImGui::Text("Lighting option");
-			if (ImGui::Button("None")) {
+
+			meshMaterials[i].uvTransform.debug_gui();
+
+			meshMaterials[i].color.debug_gui3();
+
+			if (ImGui::RadioButton("None", meshMaterials[i].material.get_data()->lighting == static_cast<uint32_t>(LighingType::None))) {
 				meshMaterials[i].material.set_lighting(LighingType::None);
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("Lambert")) {
+			if (ImGui::RadioButton("Lambert", meshMaterials[i].material.get_data()->lighting == static_cast<uint32_t>(LighingType::Lambert))) {
 				meshMaterials[i].material.set_lighting(LighingType::Lambert);
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("Half lambert")) {
+			if (ImGui::RadioButton("Half lambert", meshMaterials[i].material.get_data()->lighting == static_cast<uint32_t>(LighingType::HalfLambert))) {
 				meshMaterials[i].material.set_lighting(LighingType::HalfLambert);
 			}
 			ImGui::TreePop();

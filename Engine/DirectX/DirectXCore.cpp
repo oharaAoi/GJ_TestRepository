@@ -15,8 +15,8 @@
 #include "Engine/WinApp.h"
 #include "Engine/Utility/Utility.h"
 #include "Engine/Utility/BackgroundLoader/BackgroundLoader.h"
-#include "Engine/DirectX/DirectXResourceObject/Texture/TextureManager/TextureManager.h"
-#include "Engine/GameObject/PolygonMesh/PolygonMeshManager/PolygonMeshManager.h"
+#include "Engine/Game/Managers/TextureManager/TextureManager.h"
+#include "Engine/Game/Managers/PolygonMeshManager/PolygonMeshManager.h"
 #include "Engine/DirectX/DirectXDevice/DirectXDevice.h"
 #include "Engine/DirectX/DirectXCommand/DirectXCommand.h"
 #include "Engine/DirectX/DirectXDescriptorHeap/RTVDescriptorHeap/RTVDescriptorHeap.h"
@@ -25,15 +25,15 @@
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Engine/Utility/ShaderCompiler/ShaderCompiler.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
-#include "Engine/GameObject/GameObject.h"
+#include "Engine/Game/GameObject/GameObject.h"
 
-#include "Engine/Math/Camera2D.h"
-#include "Engine/Math/Camera3D.h"
+#include "Engine/Game/Camera/Camera2D.h"
+#include "Engine/Game/Camera/Camera3D.h"
 
 #include "Engine/Math/Vector3.h"
-#include "Engine/Math/Color.h"
+#include "Engine/Game/Color/Color.h"
 #include "Engine/Math/Quaternion.h"
-#include "Engine/GameObject/Transform3D/Transform3D.h"
+#include "Engine/Game/Transform3D/Transform3D.h"
 #include "externals/imgui/imgui.h"
 
 // ----------要修正----------
@@ -85,8 +85,8 @@ void DirectXCore::ShowDebugTools() {
 }
 #endif // _DEBUG
 
-void DirectXCore::ShowGrid() {
-	GetInstance().gridMesh->begin_rendering();
+void DirectXCore::ShowGrid(const Camera3D& camera) {
+	GetInstance().gridMesh->begin_rendering(camera);
 	GetInstance().gridMesh->draw();
 }
 
@@ -172,7 +172,7 @@ void DirectXCore::show_debug_tools() {
 
 	// 3DカメラのImGui
 	ImGui::SetNextWindowDockID(debugDock, ImGuiCond_FirstUseEver);
-	Camera3D::DebugGUI();
+	//Camera3D::DebugGUI();
 
 	// 2DカメラのImGui
 	ImGui::SetNextWindowDockID(debugDock, ImGuiCond_FirstUseEver);
@@ -183,7 +183,7 @@ void DirectXCore::show_debug_tools() {
 	//ImGui::SetNextWindowPos(ImVec2{ 20, 20 }, ImGuiCond_Once);
 	ImGui::SetNextWindowDockID(debugDock, ImGuiCond_FirstUseEver);
 	ImGui::Begin("Light", nullptr);
-	light->get_data()->color.debug_gui();
+	light->get_data()->color.debug_gui3();
 	Vector3 rotate = CVector3::ZERO;
 	ImGui::Text(std::format("X : {:.3}, Y : {:.3}, Z : {:.3}", light->get_data()->direction.x, light->get_data()->direction.y, light->get_data()->direction.z).c_str());
 	if (ImGui::DragFloat3("DirectionRotate", &rotate.x, 1.0f, -180.0f, 180.0f)) {

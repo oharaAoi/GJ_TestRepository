@@ -4,13 +4,23 @@
 #include <cmath>
 
 float Vector2::length() const noexcept {
-	return std::sqrt(x * x + y * y);
+	return std::sqrt(DotProduct(*this, *this));
 }
 
 const Vector2 Vector2::normalize() const noexcept(false) {
 	assert(this->length() != 0);
-	float m = 1.0f / this->length();
-	return *this * m;
+	return *this / length();
+}
+
+const Vector2 Vector2::normalize_safe(float tolerance, const Vector2& disapproval) const noexcept {
+	assert(tolerance >= 0);
+	float length_ = length();
+	if (length_ <= tolerance) {
+		return disapproval;
+	}
+	else {
+		return *this / length();
+	}
 }
 
 float Vector2::Length(const Vector2& vector) noexcept {

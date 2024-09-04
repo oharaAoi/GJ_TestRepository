@@ -15,7 +15,7 @@ GrayscaleNode::~GrayscaleNode() = default;
 void GrayscaleNode::initialize() {
 	create_pipeline_state();
 	primitiveTopology = D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	*isGray.get_data() = 1;
+	*isGray.get_data() = false;
 }
 
 void GrayscaleNode::draw() {
@@ -27,10 +27,6 @@ void GrayscaleNode::draw() {
 
 void GrayscaleNode::set_texture_resource(const D3D12_GPU_DESCRIPTOR_HANDLE& textureGPUHandle_) {
 	textureGPUHandle = textureGPUHandle_;
-}
-
-void GrayscaleNode::debug_gui() {
-	ImGui::Checkbox("IsGray", reinterpret_cast<bool*>(isGray.get_data()));
 }
 
 void GrayscaleNode::create_pipeline_state() {
@@ -59,3 +55,9 @@ void GrayscaleNode::create_pipeline_state() {
 	pipelineState = std::make_unique<PipelineState>();
 	pipelineState->initialize(psoBuilder->get_rootsignature(), psoBuilder->build());
 }
+
+#ifdef _DEBUG
+void GrayscaleNode::debug_gui() {
+	ImGui::Checkbox("IsGray", reinterpret_cast<bool*>(isGray.get_data()));
+}
+#endif // _DEBUG

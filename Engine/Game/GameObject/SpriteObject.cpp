@@ -4,10 +4,14 @@
 
 #include "Engine/DirectX/DirectXResourceObject/IndexBuffer/IndexBuffer.h"
 #include "Engine/DirectX/DirectXResourceObject/Texture/Texture.h"
-#include "Engine/DirectX/DirectXResourceObject/Texture/TextureManager/TextureManager.h"
+#include "Engine/Game/Managers/TextureManager/TextureManager.h"
 #include "Engine/DirectX/DirectXResourceObject/VertexBuffer/VertexBuffer.h"
-#include "Engine/GameObject/Transform2D/Transform2D.h"
-#include "Engine/Math/Camera2D.h"
+#include "Engine/Game/Transform2D/Transform2D.h"
+#include "Engine/Game/Camera/Camera2D.h"
+
+#ifdef _DEBUG
+#include <externals/imgui/imgui.h>
+#endif // _DEBUG
 
 SpriteObject::SpriteObject() :
 	material(std::make_unique<ConstantBuffer<SpriteMaterial>>(SpriteMaterial{ Color{ 1.0f,1.0f,1.0f,1.0f }, CMatrix4x4::IDENTITY })),
@@ -56,8 +60,10 @@ void SpriteObject::draw() const {
 #ifdef _DEBUG
 void SpriteObject::debug_gui() {
 	transform->debug_gui(1.0f);
+	ImGui::Separator();
 	uvTransform->debug_gui();
-	color.debug_gui();
+	ImGui::Separator();
+	color.debug_gui4();
 }
 #endif // _DEBUG
 

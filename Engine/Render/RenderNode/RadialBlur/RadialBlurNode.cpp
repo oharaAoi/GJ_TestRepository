@@ -19,7 +19,7 @@ void RadialBlurNode::initialize() {
 		Vector2{0.5f, 0.5f},
 		0.4f,
 		0.1f,
-		8
+		1
 	};
 }
 
@@ -32,13 +32,6 @@ void RadialBlurNode::draw() {
 
 void RadialBlurNode::set_texture_resource(const D3D12_GPU_DESCRIPTOR_HANDLE& textureGPUHandle_) {
 	textureGPUHandle = textureGPUHandle_;
-}
-
-void RadialBlurNode::debug_gui() {
-	ImGui::DragFloat2("Center", &blurInfo.get_data()->center.x, 0.01f , 0.0f, 1.0f, "%.4f");
-	ImGui::DragFloat("Weight", &blurInfo.get_data()->weight, 0.001f , 0.0f, 1.0f, "%.4f");
-	ImGui::DragFloat("Length", &blurInfo.get_data()->length, 0.001f , 0.0f, 1.0f, "%.4f");
-	ImGui::DragInt("SampleCount", reinterpret_cast<int*>(&blurInfo.get_data()->sampleCount), 0.02f, 1, 16);
 }
 
 void RadialBlurNode::create_pipeline_state() {
@@ -70,3 +63,12 @@ void RadialBlurNode::create_pipeline_state() {
 	pipelineState->initialize(psoBuilder->get_rootsignature(), psoBuilder->build());
 
 }
+
+#ifdef _DEBUG
+void RadialBlurNode::debug_gui() {
+	ImGui::DragFloat2("Center", &blurInfo.get_data()->center.x, 0.01f, 0.0f, 1.0f, "%.4f");
+	ImGui::DragFloat("Weight", &blurInfo.get_data()->weight, 0.001f, 0.0f, 1.0f, "%.4f");
+	ImGui::DragFloat("Length", &blurInfo.get_data()->length, 0.001f, 0.0f, 1.0f, "%.4f");
+	ImGui::DragInt("SampleCount", reinterpret_cast<int*>(&blurInfo.get_data()->sampleCount), 0.02f, 1, 16);
+}
+#endif // _DEBUG
