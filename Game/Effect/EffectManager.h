@@ -4,6 +4,8 @@
 // GameObject
 #include "Game/Effect/Particle.h"
 #include "Game/Effect/Emitter.h"
+// Camera
+#include "Engine/Game/Camera/Camera3D.h"
 
 /// <summary>
 /// 粒子を管理するクラス
@@ -27,7 +29,7 @@ public:
 	/// <summary>
 	/// 描画前処理
 	/// </summary>
-	void BeginRendering();
+	void BeginRendering(const Camera3D& camera3D);
 
 	/// <summary>
 	/// 描画関数

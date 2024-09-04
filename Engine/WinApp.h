@@ -27,6 +27,7 @@ public:
 	static int32_t GetClientHight() noexcept { return instance->kClientHight; };
 	static HWND& GetWndHandle() noexcept { return instance->hWnd; };
 	static WNDCLASS& GetWNDCLASS() { return instance->wc; }
+	static const std::string& GetWindowName() { return instance->windowName; }
 
 private:
 	/// <summary>
@@ -51,5 +52,7 @@ private:
 	MSG msg;
 
 	WNDCLASS wc{};
+
+	std::string windowName;
 };
 

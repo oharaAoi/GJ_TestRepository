@@ -106,7 +106,8 @@ void WinApp::Finalize() {
 	Log("Closed Window\n");
 }
 void WinApp::init_app(const std::string& programName, DWORD windowConfig) {
-	WNDCLASS wc{}; // ウィンドウの設定
+	windowName = programName;
+	// ウィンドウの設定
 	wc.lpfnWndProc = WindowProc;// ウィンドウプロシージャ
 	auto&& name = ConvertString(programName);
 	wc.lpszClassName = name.c_str();

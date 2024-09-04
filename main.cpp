@@ -50,8 +50,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		});
 	Camera2D::Initialize();
 
-	TextureManager::RegisterLoadQue("./Engine/Resources", "uvChecker.png");
+	TextureManager::RegisterLoadQue("./Engine/Resources", "alphaTester.png");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Sphere.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
+	AudioManager::RegisterLoadQue("./Engine/Resources", "Alarm01.wav");
 	BackgroundLoader::WaitEndExecute();
 
 	std::shared_ptr<Object3DNode> object3DNode{ new Object3DNode };
@@ -120,6 +123,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #ifdef _DEBUG
 		// カメラ、ライトのImGui
 		DirectXCore::ShowDebugTools();
+
+		ImGui::Begin("Camera3D");
+		camera3D->debug_gui();
+		ImGui::End();
+
+		// ------------------------------------------------------------------------ //
+		player->Update();
+
+		effectManager->Update();
+
+		// ------------------------------------------------------------------------ //
 
 		// メインImGuiウィンドウ
 		//ImGui::SetNextWindowSize(ImVec2{ 330,130 }, ImGuiCond_Once);
@@ -203,10 +217,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		RenderPathManager::BeginFrame();
 
 		// ------------------------------------------------------------------------ //
-		player->begin_rendering();
+		player->begin_rendering(*camera3D);
 		player->draw();
 
-		effectManager->BeginRendering();
+		effectManager->BeginRendering(*camera3D);
 		effectManager->Draw();
 
 		// ------------------------------------------------------------------------ //

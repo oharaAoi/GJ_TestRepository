@@ -37,7 +37,7 @@ void Input::Init(WNDCLASS wCalss, HWND hwnd) {
 	// -------------------------- keyboardデバイスの初期化 -------------------------- //
 	KeyboardInitialize(hwnd);
 	// -------------------------- mouseデバイスの初期化 -------------------------- //
-	//MouseInitialize();
+	MouseInitialize();
 }
 
 //=================================================================================================================
@@ -96,7 +96,7 @@ void Input::MouseInitialize() {
 
 	// 排他制御レベルのセット
 	result = mouse_->SetCooperativeLevel(
-		FindWindow(L"CG2", nullptr),
+		FindWindow(ConvertString(WinApp::GetWindowName()).c_str(), nullptr),
 		DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 	assert(SUCCEEDED(result));
 }

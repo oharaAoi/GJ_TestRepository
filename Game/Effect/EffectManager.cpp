@@ -43,9 +43,9 @@ void EffectManager::Update() {
 // ↓　描画処理
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void EffectManager::BeginRendering() {
+void EffectManager::BeginRendering(const Camera3D& camera3D) {
 	for (std::list<Particle>::iterator particle = particleList_.begin(); particle != particleList_.end(); ++particle) {
-		particle->begin_rendering();
+		particle->begin_rendering(camera3D);
 	}
 }
 

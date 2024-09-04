@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/GameObject/SpriteObject.h"
+#include "Engine/Game/GameObject/SpriteObject.h"
 
 class PlayerUI {
 

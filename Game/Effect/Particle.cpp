@@ -1,5 +1,5 @@
 #include "Particle.h"
-#include "Engine/GameObject/Transform3D/Transform3D.h"
+#include "Engine/Game/Transform3D/Transform3D.h"
 
 Particle::Particle(const Vector3& pos, const Vector3& scale, const Vector3& velocity,
 				   const uint32_t& lifeTime, const float& speed) {
