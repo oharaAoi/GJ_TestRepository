@@ -133,6 +133,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		effectManager->Update();
 
+		effectManager->EditImGui();
+
 		// ------------------------------------------------------------------------ //
 
 		// メインImGuiウィンドウ

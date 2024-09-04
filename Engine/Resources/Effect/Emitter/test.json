@@ -1,12 +1,12 @@
 {
     "test": {
-        "angle": 0.0,
+        "angle": 30.0,
         "centerPos": [
             0.0,
             0.0,
             0.0
         ],
-        "createCount": 3,
+        "createCount": 1,
         "createTime": 120,
         "direction": [
             0.0,
@@ -14,13 +14,12 @@
             0.0
         ],
         "emitterName": "test",
-        "frameCreateCount": 79,
         "lifeTime": 120,
         "radius": 1.0,
         "range": [
-            1.0,
-            1.0,
-            1.0
+            0.0,
+            0.0,
+            0.0
         ],
         "speed": 1.0,
         "useObjectName": "particle.obj"

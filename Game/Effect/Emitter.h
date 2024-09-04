@@ -87,6 +87,8 @@ public:
 	/// </summary>
 	void LoadEmitter(const std::string& groupName);
 
+	Vector3 GetPointInCone(const float& theta, const float& radius, const Vector3& direction, const Vector3& origine);
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // ↓　accessor
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,21 +135,20 @@ private:
 	const std::string kDirectoryPath_ = "./Engine/Resources/Effect/Emitter/";
 
 	// ------------------- emitterに関する変数 ------------------- //
-	Vector3 centerPos_;			// emitterの中心位置
-	Vector3 direction_;			// emitterがどの方向を向いているか
-	Vector3 range_;				// emitterのサイズ(生成する範囲)
+	Vector3 centerPos_ = {0,0,0};			// emitterの中心位置
+	Vector3 direction_ = { 0,1,0 };			// emitterがどの方向を向いているか
+	Vector3 range_ = { 1,1,1 };				// emitterのサイズ(生成する範囲)
 	
-	uint32_t createTime_;		// 何フレームごとに生成するか
-	uint32_t frameCreateCount_;	// 1フレームに何個生成するか
-	uint32_t createCount_;		// 生成時に何個生成するか
-	uint32_t lifeTime_;			// particleの生存時間
+	uint32_t createTime_ = 120;		// 何フレームごとに生成するか
+	uint32_t frameCreateCount_ = 0;	// 1フレームに何個生成するか
+	uint32_t createCount_ = 1;		// 生成時に何個生成するか
+	uint32_t lifeTime_ = 120;		// particleの生存時間
 
-	float speed_;				// particleの速度
-	float radius_;				// particleが発射される範囲
-	float angle_;				// どのくらい方向から発射されるか
+	float speed_ = 1;				// particleの速度
+	float radius_  = 1;				// particleが発射される範囲
+	float angle_ = 30;				// どのくらい方向から発射されるか
 
 	std::string useObjName_;	// 使用するobjファイルの名前
-
 	std::string emitterName_;	// emitterの名前
 
 	// ------------------- particleに関する変数 ------------------- //

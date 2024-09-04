@@ -15,25 +15,9 @@ Emitter::~Emitter() {
 
 void Emitter::Init(EffectManager* effectManager, const std::string& emitterName) {
 	effectManager_ = effectManager;
+	emitterName_ = emitterName;
 
-	LoadEmitter(emitterName);
-
-	centerPos_ = GetValue<Vector3>(emitterName, "centerPos");
-	direction_ = GetValue<Vector3>(emitterName, "direction");
-	range_ = GetValue<Vector3>(emitterName, "range");;
-
-	lifeTime_ = GetValue<uint32_t>(emitterName, "lifeTime");
-	createTime_ = GetValue<uint32_t>(emitterName, "createTime");
-	createCount_ = GetValue<uint32_t>(emitterName, "createCount");
-
-	speed_ = GetValue<float>(emitterName, "speed");
-	radius_ = GetValue<float>(emitterName, "radius");
-	angle_ = GetValue<float>(emitterName, "angle");
-
-	useObjName_ = GetValue<std::string>(emitterName, "useObjectName");
-	emitterName_ = GetValue<std::string>(emitterName, "emitterName");
-
-	frameCreateCount_ = 0;
+	frameCreateCount_ = 120;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +56,7 @@ void Emitter::Emit() {
 		float maxAngle = angle_ * ToRadian;
 		float randomAngle = RandomFloat(minAngle, maxAngle);
 
-		particleVelocity_ = direction_;
+		particleVelocity_ = GetPointInCone(randomAngle, radius_, direction_, centerPos_) - centerPos_;
 		particleVelocity_.normalize();
 
 		effectManager_->AddParticleList(particleTranslation_, particleScale_, particleVelocity_, lifeTime_, speed_);
@@ -83,13 +67,13 @@ void Emitter::Emit() {
 void Emitter::EditImGui() {
 #ifdef _DEBUG
 
-	if (ImGui::TreeNode("CreateEmitter")) {
+	if (ImGui::TreeNode(emitterName_.c_str())) {
 		ImGui::DragScalar("frameCreateCount", ImGuiDataType_U32, &frameCreateCount_);
 		ImGui::DragFloat3("centerPos", &centerPos_.x, 0.01f);
 		ImGui::DragFloat3("direction", &direction_.x, 0.01f);
 		ImGui::DragFloat3("range", &range_.x, 0.01f);
 		ImGui::DragFloat("speed", &speed_, 0.1f);
-		ImGui::DragFloat("angle", &angle_, 1.0f, -360.0f, 360.0f);
+		ImGui::DragFloat("angle", &angle_, 1.0f, 0.0f, 360.0f);
 		ImGui::DragScalar("createTime", ImGuiDataType_U32, &createTime_);
 		ImGui::DragScalar("createCount", ImGuiDataType_U32, &createCount_);
 		ImGui::DragScalar("lifeTime", ImGuiDataType_U32, &lifeTime_);
@@ -225,7 +209,7 @@ void Emitter::LoadEmitter(const std::string& groupName) {
 
 	if (ifs.fail()) {
 		std::string message = "not Exist " + groupName + ".json";
-		assert(0);
+
 		return;
 	}
 
@@ -275,4 +259,38 @@ void Emitter::LoadEmitter(const std::string& groupName) {
 			SetValue(groupName, itemName, name);
 		}
 	}
+
+	centerPos_ = GetValue<Vector3>(groupName, "centerPos");
+	direction_ = GetValue<Vector3>(groupName, "direction");
+	range_ = GetValue<Vector3>(groupName, "range");;
+
+	lifeTime_ = GetValue<uint32_t>(groupName, "lifeTime");
+	createTime_ = GetValue<uint32_t>(groupName, "createTime");
+	createCount_ = GetValue<uint32_t>(groupName, "createCount");
+
+	speed_ = GetValue<float>(groupName, "speed");
+	radius_ = GetValue<float>(groupName, "radius");
+	angle_ = GetValue<float>(groupName, "angle");
+
+	useObjName_ = GetValue<std::string>(groupName, "useObjectName");
+	emitterName_ = GetValue<std::string>(groupName, "groupName");
+
+}
+
+Vector3 Emitter::GetPointInCone(const float& theta, const float& radius, const Vector3& direction, const Vector3& origine) {
+	// 円錐の軸上の点を計算
+	Vector3 point = origine + direction.normalize();
+	
+	// 基底ベクトルを計算(方向ベクトルに垂直な2つのベクトルを作成)
+	Vector3 underVector = direction.CrossProduct({ 1,0,0 }, direction).normalize();
+	if (underVector.length() < 1e-6) {
+		underVector = direction.CrossProduct({ 0,1,0 }, direction).normalize();
+	}
+
+	Vector3 vVector = direction.CrossProduct(underVector, direction).normalize();
+
+	// 円周上の点を計算
+	Vector3 circlePoint = (underVector * std::cos(theta) + vVector * std::sin(theta)) * radius;
+
+	return point + circlePoint;
 }

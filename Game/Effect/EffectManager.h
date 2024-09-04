@@ -1,11 +1,16 @@
 #pragma once
 // STL
+#include <memory>
 #include <list>
+#include <fstream>
+#include <iostream>
 // GameObject
 #include "Game/Effect/Particle.h"
-#include "Game/Effect/Emitter.h"
+#include "Game/Effect/Effect.h"
 // Camera
 #include "Engine/Game/Camera/Camera3D.h"
+
+class Effect;
 
 /// <summary>
 /// 粒子を管理するクラス
@@ -41,9 +46,29 @@ public:
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/// <summary>
+	/// Emitterを作成する関数
+	/// </summary>
+	void CreateEmitter();
+
+	/// <summary>
 	/// ImGuiの編集
 	/// </summary>
 	void EditImGui();
+
+	/// <summary>
+	/// フォルダ内にあるEmitterのファイル名を取得する
+	/// </summary>
+	void LoadAllEmitterFaileName();
+
+	/// <summary>
+	/// フォルダ内にあるEffectのファイル名を取得する
+	/// </summary>
+	void LoadAllEffectFaileName();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void CreateEffect(const std::string& effectName);
 
 	/// <summary>
 	/// リストにParticleを追加する
@@ -53,9 +78,24 @@ public:
 
 private:
 
+	const std::string kEffectDirectoryPath_ = "./Engine/Resources/Effect/";
+	const std::string kEmitterDirectoryPath_ = "./Engine/Resources/Effect/Emitter/";
+
+	// ------------------- ゲームで使用するリスト ------------------- //
 	std::list<Particle> particleList_;
-	std::list<Emitter> emitterList_;
+	std::list<Effect> effectList_;
 
-	std::list<Emitter> testEmitterList_;
+	// ------------------- debug時に使用するリスト ------------------- //
+	std::list<std::string> createEffectList_;
+	std::list<Emitter> createEmitterList_;
+	std::string createEmitterName_;
+	char buffer[30];
+
+	// ------------------- Effect名のリスト ------------------- //
+	std::list<std::string> effectNameList_;
+	std::string currentEffect_;
+
+	// ------------------- Emitter名のリスト ------------------- //
+	std::list<std::string> emitterNameList_;
+	std::string currentEmitter_;
 };
-
