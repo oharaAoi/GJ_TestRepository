@@ -5,6 +5,7 @@
 #include "Game/WorldObject/Field.h"
 // GameObject
 #include "Game/GameCharacter/Player.h"
+#include "Game/WorldObject/Meteorite.h"
 // Input
 #include "Game/Input/Input.h"
 
@@ -31,13 +32,21 @@ public:
 	void debug_update() override;
 #endif // _DEBUG
 
+public:
+
+	void AddMeteoriteList();
+
 private:
+
+	uint32_t frameCount_ = 0;
 
 	// ------------------- WorldObject ------------------- //
 	std::unique_ptr<Field> field_ = nullptr;
 
 	// ------------------- GameObject ------------------- //
 	std::unique_ptr<Player> player_ = nullptr;
+
+	std::list<Meteorite> meteoriteList_;
 
 	// ------------------- Camera ------------------- //
 	std::unique_ptr<FollowCamera> camera3D_ = nullptr;

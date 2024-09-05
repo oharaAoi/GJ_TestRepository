@@ -11,14 +11,38 @@ Player::~Player() {
 void Player::Init() {
 	reset_object("player.obj");
 
+	gravityRod_ = std::make_unique<GravityRod>();
+	isAttack_ = false;
+
 	input_ = Input::GetInstance();
 	Vector3 translate = transform->get_translate();
-	transform->set_translate_y(10.0f);
+	transform->set_translate_y(4.5f);
 }
 
-void Player::Update(const Vector3& planetPos, const float& planetRadius) {
+void Player::Update() {
 	moveRotation = CQuaternion::IDENTITY;
-	Move(planetPos, planetRadius);
+	Move();
+	Attack();
+
+	if (isAttack_) {
+		gravityRod_->Update(transform->get_translate(), transform->get_quaternion());
+	}
+
+	gravityRod_->EditImGui();
+}
+
+void Player::Begin_Rendering(Camera3D* camera3d) {
+	begin_rendering(*camera3d);
+	if (isAttack_) {
+		gravityRod_->Begin_Rendering(camera3d);
+	}
+}
+
+void Player::Draw() const {
+	draw();
+	if (isAttack_) {
+		gravityRod_->Draw();
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +50,7 @@ void Player::Update(const Vector3& planetPos, const float& planetRadius) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ------------------- 移動を行う関数 ------------------- //
-void Player::Move(const Vector3& planetPos, const float& planetRadius) {
+void Player::Move() {
 	Vector3 translate = transform->get_translate();
 	Quaternion playerQuaternion = transform->get_quaternion();
 
@@ -41,7 +65,7 @@ void Player::Move(const Vector3& planetPos, const float& planetRadius) {
 		}
 	
 		// playerを動かす
-		velocity = velocity.normalize() * 0.1f;
+		velocity = velocity.normalize() * speed * (1.0f / 60);
 		translate.x += velocity.x;
 		translate.z += velocity.y;
 		transform->set_translate(translate);
@@ -50,7 +74,17 @@ void Player::Move(const Vector3& planetPos, const float& planetRadius) {
 		float targetAngle = std::atan2f(velocity.x, velocity.y);
 		moveRotation = Quaternion::EulerRadian({0,targetAngle,0});
 		playerQuaternion = moveRotation;
+		forwordRotation = moveRotation;
 		transform->set_rotate(playerQuaternion);
+	}
+}
+
+// ------------------- 攻撃を行う関数 ------------------- //
+void Player::Attack() {
+	if (input_->GetIsGamePadConnected(0)) {
+		if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+			isAttack_ = true;
+		}
 	}
 }
 

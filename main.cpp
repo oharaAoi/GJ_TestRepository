@@ -21,6 +21,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Field.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "GravityRod.obj");
 	BackgroundLoader::WaitEndExecute();
 
 	auto&& scene = CreateUnique<GameScene>();
