@@ -232,6 +232,18 @@
     <Filter Include="Engine\Core\Game\Scene">
       <UniqueIdentifier>{a652764d-1091-4844-a8c3-ed92140a958e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Effect">
+      <UniqueIdentifier>{ccbad35f-39f5-4229-9ba5-4e2c1a01ea2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\UI">
+      <UniqueIdentifier>{2f1574db-2151-40ec-8950-7c07dd5c6f9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\GameCharacter">
+      <UniqueIdentifier>{96997430-32fc-4011-ad8d-7895b9d434c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Input">
+      <UniqueIdentifier>{42589a69-a816-4a59-8630-e03dcc70867a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -447,29 +459,29 @@
     <ClCompile Include="TestCode\SceneDemo.cpp">
       <Filter>TestProgram</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Input\Input.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\PlayerUI.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Effect\EffectManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\MyRandom.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Effect\Effect.cpp">
+      <Filter>MainGame\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Effect\EffectManager.cpp">
+      <Filter>MainGame\Effect</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Effect\Emitter.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>MainGame\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Game\Effect\Particle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>MainGame\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Effect\Effect.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Game\UI\PlayerUI.cpp">
+      <Filter>MainGame\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\Player.cpp">
+      <Filter>MainGame\GameCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Input\Input.cpp">
+      <Filter>MainGame\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -689,28 +701,7 @@
     <ClInclude Include="Engine\Game\Audio\AudioResource.h">
       <Filter>Engine\Core\Game\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Input\Input.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\PlayerUI.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Effect\EffectManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Game\MyRandom.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Effect\Emitter.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Effect\Particle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Effect\Effect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Game\Managers\SceneManager\SceneManager.h">
@@ -721,6 +712,27 @@
     </ClInclude>
     <ClInclude Include="TestCode\SceneDemo.h">
       <Filter>TestProgram</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effect\Effect.h">
+      <Filter>MainGame\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effect\EffectManager.h">
+      <Filter>MainGame\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effect\Emitter.h">
+      <Filter>MainGame\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effect\Particle.h">
+      <Filter>MainGame\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\PlayerUI.h">
+      <Filter>MainGame\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\Player.h">
+      <Filter>MainGame\GameCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Input\Input.h">
+      <Filter>MainGame\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
