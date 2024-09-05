@@ -492,8 +492,11 @@
     <ClCompile Include="Game\Scene\GameScene.cpp">
       <Filter>MainGame\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Game\WorldObject\Planet.cpp">
+    <ClCompile Include="Game\WorldObject\Field.cpp">
       <Filter>MainGame\WorldObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\FollowCamera.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -749,8 +752,11 @@
     <ClInclude Include="Game\Scene\GameScene.h">
       <Filter>MainGame\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Game\WorldObject\Planet.h">
+    <ClInclude Include="Game\WorldObject\Field.h">
       <Filter>MainGame\WorldObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\FollowCamera.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

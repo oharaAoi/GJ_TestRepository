@@ -6,31 +6,36 @@
 #include "Engine/DirectX/DirectXCore.h"
 
 void GameScene::initialize() {
-	planet_ = std::make_unique<Planet>();
+	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
+
+	field_ = std::make_unique<Field>();
 
 	player_ = std::make_unique<Player>();
 
-	camera3D_ = std::make_unique<Camera3D>();
+	camera3D_ = std::make_unique<FollowCamera>();
 	camera3D_->initialize();
 	camera3D_->set_transform({
 		CVector3::BASIS,
-		Quaternion::EulerDegree(45, 0, 0),
-		{ 0, 10, -10 }
-							 });
+		Quaternion::EulerDegree(90, 0, 0),
+		{ 0, 35, 0 }
+	});
 }
 
 void GameScene::begin() {
 }
 
 void GameScene::update() {
-	camera3D_->update_matrix();
-	camera3D_->update();
 
-	player_->Update();
+	Input::GetInstance()->Update();
+
+	camera3D_->update();
+	camera3D_->update_matrix();
+
+	player_->Update(field_->GetCenterPos(), field_->GetRadius());
 }
 
 void GameScene::begin_rendering() {
-	//planet_->begin_rendering(*camera3D_);
+	field_->begin_rendering(*camera3D_);
 	player_->begin_rendering(*camera3D_);
 }
 
@@ -41,7 +46,7 @@ void GameScene::late_update() {
 void GameScene::draw() const {
 	RenderPathManager::BeginFrame();
 	DirectXCore::ShowGrid(*camera3D_);
-	planet_->draw();
+	field_->draw();
 	player_->draw();
 	RenderPathManager::Next();
 }
@@ -51,7 +56,7 @@ void GameScene::draw() const {
 
 #include <externals/imgui/imgui.h>
 void GameScene::debug_update() {
-	ImGui::Begin("DemoScene");
+	ImGui::Begin("GameScene");
 	if (ImGui::Button("StackScene")) {
 		SceneManager::SetSceneChange(CreateUnique<GameScene>(), true);
 	}
@@ -65,6 +70,11 @@ void GameScene::debug_update() {
 
 	ImGui::Begin("Camera3D");
 	camera3D_->debug_gui();
+	ImGui::End();
+
+	field_->EditImGui();
+	ImGui::Begin("GameObject");
+	player_->debug_gui();
 	ImGui::End();
 }
 #endif // _DEBUG

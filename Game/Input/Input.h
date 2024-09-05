@@ -107,6 +107,8 @@ public: // 入力
 	static Vector2 GetLeftJoyStick();
 	// 右ジョイスティックの値の取得
 	static Vector2 GetRightJoyStick();
+	// ゲームパッドが繋がっているかを確認する
+	static bool GetIsGamePadConnected(const int& index);
 
 private:
 	// DirectInputオブジェクトの生成

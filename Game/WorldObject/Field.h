@@ -5,12 +5,12 @@
 /// <summary>
 /// playerやEnemyが上に存在しているobject
 /// </summary>
-class Planet :
+class Field :
 	public GameObject {
 public:
 
-	Planet();
-	~Planet();
+	Field();
+	~Field();
 
 	/// <summary>
 	/// 初期化関数
@@ -26,6 +26,7 @@ public:
 // ↓　メンバ関数
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+	void EditImGui();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // ↓　accessor
@@ -34,9 +35,12 @@ public:
 	// ----------- 半径 ----------- //
 	const float GetRadius() const { return radius_; }
 
+	// ----------- 座標 ----------- //
+	const Vector3 GetCenterPos() const { return transform->get_translate(); }
+
 private:
 
-	float radius_ = 5.0f;
+	float radius_ = 2.3f;
 
 };
 

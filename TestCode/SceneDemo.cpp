@@ -8,9 +8,6 @@
 void SceneDemo::load() {
 }
 
-void SceneDemo::load() {
-}
-
 void SceneDemo::initialize() {
 }
 

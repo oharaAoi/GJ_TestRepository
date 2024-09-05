@@ -19,6 +19,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp::Initialize("DirectXGame", kClientWidth, kClientHight);
 
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Field.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
 	BackgroundLoader::WaitEndExecute();
 

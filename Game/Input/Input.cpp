@@ -241,3 +241,15 @@ Vector2 Input::GetRightJoyStick() {
 
 	return Vector2(RX, RY);
 }
+
+bool Input::GetIsGamePadConnected(const int& index) {
+	DWORD result = XInputGetState(index, &gamepadState_);
+
+	if (result == ERROR_SUCCESS) {
+		// 接続されている
+		return true;
+	} else {
+		// 接続されていない
+		return false;
+	}
+}

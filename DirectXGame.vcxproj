@@ -168,12 +168,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Effect\EffectManager.cpp" />
     <ClCompile Include="Game\Effect\Emitter.cpp" />
     <ClCompile Include="Game\Effect\Particle.cpp" />
+    <ClCompile Include="Game\FollowCamera.cpp" />
     <ClCompile Include="Game\GameCharacter\Player.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\MyRandom.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="Game\UI\PlayerUI.cpp" />
-    <ClCompile Include="Game\WorldObject\Planet.cpp" />
+    <ClCompile Include="Game\WorldObject\Field.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TestCode\SceneDemo.cpp" />
   </ItemGroup>
@@ -256,12 +257,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Effect\EffectManager.h" />
     <ClInclude Include="Game\Effect\Emitter.h" />
     <ClInclude Include="Game\Effect\Particle.h" />
+    <ClInclude Include="Game\FollowCamera.h" />
     <ClInclude Include="Game\GameCharacter\Player.h" />
     <ClInclude Include="Game\Input\Input.h" />
     <ClInclude Include="Game\MyRandom.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\UI\PlayerUI.h" />
-    <ClInclude Include="Game\WorldObject\Planet.h" />
+    <ClInclude Include="Game\WorldObject\Field.h" />
     <ClInclude Include="TestCode\SceneDemo.h" />
   </ItemGroup>
   <ItemGroup>

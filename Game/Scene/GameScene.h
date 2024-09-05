@@ -2,11 +2,13 @@
 // Scene
 #include "Engine/Game/Scene/BaseScene.h"
 // WorldObject
-#include "Game/WorldObject/Planet.h"
+#include "Game/WorldObject/Field.h"
 // GameObject
 #include "Game/GameCharacter/Player.h"
+// Input
+#include "Game/Input/Input.h"
 
-#include "Engine/Game/Camera/Camera3D.h"
+#include "Game/FollowCamera.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 
 class GameScene :
@@ -32,13 +34,13 @@ public:
 private:
 
 	// ------------------- WorldObject ------------------- //
-	std::unique_ptr<Planet> planet_ = nullptr;
+	std::unique_ptr<Field> field_ = nullptr;
 
 	// ------------------- GameObject ------------------- //
 	std::unique_ptr<Player> player_ = nullptr;
 
 	// ------------------- Camera ------------------- //
-	std::unique_ptr<Camera3D> camera3D_ = nullptr;
+	std::unique_ptr<FollowCamera> camera3D_ = nullptr;
 
 };
 
