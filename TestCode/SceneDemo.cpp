@@ -11,6 +11,9 @@ void SceneDemo::load() {
 void SceneDemo::load() {
 }
 
+void SceneDemo::load() {
+}
+
 void SceneDemo::initialize() {
 	planet_ = std::make_unique<Planet>();
 
