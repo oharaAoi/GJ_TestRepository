@@ -3,10 +3,14 @@
 #include "Engine/Game/Camera/Camera3D.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 
+#include <memory>
+
+class GameObject;
+
 class SceneDemo : public BaseScene {
 public:
-	SceneDemo() = default;
-	~SceneDemo() = default;
+	SceneDemo();
+	~SceneDemo();
 
 public:
 	void load();

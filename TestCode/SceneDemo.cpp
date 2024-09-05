@@ -8,7 +8,14 @@
 void SceneDemo::load() {
 }
 
+#include "Engine/Game/GameObject/GameObject.h"
+
+SceneDemo::SceneDemo() = default;
+
+SceneDemo::~SceneDemo() = default;
+
 void SceneDemo::initialize() {
+	parent = CreateUnique<GameObject>();
 }
 
 void SceneDemo::finalize() {
