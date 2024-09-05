@@ -28,6 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SceneManager::Initialize(std::move(scene));
 
 
+
 	while (!WinApp::IsEndApp()) {
 		WinApp::BeginFrame();
 
@@ -41,7 +42,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		SceneManager::Draw();
 
-		SceneManager::DebugGui();
 
 		WinApp::EndFrame();
 	}
