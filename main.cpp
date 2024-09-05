@@ -36,11 +36,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		SceneManager::Update();
 
-
-		RenderPathManager::BeginFrame();
 		SceneManager::Draw();
-		SceneManager::DebugGui();
-		RenderPathManager::Next();
+
 
 		WinApp::EndFrame();
 	}
