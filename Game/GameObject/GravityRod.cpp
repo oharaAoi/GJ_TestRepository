@@ -32,6 +32,9 @@ void GravityRod::Update(const Vector3& playerPos, const Quaternion& quaternion) 
 	// 両方の先端にオブジェクトを配置する
 	tipObject_[0]->Update(radius_, transform->get_quaternion(), transform->get_translate());
 	tipObject_[1]->Update(-radius_, transform->get_quaternion(), transform->get_translate());
+
+	// rodのベクトルを求める
+	rodVector_ = Vector3::Normalize(tipObject_[0]->get_transform().get_translate() - tipObject_[1]->get_transform().get_translate());
 }
 
 void GravityRod::Begin_Rendering(Camera3D* camera3d) {

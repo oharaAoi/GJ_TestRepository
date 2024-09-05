@@ -1,5 +1,7 @@
 #include "Meteorite.h"
 
+float Meteorite::attractionedStrength_ = 3;
+
 Meteorite::Meteorite() {
 	Init();
 }
@@ -11,7 +13,7 @@ void Meteorite::Init() {
 	reset_object("particle.obj");
 
 	velocity_ = { -2, 0, 0 };
-	transform->set_translate_y(5.0);
+	transform->set_translate_y(4.5);
 	transform->set_translate_x(10.0f);
 	transform->set_translate_z(RandomFloat(-4.0f, 4.0f));
 }
@@ -23,6 +25,11 @@ void Meteorite::Update() {
 void Meteorite::Move() {
 	Vector3 translate = transform->get_translate();
 	translate += velocity_ * (1.0f / 60) * speed;
+
+	if (isAttraction_) {
+		velocity_ += acceleration_ * (1.0f / 60) * attractionedStrength_;
+	}
+
 	transform->set_translate(translate);
 }
 

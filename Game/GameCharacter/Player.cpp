@@ -25,7 +25,7 @@ void Player::Update() {
 	Attack();
 
 	if (isAttack_) {
-		gravityRod_->Update(transform->get_translate(), transform->get_quaternion());
+		gravityRod_->Update(transform->get_translate(), forwordRotation);
 	}
 
 	gravityRod_->EditImGui();
@@ -83,7 +83,7 @@ void Player::Move() {
 void Player::Attack() {
 	if (input_->GetIsGamePadConnected(0)) {
 		if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-			isAttack_ = true;
+			isAttack_ = !isAttack_;
 		}
 	}
 }

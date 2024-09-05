@@ -39,7 +39,14 @@ public:	// メンバ関数
 	void Attack();
 
 public:
+
 	const Quaternion& GetMoveQuaternion() const;
+
+	const Vector3 GetGravityRodVector() const { return gravityRod_->GetRodVector(); }
+	const Vector3 GetGravityRodOrigine() const { return gravityRod_->GetRodOrigine(); }
+	const Vector3 GetGravityRodEnd() const { return gravityRod_->GetRodEnd(); }
+
+	const bool& GetIsAttack() const { return isAttack_; }
 
 private:
 

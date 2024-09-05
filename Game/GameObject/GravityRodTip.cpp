@@ -11,5 +11,6 @@ void GravityRodTip::Init() {
 }
 
 void GravityRodTip::Update(const float& radius, const Quaternion& rodQuaternion, const Vector3& translation) {
-	transform->set_translate((rodQuaternion.vector() * radius) + translation);
+	Vector3 forword = Vector3{ 0,0,1 } * rodQuaternion;
+	transform->set_translate(translation + (forword * radius));
 }

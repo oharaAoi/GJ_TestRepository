@@ -1,7 +1,9 @@
 #pragma once
+#include <cmath>
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Math/Quaternion.h"
 #include "Engine/Math/Vector3.h"
+#include "Engine/Math/Definition.h"
 
 /// <summary>
 /// 重力棒の先端

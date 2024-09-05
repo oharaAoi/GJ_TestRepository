@@ -9,6 +9,10 @@ class Meteorite
 
 public:
 
+	static float attractionedStrength_;
+
+public:
+
 	Meteorite();
 	~Meteorite();
 
@@ -30,6 +34,9 @@ public:	// メンバ関数
 
 public:	// accessor
 
+	void SetIsAttraction(const bool& isAttraction) { isAttraction_ = isAttraction; }
+
+	void SetAcceleration(const Vector3& acceleration) { acceleration_ = acceleration; }
 
 private:
 
@@ -37,6 +44,8 @@ private:
 
 	float radius_ = 2.0f;
 	Vector3 velocity_;
+	Vector3 acceleration_;
 
+	bool isAttraction_;
 };
 

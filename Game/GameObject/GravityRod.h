@@ -34,13 +34,19 @@ public:	// メンバ関数
 
 public:	// accessor
 
+	// ----------- 棒のベクトル ----------- //
+	const Vector3 GetRodVector() const { return rodVector_; }
 
+	// ----------- 両先端の座標 ----------- //
+	const Vector3 GetRodOrigine() const { return tipObject_[1]->get_transform().get_translate(); }
+	const Vector3 GetRodEnd() const { return tipObject_[0]->get_transform().get_translate(); }
 
 private:
 
-	float radius_ = 2.0f;
+	float radius_ = 6.0f;
 
 	std::unique_ptr<GravityRodTip> tipObject_[2];
 
+	Vector3 rodVector_;
 };
 

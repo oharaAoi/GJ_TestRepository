@@ -36,6 +36,11 @@ public:
 
 	void AddMeteoriteList();
 
+	/// <summary>
+	/// 隕石が吸い寄せられるかを判定する
+	/// </summary>
+	void CheckMeteoAttraction();
+
 private:
 
 	uint32_t frameCount_ = 0;

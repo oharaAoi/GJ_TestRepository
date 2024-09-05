@@ -43,13 +43,17 @@ void GameScene::update() {
 
 	frameCount_++;
 
-	if (frameCount_ > 120) {
+	if (frameCount_ > 240) {
 		AddMeteoriteList();
 		frameCount_ = 0;
 	}
 
 	for (Meteorite& meteo : meteoriteList_) {
 		meteo.Update();
+	}
+
+	if (player_->GetIsAttack()) {
+		CheckMeteoAttraction();
 	}
 }
 
@@ -80,8 +84,29 @@ void GameScene::draw() const {
 	RenderPathManager::Next();
 }
 
+
 void GameScene::AddMeteoriteList() {
 	meteoriteList_.emplace_back();
+}
+
+
+void GameScene::CheckMeteoAttraction() {
+	for (Meteorite& meteo : meteoriteList_) {
+		Vector3 meteoToRodOri = (meteo.get_transform().get_translate() - player_->GetGravityRodOrigine());
+		Vector3 projectVector = Vector3::Projection(meteoToRodOri, player_->GetGravityRodVector());
+		// 最近接点を求める
+		Vector3 closesPoint = player_->GetGravityRodOrigine() + projectVector;
+		// 最近接点と隕石の距離を求める
+		float length = Vector3::Length(meteo.get_transform().get_translate(), closesPoint);
+
+		if (length < 3.0f) {
+			meteo.SetIsAttraction(true);
+			meteo.SetAcceleration(Vector3::Normalize(closesPoint - meteo.get_transform().get_translate()));
+		} else {
+			meteo.SetIsAttraction(false);
+		}
+	}
+
 }
 
 #ifdef _DEBUG
@@ -107,6 +132,10 @@ void GameScene::debug_update() {
 	field_->EditImGui();
 	ImGui::Begin("GameObject");
 	player_->debug_gui();
+	ImGui::End();
+
+	ImGui::Begin("Meteorite");
+	ImGui::DragFloat("attractionedStrength", &Meteorite::attractionedStrength_, 0.1f);
 	ImGui::End();
 }
 #endif // _DEBUG
