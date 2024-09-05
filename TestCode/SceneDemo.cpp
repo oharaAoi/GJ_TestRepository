@@ -14,9 +14,6 @@ void SceneDemo::initialize() {
 void SceneDemo::finalize() {
 }
 
-void SceneDemo::finalize() {
-}
-
 void SceneDemo::begin() {
 }
 
