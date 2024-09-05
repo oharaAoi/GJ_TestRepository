@@ -75,6 +75,16 @@ void EffectManager::Draw() const {
 // ↓　メンバ関数
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+void EffectManager::AddEffect(const std::string& effectName) {
+	std::string path = effectName + ".json";
+	//　引数のEffectが存在するか探索する
+	for (const std::string& effect : effectNameList_) {
+		if (effect == path) {
+			effectList_.emplace_back(this, path, Vector3{0,0,0});
+		}
+	}
+}
+
 // ------------------- 新しいEmitterを作成する ------------------- //
 void EffectManager::CreateEmitter() {
 	ImGui::Begin("CreateEmitter");
@@ -201,7 +211,7 @@ void EffectManager::CreateEffect(const std::string& effectName) {
 
 	// 書き込む
 	// 書き込むJSONファイルのフルパス
-	std::string filePath = kEffectDirectoryPath_ + effectName + ".json";
+	std::string filePath = kEffectDirectoryPath_ + effectName;
 	// 書き込み用のファイルストリーム
 	std::ofstream ofs;
 	// ファイルを書き込みように開く

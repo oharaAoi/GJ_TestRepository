@@ -14,13 +14,13 @@ class EffectManager;
 class Effect {
 public:
 
-	Effect(EffectManager* effectManager, const std::string& effectName);
+	Effect(EffectManager* effectManager, const std::string& effectName, const Vector3& centerPos);
 	~Effect();
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Init(EffectManager* effectManager, const std::string& effectName);
+	void Init(EffectManager* effectManager, const std::string& effectName, const Vector3& centerPos);
 
 	/// <summary>
 	/// 更新処理
@@ -44,10 +44,14 @@ public:
 	
 private:
 
-	EffectManager* effectManager_ = nullptr;
-	std::string effectName_;
+	const std::string kDirectoryPath_ = "./Engine/Resources/Effect/";
 
+	EffectManager* effectManager_ = nullptr;
+	// effect名
+	std::string effectName_;
+	// 使用するEmitterの名前リスト
 	std::list<std::string> useEmitterNameList_;
+	// emitterのリスト
 	std::list<Emitter> emitterList_;
 };
 

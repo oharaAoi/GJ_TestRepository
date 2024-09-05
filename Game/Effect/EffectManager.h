@@ -46,6 +46,12 @@ public:
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/// <summary>
+	/// Effectを追加する
+	/// </summary>
+	/// <param name="effectName"></param>
+	void AddEffect(const std::string& effectName);
+
+	/// <summary>
 	/// Emitterを作成する関数
 	/// </summary>
 	void CreateEmitter();

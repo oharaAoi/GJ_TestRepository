@@ -2,8 +2,8 @@
 #include "Game/Effect/EffectManager.h"
 #include "externals/imgui/imgui.h"
 
-Effect::Effect(EffectManager* effectManager, const std::string& effectName) {
-	Init(effectManager, effectName);
+Effect::Effect(EffectManager* effectManager, const std::string& effectName, const Vector3& centerPos) {
+	Init(effectManager, effectName, centerPos);
 }
 
 Effect::~Effect() {}
@@ -12,9 +12,11 @@ Effect::~Effect() {}
 // ↓　初期化処理
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Effect::Init(EffectManager* effectManager, const std::string& effectName) {
+void Effect::Init(EffectManager* effectManager, const std::string& effectName, const Vector3& centerPos) {
 	effectManager_ = effectManager;
 	effectName_ = effectName;
+
+	LoadEffectFile(effectName);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +53,8 @@ void Effect::EditImGui() {
 
 // ------------------- Effectの情報を読み込む ------------------- //
 void Effect::LoadEffectFile(const std::string& fileName) {
-	std::ifstream file(fileName);
+	std::string filePath = kDirectoryPath_ + fileName;
+	std::ifstream file(filePath);
 	if (file.is_open()) {
 		nlohmann::json json;
 		file >> json;  // JSONファイルを読み込んでjsonオブジェクトに変換
@@ -66,4 +69,8 @@ void Effect::LoadEffectFile(const std::string& fileName) {
 		assert("can not file open");
 	}
 
+	// リストには入っている名前のEmitterを読み込む
+	for (const std::string& emitterName : useEmitterNameList_) {
+		emitterList_.emplace_back(effectManager_, emitterName);
+	}
 }

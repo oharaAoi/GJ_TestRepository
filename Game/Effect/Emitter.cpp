@@ -18,6 +18,8 @@ void Emitter::Init(EffectManager* effectManager, const std::string& emitterName)
 	emitterName_ = emitterName;
 
 	frameCreateCount_ = 120;
+
+	LoadEmitter(emitterName);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +57,7 @@ void Emitter::Emit() {
 		float minAngle = -angle_ * ToRadian;
 		float maxAngle = angle_ * ToRadian;
 		float randomAngle = RandomFloat(minAngle, maxAngle);
-
+		// 円錐の形で放出できるように円周上の点を計算する
 		particleVelocity_ = GetPointInCone(randomAngle, radius_, direction_, centerPos_) - centerPos_;
 		particleVelocity_.normalize();
 
@@ -73,7 +75,7 @@ void Emitter::EditImGui() {
 		ImGui::DragFloat3("direction", &direction_.x, 0.01f);
 		ImGui::DragFloat3("range", &range_.x, 0.01f);
 		ImGui::DragFloat("speed", &speed_, 0.1f);
-		ImGui::DragFloat("angle", &angle_, 1.0f, 0.0f, 360.0f);
+		ImGui::DragFloat("angle", &angle_, 1.0f, 0.0f, 180.0f);
 		ImGui::DragScalar("createTime", ImGuiDataType_U32, &createTime_);
 		ImGui::DragScalar("createCount", ImGuiDataType_U32, &createCount_);
 		ImGui::DragScalar("lifeTime", ImGuiDataType_U32, &lifeTime_);
@@ -108,7 +110,7 @@ void Emitter::EditImGui() {
 			std::string message = std::format("{}.json saved.", emitterName_);
 			MessageBoxA(nullptr, message.c_str(), "Adjustment", 0);
 		}
-		
+
 		ImGui::TreePop();
 	}
 
@@ -273,14 +275,15 @@ void Emitter::LoadEmitter(const std::string& groupName) {
 	angle_ = GetValue<float>(groupName, "angle");
 
 	useObjName_ = GetValue<std::string>(groupName, "useObjectName");
-	emitterName_ = GetValue<std::string>(groupName, "groupName");
+	emitterName_ = GetValue<std::string>(groupName, "emitterName");
 
 }
 
 Vector3 Emitter::GetPointInCone(const float& theta, const float& radius, const Vector3& direction, const Vector3& origine) {
 	// 円錐の軸上の点を計算
-	Vector3 point = origine + direction.normalize();
-	
+	Vector3 point;
+	point = origine + direction.normalize();
+
 	// 基底ベクトルを計算(方向ベクトルに垂直な2つのベクトルを作成)
 	Vector3 underVector = direction.CrossProduct({ 1,0,0 }, direction).normalize();
 	if (underVector.length() < 1e-6) {

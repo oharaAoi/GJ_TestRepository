@@ -113,6 +113,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 
+	bool test = false;
+
 	// ------------------------------------------------------------------------ //
 
 	while (!WinApp::IsEndApp()) {
@@ -134,6 +136,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		effectManager->Update();
 
 		effectManager->EditImGui();
+
+		if (!test) {
+			effectManager->AddEffect("effect");
+			test = true;
+		}
 
 		// ------------------------------------------------------------------------ //
 
