@@ -39,9 +39,10 @@ void SceneDemo::late_update() {
 }
 
 void SceneDemo::draw() const {
-
+	RenderPathManager::BeginFrame();
 	DirectXCore::ShowGrid(*camera3D_);
 	planet_->draw();
+	RenderPathManager::Next();
 }
 
 #ifdef _DEBUG
