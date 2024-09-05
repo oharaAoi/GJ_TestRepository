@@ -6,21 +6,21 @@
 /// playerやEnemyが上に存在しているobject
 /// </summary>
 class Planet :
-	public GameObject {
+    public GameObject {
 public:
 
-	Planet();
-	~Planet();
+    Planet();
+    ~Planet();
 
 	/// <summary>
 	/// 初期化関数
 	/// </summary>
-	void Init();
+    void Init();
 
 	/// <summary>
 	/// 更新関数
 	/// </summary>
-	void Update();
+    void Update();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // ↓　メンバ関数
