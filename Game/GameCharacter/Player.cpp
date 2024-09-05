@@ -22,10 +22,10 @@ void Player::Update(const Vector3& planetPos, const float& planetRadius) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// ���@�����o�֐�
+// ↓　メンバ関数
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-// ------------------- �ړ���s���֐� ------------------- //
+// ------------------- 移動を行う関数 ------------------- //
 void Player::Move(const Vector3& planetPos, const float& planetRadius) {
 	Vector3 translate = transform->get_translate();
 	Quaternion playerQuaternion = transform->get_quaternion();
@@ -33,20 +33,20 @@ void Player::Move(const Vector3& planetPos, const float& planetRadius) {
 	if (input_->GetIsGamePadConnected(0)) {
 		Vector2 velocity = input_->GetLeftJoyStick();
 		bool isMove = false;
-		// ���͂������Ă�����
+		// 入力がさせていたら
 		if (velocity.x != 0 || velocity.y) { isMove = true; }
 
 		if (!isMove) {
 			return;
 		}
 	
-		// player�𓮂���
+		// playerを動かす
 		velocity = velocity.normalize() * 0.1f;
 		translate.x += velocity.x;
 		translate.z += velocity.y;
 		transform->set_translate(translate);
 
-		// player�̌�����ړ������ɂ���
+		// playerの向きを移動方向にする
 		float targetAngle = std::atan2f(velocity.x, velocity.y);
 		moveRotation = Quaternion::EulerRadian({0,targetAngle,0});
 		playerQuaternion = moveRotation;
