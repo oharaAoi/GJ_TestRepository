@@ -11,7 +11,9 @@ public:
 	~SceneDemo() = default;
 
 public:
-	void initialize() override;
+	void load();
+	void initialize();
+	void finalize();
 
 	void begin() override;
 	void update() override;

@@ -5,6 +5,9 @@
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 #include "Engine/DirectX/DirectXCore.h"
 
+void SceneDemo::load() {
+}
+
 void SceneDemo::initialize() {
 	planet_ = std::make_unique<Planet>();
 
@@ -15,6 +18,9 @@ void SceneDemo::initialize() {
 		Quaternion::EulerDegree(45, 0, 0),
 		{ 0, 10, -10 }
 	});
+}
+
+void SceneDemo::finalize() {
 }
 
 void SceneDemo::begin() {
