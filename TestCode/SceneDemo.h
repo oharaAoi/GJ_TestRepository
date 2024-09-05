@@ -1,7 +1,5 @@
 #pragma once
-
 #include "Engine/Game/Scene/BaseScene.h"
-#include "Game/WorldObject/Planet.h"
 #include "Engine/Game/Camera/Camera3D.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 
@@ -28,9 +26,6 @@ public:
 
 private:
 
-	// ------------------- WorldObject ------------------- //
-	std::unique_ptr<Planet> planet_ = nullptr;
 
-	// ------------------- Camera ------------------- //
-	std::unique_ptr<Camera3D> camera3D_ = nullptr;
+
 };

@@ -9,6 +9,7 @@ Player::~Player() {
 }
 
 void Player::Init() {
+	reset_object("player.obj");
 }
 
 void Player::Update() {

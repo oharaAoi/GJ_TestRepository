@@ -4,6 +4,7 @@
 
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 #include "TestCode/SceneDemo.h"
+#include "Game/Scene/GameScene.h"
 #include "Engine/Game/Managers/SceneManager/SceneManager.h"
 #include "Engine/Utility/Utility.h"
 
@@ -18,9 +19,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp::Initialize("DirectXGame", kClientWidth, kClientHight);
 
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
 	BackgroundLoader::WaitEndExecute();
 
-	auto&& scene = CreateUnique<SceneDemo>();
+	auto&& scene = CreateUnique<GameScene>();
 	scene->initialize();
 	SceneManager::Initialize(std::move(scene));
 
