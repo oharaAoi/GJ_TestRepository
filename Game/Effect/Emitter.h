@@ -10,6 +10,7 @@
 // Math
 #include "Engine/Math/Vector3.h"
 #include "Engine/Math/Definition.h"
+#include "Engine/Math/Quaternion.h"
 #include "Game/MyRandom.h"
 // GameObject
 #include "Game/Effect/Particle.h"
@@ -90,6 +91,8 @@ public:
 	void LoadEmitter(const std::string& groupName);
 
 	Vector3 GetPointInCone(const float& theta, const float& radius, const Vector3& direction, const Vector3& origine);
+
+	Vector3 GetEmitDirectionRandom(const float& radius, const Vector3& direction);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // ↓　accessor

@@ -62,12 +62,7 @@ void Emitter::Emit() {
 
 		particleScale_ = { radius_, radius_, radius_ };
 
-		// 向きに対しての角度を算出
-		float minAngle = -angle_ * ToRadian;
-		float maxAngle = angle_ * ToRadian;
-		float randomAngle = RandomFloat(minAngle, maxAngle);
-		// 円錐の形で放出できるように円周上の点を計算する
-		particleVelocity_ = GetPointInCone(randomAngle, radius_, direction_, centerPos_) - centerPos_;
+		particleVelocity_ = GetEmitDirectionRandom(radius_, direction_);
 		particleVelocity_.normalize();
 
 		effectManager_->AddParticleList(particleTranslation_, particleScale_, particleVelocity_, lifeTime_, speed_);
@@ -314,4 +309,15 @@ Vector3 Emitter::GetPointInCone(const float& theta, const float& radius, const V
 	Vector3 circlePoint = (underVector * std::cos(theta) + vVector * std::sin(theta)) * radius;
 
 	return point + circlePoint;
+}
+
+Vector3 Emitter::GetEmitDirectionRandom(const float& radius, const Vector3& direction) {
+	float minAngle = -angle_ * ToRadian;
+	float maxAngle = angle_ * ToRadian;
+	float randomRoll = RandomFloat(minAngle, maxAngle);
+	float randomPitch = RandomFloat(minAngle, maxAngle);
+	float randomYaw = RandomFloat(minAngle, maxAngle);
+
+	Quaternion randomQuaternion = Quaternion::EulerRadian(Vector3{ randomPitch,randomYaw, randomRoll });
+	return direction * randomQuaternion;
 }
