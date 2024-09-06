@@ -39,13 +39,15 @@ public:
 
 public:
 
-	Emitter(EffectManager* effectManager, const std::string& emitterName);
+	Emitter(EffectManager* effectManager, const std::string& emitterName,
+			const Vector3& centerPos, const Vector3& direction);
 	~Emitter();
 
 	/// <summary>
 	/// 初期化関数
 	/// </summary>
-	void Init(EffectManager* effectManager, const std::string& emitterName);
+	void Init(EffectManager* effectManager, const std::string& emitterName,
+			  const Vector3& centerPos, const Vector3& direction);
 
 	/// <summary>
 	/// 更新関数
@@ -95,6 +97,8 @@ public:
 
 	void GetEffectManager(EffectManager* effectManager) { effectManager_ = effectManager; };
 
+	const bool GetIsDead() const { return isDead_; }
+
 	/// <summary>
 	/// keyで指定した値をgroupに保存する
 	/// </summary>
@@ -123,11 +127,13 @@ public:
 	/// <param name="key">: 項目</param>
 	/// <returns>: uint32_t, float, Vector3, bool, vector.Vector3 </returns>
 	template<typename T>
-	T GetValue(const std::string& groupName, const std::string& key) const;
+	T GetValue(const std::string& groupName, const std::string& key, const T& defaultValue = T()) const;
 
 private:
 
 	EffectManager* effectManager_ = nullptr;
+
+	bool isDead_ = false;			// Emitterの寿命
 
 	// ------------------- emitterを保存する際に使用する変数 ------------------- //
 	std::map<std::string, Group> emitterData_;
@@ -143,6 +149,7 @@ private:
 	uint32_t frameCreateCount_ = 0;	// 1フレームに何個生成するか
 	uint32_t createCount_ = 1;		// 生成時に何個生成するか
 	uint32_t lifeTime_ = 120;		// particleの生存時間
+	uint32_t emitCount_ = 1;		// particleを放出する回数
 
 	float speed_ = 1;				// particleの速度
 	float radius_  = 1;				// particleが発射される範囲
@@ -182,14 +189,19 @@ inline void Emitter::AddItem(const std::string& groupName, const std::string& ke
 }
 
 template<typename T>
-inline T Emitter::GetValue(const std::string& groupName, const std::string& key) const {
+inline T Emitter::GetValue(const std::string& groupName, const std::string& key, const T& defaultValue) const {
 	// 未登録チェック
 	assert(emitterData_.find(groupName) != emitterData_.end());
 	// グループの参照を取得
 	const Group& group = emitterData_.at(groupName);
 
-	assert(group.items.find(key) != group.items.end());
-	const Item& item = group.items.at(key);
+	auto it = group.items.find(key);
+	if (it != group.items.end()) {
+		// 存在すればその値を返す
+		const Item& item = it->second;
+		return std::get<T>(item.value);
+	}
 
-	return std::get<T>(item.value);
+	// 存在しない場合はデフォルト値を返す
+	return defaultValue;
 }

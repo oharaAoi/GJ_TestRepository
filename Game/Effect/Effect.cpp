@@ -2,8 +2,9 @@
 #include "Game/Effect/EffectManager.h"
 #include "externals/imgui/imgui.h"
 
-Effect::Effect(EffectManager* effectManager, const std::string& effectName, const Vector3& centerPos) {
-	Init(effectManager, effectName, centerPos);
+Effect::Effect(EffectManager* effectManager, const std::string& effectName,
+			   const Vector3& centerPos, const Vector3& direction) {
+	Init(effectManager, effectName, centerPos, direction);
 }
 
 Effect::~Effect() {}
@@ -12,9 +13,13 @@ Effect::~Effect() {}
 // ↓　初期化処理
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Effect::Init(EffectManager* effectManager, const std::string& effectName, const Vector3& centerPos) {
+void Effect::Init(EffectManager* effectManager, const std::string& effectName,
+				  const Vector3& centerPos, const Vector3& direction) {
 	effectManager_ = effectManager;
 	effectName_ = effectName;
+
+	emitterPos_ = centerPos;
+	emitterDirection_ = direction;
 
 	LoadEffectFile(effectName);
 }
@@ -25,8 +30,12 @@ void Effect::Init(EffectManager* effectManager, const std::string& effectName, c
 
 void Effect::Update() {
 	for (std::list<Emitter>::iterator emitter = emitterList_.begin(); emitter != emitterList_.end();) {
-		emitter->Update();
-		emitter++;
+		if (!emitter->GetIsDead()) {
+			emitter->Update();
+			emitter++;
+		} else {
+			emitter = emitterList_.erase(emitter);
+		}
 	}
 }
 
@@ -71,6 +80,6 @@ void Effect::LoadEffectFile(const std::string& fileName) {
 
 	// リストには入っている名前のEmitterを読み込む
 	for (const std::string& emitterName : useEmitterNameList_) {
-		emitterList_.emplace_back(effectManager_, emitterName);
+		emitterList_.emplace_back(effectManager_, emitterName, emitterPos_, emitterDirection_);
 	}
 }

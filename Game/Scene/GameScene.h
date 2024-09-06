@@ -9,6 +9,9 @@
 // Input
 #include "Game/Input/Input.h"
 
+// Manager
+#include "Game/Effect/EffectManager.h"
+
 #include "Game/FollowCamera.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 
@@ -55,6 +58,9 @@ private:
 
 	// ------------------- Camera ------------------- //
 	std::unique_ptr<FollowCamera> camera3D_ = nullptr;
+
+	// ------------------- Manager ------------------- //
+	EffectManager* effectManager_ = nullptr;
 
 };
 

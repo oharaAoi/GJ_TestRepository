@@ -10,6 +10,8 @@ class Meteorite
 public:
 
 	static float attractionedStrength_;
+	static float kSpeed_;
+	static float radius_;
 
 public:
 
@@ -34,18 +36,25 @@ public:	// メンバ関数
 
 public:	// accessor
 
+	// ----------- 引き寄せられているか ----------- //
 	void SetIsAttraction(const bool& isAttraction) { isAttraction_ = isAttraction; }
 
+	// ----------- 加速度 ----------- //
 	void SetAcceleration(const Vector3& acceleration) { acceleration_ = acceleration; }
+
+	// ----------- 半径 ----------- //
+	const float GetRadius() const { return radius_; }
+
+	// ----------- 死亡フラグ ----------- //
+	void SetIsDead(const bool& isDead) { isDead_ = isDead; }
+	const bool GetIsDead() const { return isDead_; }
 
 private:
 
-	const float speed = 2.0f;
-
-	float radius_ = 2.0f;
 	Vector3 velocity_;
 	Vector3 acceleration_;
 
 	bool isAttraction_;
+	bool isDead_;
 };
 

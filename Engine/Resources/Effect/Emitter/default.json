@@ -1,0 +1,28 @@
+{
+    "default.json": {
+        "angle": 30.0,
+        "centerPos": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "createCount": 5,
+        "createTime": 1,
+        "direction": [
+            0.0,
+            1.0,
+            0.0
+        ],
+        "emitCount": 1,
+        "emitterName": "default.json",
+        "lifeTime": 120,
+        "radius": 1.0,
+        "range": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "speed": 1.0,
+        "useObjectName": "particle.obj"
+    }
+}

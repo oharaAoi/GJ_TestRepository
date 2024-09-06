@@ -41,9 +41,12 @@ public:	// accessor
 	const Vector3 GetRodOrigine() const { return tipObject_[1]->get_transform().get_translate(); }
 	const Vector3 GetRodEnd() const { return tipObject_[0]->get_transform().get_translate(); }
 
+	const float GetAttractionRange() const { return attractionRange_; }
+
 private:
 
 	float radius_ = 6.0f;
+	float attractionRange_ = 3.0f;
 
 	std::unique_ptr<GravityRodTip> tipObject_[2];
 

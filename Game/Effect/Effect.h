@@ -14,13 +14,15 @@ class EffectManager;
 class Effect {
 public:
 
-	Effect(EffectManager* effectManager, const std::string& effectName, const Vector3& centerPos);
+	Effect(EffectManager* effectManager, const std::string& effectName,
+		   const Vector3& centerPos, const Vector3& direction);
 	~Effect();
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Init(EffectManager* effectManager, const std::string& effectName, const Vector3& centerPos);
+	void Init(EffectManager* effectManager, const std::string& effectName,
+			  const Vector3& centerPos, const Vector3& direction);
 
 	/// <summary>
 	/// 更新処理
@@ -53,5 +55,9 @@ private:
 	std::list<std::string> useEmitterNameList_;
 	// emitterのリスト
 	std::list<Emitter> emitterList_;
+
+	// Emitterに関する変数
+	Vector3 emitterPos_;
+	Vector3 emitterDirection_;
 };
 

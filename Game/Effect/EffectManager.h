@@ -18,14 +18,20 @@ class Effect;
 class EffectManager {
 public:
 
-	EffectManager();
+	EffectManager() = default;
 	~EffectManager();
+	EffectManager(const EffectManager&) = delete;
+	const EffectManager& operator=(const EffectManager&) = delete;
+
+	static EffectManager* GetInstance();
+
+public:
 
 	/// <summary>
 	/// 初期化関数
 	/// </summary>
 	void Init();
-	
+
 	/// <summary>
 	/// 更新関数
 	/// </summary>
@@ -41,16 +47,16 @@ public:
 	/// </summary>
 	void Draw() const;
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// ↓　メンバ関数
-//////////////////////////////////////////////////////////////////////////////////////////////////
+public:	// メンバ関数
 
 	/// <summary>
 	/// Effectを追加する
 	/// </summary>
 	/// <param name="effectName"></param>
-	void AddEffect(const std::string& effectName);
+	void AddEffect(const std::string& effectName,
+				   const Vector3& pos = { 0,0,0 }, const Vector3& direction = { 0, 1, 0 });
 
+#ifdef _DEBUG
 	/// <summary>
 	/// Emitterを作成する関数
 	/// </summary>
@@ -60,6 +66,7 @@ public:
 	/// ImGuiの編集
 	/// </summary>
 	void EditImGui();
+#endif
 
 	/// <summary>
 	/// フォルダ内にあるEmitterのファイル名を取得する
@@ -96,6 +103,11 @@ private:
 	std::list<Emitter> createEmitterList_;
 	std::string createEmitterName_;
 	char buffer[30];
+
+	std::string createEffectName_;
+	char effectBuffer[30];
+
+	std::unique_ptr<Emitter> editEmitter_ = nullptr;
 
 	// ------------------- Effect名のリスト ------------------- //
 	std::list<std::string> effectNameList_;

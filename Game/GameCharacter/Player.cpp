@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Engine/Game/Transform3D/Transform3D.h"
+#include <externals/imgui/imgui.h>
 
 Player::Player() {
 	Init();
@@ -27,8 +28,11 @@ void Player::Update() {
 	if (isAttack_) {
 		gravityRod_->Update(transform->get_translate(), forwordRotation);
 	}
-
+#ifdef _DEBUG
+	ImGui::Begin("GravityRod");
 	gravityRod_->EditImGui();
+	ImGui::End();
+#endif
 }
 
 void Player::Begin_Rendering(Camera3D* camera3d) {

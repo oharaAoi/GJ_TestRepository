@@ -40,6 +40,8 @@ public:	// メンバ関数
 
 public:
 
+	const GravityRod* GetGravityRod() { return gravityRod_.get(); }
+
 	const Quaternion& GetMoveQuaternion() const;
 
 	const Vector3 GetGravityRodVector() const { return gravityRod_->GetRodVector(); }

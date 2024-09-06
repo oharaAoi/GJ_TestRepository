@@ -26,7 +26,8 @@ void GravityRod::Init() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GravityRod::Update(const Vector3& playerPos, const Quaternion& quaternion) {
-	transform->set_translate(playerPos);
+	Vector3 translate = { playerPos.x, playerPos.y + 0.5f, playerPos.z };
+	transform->set_translate(translate);
 	transform->set_rotate(quaternion);
 
 	// 両方の先端にオブジェクトを配置する
@@ -54,6 +55,11 @@ void GravityRod::Draw() const {
 void GravityRod::EditImGui() {
 	ImGui::Begin("GravityRod");
 	ImGui::DragFloat("radius", &radius_, 0.1f);
+	ImGui::DragFloat("Range", &attractionRange_, 0.1f);
+	ImGui::DragFloat("TipRadius", &GravityRodTip::radius_, 0.1f);
+
+	ImGui::Separator();
+	debug_gui();
 	ImGui::End();
 }
 #endif // _DEBUG

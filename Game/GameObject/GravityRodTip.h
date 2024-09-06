@@ -13,6 +13,10 @@ class GravityRodTip :
 
 public:
 
+	static float radius_;
+
+public:
+
 	GravityRodTip();
 	~GravityRodTip();
 

@@ -2,8 +2,9 @@
 #include "Game/Effect/EffectManager.h"
 #include "externals/imgui/imgui.h"
 
-Emitter::Emitter(EffectManager* effectManager, const std::string& emitterName) {
-	Init(effectManager, emitterName);
+Emitter::Emitter(EffectManager* effectManager, const std::string& emitterName,
+				 const Vector3& centerPos, const Vector3& direction) {
+	Init(effectManager, emitterName, centerPos, direction);
 }
 
 Emitter::~Emitter() {
@@ -13,13 +14,17 @@ Emitter::~Emitter() {
 // ↓　初期化関数
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Emitter::Init(EffectManager* effectManager, const std::string& emitterName) {
+void Emitter::Init(EffectManager* effectManager, const std::string& emitterName,
+				   const Vector3& centerPos, const Vector3& direction) {
 	effectManager_ = effectManager;
 	emitterName_ = emitterName;
 
-	frameCreateCount_ = 120;
+	frameCreateCount_ = 1;
 
 	LoadEmitter(emitterName);
+
+	centerPos_ = centerPos;
+	direction_ = direction;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +32,10 @@ void Emitter::Init(EffectManager* effectManager, const std::string& emitterName)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Emitter::Update() {
+	if (emitCount_ <= 0) {
+		isDead_ = true;
+	}
+
 	if (--frameCreateCount_ <= 0) {
 		Emit();
 		frameCreateCount_ = createTime_;
@@ -63,6 +72,8 @@ void Emitter::Emit() {
 
 		effectManager_->AddParticleList(particleTranslation_, particleScale_, particleVelocity_, lifeTime_, speed_);
 	}
+
+	emitCount_--;
 }
 
 // ------------------- ImGuiを編集する ------------------- //
@@ -79,6 +90,7 @@ void Emitter::EditImGui() {
 		ImGui::DragScalar("createTime", ImGuiDataType_U32, &createTime_);
 		ImGui::DragScalar("createCount", ImGuiDataType_U32, &createCount_);
 		ImGui::DragScalar("lifeTime", ImGuiDataType_U32, &lifeTime_);
+		ImGui::DragScalar("emitCount", ImGuiDataType_U32, &emitCount_);
 		PolygonMeshManager::MeshListGui(useObjName_);
 
 		// 保存したいEmitterの名前を登録
@@ -100,6 +112,7 @@ void Emitter::EditImGui() {
 			AddItem(emitterName_, "createTime", createTime_);
 			AddItem(emitterName_, "createCount", createCount_);
 			AddItem(emitterName_, "lifeTime", lifeTime_);
+			AddItem(emitterName_, "emitCount", emitCount_);
 			AddItem(emitterName_, "speed", speed_);
 			AddItem(emitterName_, "radius", radius_);
 			AddItem(emitterName_, "angle", angle_);
@@ -203,7 +216,7 @@ void Emitter::SaveFileEmitter(const std::string& groupName) {
 // ------------------- Emitterの情報を読み込む ------------------- //
 void Emitter::LoadEmitter(const std::string& groupName) {
 	// 読み込むjsonファイルのフルパスを合成する
-	std::string filePath = kDirectoryPath_ + groupName + ".json";
+	std::string filePath = kDirectoryPath_ + groupName;
 	// 読み込み用ファイルストリーム
 	std::ifstream ifs;
 	// ファイルを読み込みように開く
@@ -269,6 +282,7 @@ void Emitter::LoadEmitter(const std::string& groupName) {
 	lifeTime_ = GetValue<uint32_t>(groupName, "lifeTime");
 	createTime_ = GetValue<uint32_t>(groupName, "createTime");
 	createCount_ = GetValue<uint32_t>(groupName, "createCount");
+	emitCount_ = GetValue<uint32_t>(groupName, "emitCount");
 
 	speed_ = GetValue<float>(groupName, "speed");
 	radius_ = GetValue<float>(groupName, "radius");
@@ -285,9 +299,13 @@ Vector3 Emitter::GetPointInCone(const float& theta, const float& radius, const V
 	point = origine + direction.normalize();
 
 	// 基底ベクトルを計算(方向ベクトルに垂直な2つのベクトルを作成)
-	Vector3 underVector = direction.CrossProduct({ 1,0,0 }, direction).normalize();
+	Vector3 vertical = Vector3::CrossProduct({ 1,0,0 }, direction);
+	if (Vector3::DotProduct(vertical, direction) == 0) {
+		vertical = Vector3::CrossProduct({ 0,1,0 }, direction);
+	}
+	Vector3 underVector = Vector3::Normalize(vertical);
 	if (underVector.length() < 1e-6) {
-		underVector = direction.CrossProduct({ 0,1,0 }, direction).normalize();
+		underVector = Vector3::CrossProduct({ 0,1,0 }, direction).normalize();
 	}
 
 	Vector3 vVector = direction.CrossProduct(underVector, direction).normalize();

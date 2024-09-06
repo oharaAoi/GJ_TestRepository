@@ -7,6 +7,8 @@
 
 void GameScene::initialize() {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
+	EffectManager::GetInstance()->Init();
+	effectManager_ = EffectManager::GetInstance();
 
 	field_ = std::make_unique<Field>();
 	player_ = std::make_unique<Player>();
@@ -52,6 +54,22 @@ void GameScene::update() {
 		meteo.Update();
 	}
 
+	// 死亡フラグのチェックを行う
+	meteoriteList_.remove_if([](const Meteorite& meteo) {
+		if (meteo.GetIsDead()) {
+			return true;
+		}
+		return false;
+	});
+
+	// -------------------------------------------------
+	// ↓ Manager系の更新
+	// -------------------------------------------------
+	effectManager_->Update();
+
+	// -------------------------------------------------
+	// ↓ 当たり判定系
+	// -------------------------------------------------
 	if (player_->GetIsAttack()) {
 		CheckMeteoAttraction();
 	}
@@ -65,6 +83,8 @@ void GameScene::begin_rendering() {
 	for (Meteorite& meteo : meteoriteList_) {
 		meteo.begin_rendering(*camera3D_);
 	}
+
+	effectManager_->BeginRendering(*camera3D_);
 }
 
 void GameScene::late_update() {
@@ -80,6 +100,8 @@ void GameScene::draw() const {
 	for (const Meteorite& meteo : meteoriteList_) {
 		meteo.draw();
 	}
+
+	effectManager_->Draw();
 
 	RenderPathManager::Next();
 }
@@ -99,9 +121,18 @@ void GameScene::CheckMeteoAttraction() {
 		// 最近接点と隕石の距離を求める
 		float length = Vector3::Length(meteo.get_transform().get_translate(), closesPoint);
 
-		if (length < 3.0f) {
+		// 2点間の距離が重力圏の範囲と隕石の半径の合計より短かったら
+		if (length < player_->GetGravityRod()->GetAttractionRange() + meteo.GetRadius()) {
 			meteo.SetIsAttraction(true);
 			meteo.SetAcceleration(Vector3::Normalize(closesPoint - meteo.get_transform().get_translate()));
+
+			// 一応死亡判定を取って置く
+			if (length < meteo.GetRadius()) {
+				meteo.SetIsDead(true);
+				effectManager_->AddEffect("default", meteo.get_transform().get_translate(), 
+										  Vector3::Normalize(meteo.get_transform().get_translate() - closesPoint));
+			}
+
 		} else {
 			meteo.SetIsAttraction(false);
 		}
@@ -136,6 +167,8 @@ void GameScene::debug_update() {
 
 	ImGui::Begin("Meteorite");
 	ImGui::DragFloat("attractionedStrength", &Meteorite::attractionedStrength_, 0.1f);
+	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f);
+	ImGui::DragFloat("radius", &Meteorite::radius_, 0.1f);
 	ImGui::End();
 }
 #endif // _DEBUG
