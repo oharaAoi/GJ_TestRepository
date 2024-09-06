@@ -253,6 +253,9 @@
     <Filter Include="MainGame\GameObject">
       <UniqueIdentifier>{b0978a05-1395-4145-b217-a9d28bb59933}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Function">
+      <UniqueIdentifier>{f7529802-54a1-43a4-93a6-b186541fd27e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -509,6 +512,12 @@
     </ClCompile>
     <ClCompile Include="Game\GameObject\GravityRodTip.cpp">
       <Filter>MainGame\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\WorldObject\MeteoriteManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Function\TimedCall.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -778,6 +787,12 @@
     </ClInclude>
     <ClInclude Include="Game\GameObject\GravityRodTip.h">
       <Filter>MainGame\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\WorldObject\MeteoriteManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Function\TimedCall.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
