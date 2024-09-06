@@ -104,13 +104,14 @@ private:
 	std::string createEmitterName_;
 	char buffer[30];
 
+	// ------------------- debug時に使用するEmitter ------------------- //
 	std::string createEffectName_;
 	char effectBuffer[30];
-
 	std::unique_ptr<Emitter> editEmitter_ = nullptr;
 
 	// ------------------- Effect名のリスト ------------------- //
 	std::list<std::string> effectNameList_;
+	std::list<Effect> editEffectList_;
 	std::string currentEffect_;
 
 	// ------------------- Emitter名のリスト ------------------- //

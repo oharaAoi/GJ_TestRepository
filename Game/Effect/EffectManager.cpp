@@ -176,9 +176,45 @@ void EffectManager::EditImGui() {
 	}
 
 	// --------------------------------
-	// ↓ Emitterを編集する
+	// ↓ Effectを編集する
 	// --------------------------------
 	if (ImGui::TreeNode("EditEffect")) {
+		if (ImGui::BeginCombo("SelectEmitter", currentEffect_.c_str())) {
+			for (const auto& name : effectNameList_) {
+				// 現在選択されているエフェクトかどうかを判定
+				bool isSelected = (currentEffect_ == name);
+				if (ImGui::Selectable(name.c_str(), isSelected)) {
+					// ユーザーが新しい項目を選択したら更新
+					currentEffect_ = name;
+				}
+
+				if (isSelected) {
+					// 現在選択されている項目にフォーカスを設定
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		if (ImGui::Button("open")) {
+			editEffectList_.clear();
+			editEffectList_.emplace_back(this, currentEffect_);
+		}
+
+		if (!editEffectList_.empty()) {
+			for (std::list<Effect>::iterator effect = editEffectList_.begin(); effect != editEffectList_.end();) {
+				effect->EditImGui();
+				effect++;
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
+	// --------------------------------
+	// ↓ Emitterを編集する
+	// --------------------------------
+	if (ImGui::TreeNode("EditEmitter")) {
 		if (ImGui::BeginCombo("SelectEmitter", currentEmitter_.c_str())) {
 			for (const auto& name : emitterNameList_) {
 				// 現在選択されているエフェクトかどうかを判定

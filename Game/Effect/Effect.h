@@ -15,7 +15,7 @@ class Effect {
 public:
 
 	Effect(EffectManager* effectManager, const std::string& effectName,
-		   const Vector3& centerPos, const Vector3& direction);
+		   const Vector3& centerPos = Vector3(0,0,0), const Vector3& direction = Vector3(0,1,0));
 	~Effect();
 
 	/// <summary>
