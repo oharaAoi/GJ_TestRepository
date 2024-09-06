@@ -256,6 +256,9 @@
     <Filter Include="Engine\Core\Game\Hierarchy">
       <UniqueIdentifier>{8b55b31e-7b0a-41e4-b39b-459d40867b9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Function">
+      <UniqueIdentifier>{f7529802-54a1-43a4-93a6-b186541fd27e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -515,6 +518,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Game\Hierarchy\Hierarchy.cpp">
       <Filter>Engine\Core\Game\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\WorldObject\MeteoriteManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Function\TimedCall.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -787,6 +796,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Game\Hierarchy\Hierarchy.h">
       <Filter>Engine\Core\Game\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\WorldObject\MeteoriteManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Function\TimedCall.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
