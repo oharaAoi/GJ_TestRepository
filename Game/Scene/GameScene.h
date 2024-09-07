@@ -52,6 +52,11 @@ public:
 	/// <param name="position"></param>
 	void AddMeteorite(const Vector3& position);
 
+	/// <summary>
+	/// 隕石同士の当たり判定を取る
+	/// </summary>
+	void CheckCollision();
+
 private:
 
 	uint32_t frameCount_ = 0;

@@ -56,10 +56,23 @@ public:
 	/// </summary>
 	void Update();
 
+#ifdef _DEBUG
 	/// <summary>
 	/// ImGuiを編集する
 	/// </summary>
 	void EditImGui();
+
+	/// <summary>
+	/// ファイルを作成する
+	/// </summary>
+	void CreateConfigGui();
+
+	/// <summary>
+	/// ファイルを編集する
+	/// </summary>
+	void EditConfigGui();
+
+#endif
 
 public:	// メンバ関数
 
@@ -141,6 +154,9 @@ private:
 
 	std::string saveFileName_;
 	char saveNameBuffe_[30];
+
+	std::vector<std::string> fileNameArray_;
+	std::string currentFile_;
 };
 
 template<typename T>

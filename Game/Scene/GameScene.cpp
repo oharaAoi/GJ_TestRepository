@@ -84,6 +84,8 @@ void GameScene::update() {
 	if (player_->GetIsAttack()) {
 		CheckMeteoAttraction();
 	}
+
+	CheckCollision();
 }
 
 void GameScene::begin_rendering() {
@@ -124,8 +126,8 @@ void GameScene::CheckMeteoAttraction() {
 		Vector3 direction{};
 		float length = 0;
 		// 引き寄せる2つの球体との距離を測る
-		Vector3 meteoToAttractOrigine = player_->GetGravityRodOrigine() - meteo.get_transform().get_translate();
-		Vector3 meteoToAttractEnd = player_->GetGravityRodEnd() - meteo.get_transform().get_translate();
+		Vector3 meteoToAttractOrigine = player_->GetGravityRodOrigine() - meteo.world_position();
+		Vector3 meteoToAttractEnd = player_->GetGravityRodEnd() - meteo.world_position();
 
 		float origineLength = meteoToAttractOrigine.length();
 		float endLength = meteoToAttractEnd.length();
@@ -156,6 +158,28 @@ void GameScene::CheckMeteoAttraction() {
 
 void GameScene::AddMeteorite(const Vector3& position) {
 	meteoriteList_.emplace_back(position);
+}
+
+void GameScene::CheckCollision() {
+	std::list<Meteorite>::iterator iterA = meteoriteList_.begin();
+	for (; iterA != meteoriteList_.end(); ++iterA) {
+		Meteorite* meteoA = &(*iterA);
+
+		std::list<Meteorite>::iterator iterB = iterA;
+		iterB++;
+
+		for (; iterB != meteoriteList_.end(); ++iterB) {
+			Meteorite* meteoB = &(*iterB);
+
+			//float length = Vector3::Length(meteoA->world_position() - meteoB->world_position());
+			float length = Vector3::Length(meteoA->get_transform().get_translate() - meteoB->get_transform().get_translate());
+
+			if (length < meteoA->GetRadius() + meteoB->GetRadius()) {
+				meteoA->OnCollision(meteoB->get_transform().get_translate());
+				meteoB->OnCollision(meteoA->get_transform().get_translate());
+			}
+		}
+	}
 }
 
 #ifdef _DEBUG

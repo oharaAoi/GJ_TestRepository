@@ -4,6 +4,12 @@
 #include "Engine/Math/Vector3.h"
 #include "GravityRodTip.h"
 
+enum Tips {
+	Tips_origine,
+	Tips_end
+};
+
+
 /// <summary>
 /// 重力を持った棒
 /// </summary>
@@ -38,8 +44,8 @@ public:	// accessor
 	const Vector3 GetRodVector() const { return rodVector_; }
 
 	// ----------- 両先端の座標 ----------- //
-	const Vector3 GetRodOrigine() const { return tipObject_[1]->get_transform().get_translate(); }
-	const Vector3 GetRodEnd() const { return tipObject_[0]->get_transform().get_translate(); }
+	const Vector3 GetRodOrigine() const { return tipObject_[1]->world_position(); }
+	const Vector3 GetRodEnd() const { return tipObject_[0]->world_position(); }
 
 	const float GetAttractionRange() const { return attractionRange_; }
 

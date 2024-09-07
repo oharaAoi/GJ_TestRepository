@@ -15,6 +15,7 @@ void Meteorite::Init(const Vector3& pos) {
 	reset_object("particle.obj");
 
 	transform->set_translate(pos);
+	transform->set_scale({ radius_, radius_, radius_ });
 
 	velocity_ = { -2, 0, 0 };
 	//transform->set_translate_y(5.0f);
@@ -23,32 +24,47 @@ void Meteorite::Init(const Vector3& pos) {
 
 	isDead_ = false;
 	isAttraction_ = false;
+	isFalling_ = false;
 }
 
 void Meteorite::Update() {
-	transform->set_scale({ radius_, radius_, radius_ });
-	Move();
-	isAttraction_ = false;
+	if (!isFalling_) {
+		Move();
+		isAttraction_ = false;
+	} else {
+		Falling();
+	}
 }
 
 void Meteorite::Move() {
 	Vector3 translate = transform->get_translate();
 	translate += velocity_ * (1.0f / 60) * kSpeed_;
-
+	// 引き寄せられている間の処理
 	if (isAttraction_) {
 		velocity_ += acceleration_ * (1.0f / 60) * attractionedStrength_;
 	}
 
-
-	if (translate.x < -10 || translate.x > 10) {
-		isDead_ = true;
-	}
-
-	if (translate.z < -10 || translate.z > 10) {
+	// 範囲外に出たら削除する処理
+	if (std::abs(translate.x) > 20 || std::abs(translate.y) > 20 || std::abs(translate.z) > 20) {
 		isDead_ = true;
 	}
 
 	transform->set_translate(translate);
+}
+
+void Meteorite::Falling() {
+	acceleration_ = { 0,kGravity_,0 };
+	Vector3 translate = transform->get_translate();
+	velocity_ += acceleration_ * (1.0f / 60);
+	translate += velocity_ * (1.0f / 60);
+	transform->set_translate(translate);
+}
+
+void Meteorite::OnCollision(const Vector3& other) {
+	if (!isFalling_) {
+		velocity_ += Vector3::Normalize(other - transform->get_translate()) * -2.0f;
+	}
+	isFalling_ = true;
 }
 
 #ifdef _DEBUG

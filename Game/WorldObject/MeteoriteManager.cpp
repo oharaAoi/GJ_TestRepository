@@ -116,80 +116,109 @@ void MeteoriteManager::EditImGui() {
 		LoadAllFile();
 	}
 
-	ImGui::DragScalar("rePopTime", ImGuiDataType_U32, &rePopTime_);
-	ImGui::DragFloat("popWidth", &popWidth_);
-	ImGui::DragScalar("popNum", ImGuiDataType_U32, &popNum_);
-	ImGui::DragFloat3("editPos", &editMeteoPos_.x, 0.01f);
-	if (ImGui::Button("pop")) {
-		debugMeteoriteList_.emplace_back(editMeteoPos_);
-		popedList_.emplace_back(editMeteoPos_);
-	}
+	CreateConfigGui();
 
-	if (ImGui::TreeNode("popedList")) {
-		uint32_t popIndex = 0;
-		for (std::list<Vector3>::iterator popedPos = popedList_.begin(); popedPos != popedList_.end();) {
-			Vector3 pos = *popedPos;
-			std::string name = "popedPos" + std::to_string(popIndex);
-			ImGui::DragFloat3(name.c_str(), &pos.x, 0.01f);
-			ImGui::SameLine();
-			std::string popButton = "RePop" + std::to_string(popIndex);
-			if (ImGui::Button(popButton.c_str())) {
-				debugMeteoriteList_.emplace_back(pos);
+	EditConfigGui();
+	
+	ImGui::End();
+}
+
+void MeteoriteManager::CreateConfigGui() {
+	if (ImGui::TreeNode("CreateConfig")) {
+		ImGui::DragScalar("rePopTime", ImGuiDataType_U32, &rePopTime_);
+		ImGui::DragFloat("popWidth", &popWidth_);
+		ImGui::DragScalar("popNum", ImGuiDataType_U32, &popNum_);
+		ImGui::DragFloat3("editPos", &editMeteoPos_.x, 0.01f);
+		if (ImGui::Button("pop")) {
+			debugMeteoriteList_.emplace_back(editMeteoPos_);
+			popedList_.emplace_back(editMeteoPos_);
+		}
+
+		if (ImGui::TreeNode("popedList")) {
+			uint32_t popIndex = 0;
+			for (std::list<Vector3>::iterator popedPos = popedList_.begin(); popedPos != popedList_.end();) {
+				Vector3 pos = *popedPos;
+				std::string name = "popedPos" + std::to_string(popIndex);
+				ImGui::DragFloat3(name.c_str(), &pos.x, 0.01f);
+				ImGui::SameLine();
+				std::string popButton = "RePop" + std::to_string(popIndex);
+				if (ImGui::Button(popButton.c_str())) {
+					debugMeteoriteList_.emplace_back(pos);
+				}
+				ImGui::SameLine();
+
+				std::string deleteButton = "Delete" + std::to_string(popIndex);
+				if (ImGui::Button(deleteButton.c_str())) {
+					popedPos = popedList_.erase(popedPos);
+					ImGui::TreePop();
+					ImGui::End();
+					return;
+				}
+
+				++popedPos;
+				++popIndex;
 			}
-			ImGui::SameLine();
+			ImGui::TreePop();
+		}
 
-			std::string deleteButton = "Delete" + std::to_string(popIndex);
-			if (ImGui::Button(deleteButton.c_str())) {
-				popedPos = popedList_.erase(popedPos);
-				ImGui::TreePop();
-				ImGui::End();
-				return;
+		// saveを行う
+		if (ImGui::Button("Save")) {
+			std::string meteoPosNumber = saveFileName_;
+			// 位置の設定
+			uint32_t popIndex = 0;
+			for (std::list<Vector3>::iterator popedPos = popedList_.begin(); popedPos != popedList_.end();) {
+				Vector3 pos = *popedPos;
+				std::string name = "popPos" + std::to_string(popIndex);
+				AddItem(meteoPosNumber, name, pos);
+				popedPos++;
+				popIndex++;
 			}
+			// 調整項目の設定
+			Adjustment adjustment = {
+				rePopTime_,
+				popWidth_,
+				popNum_ = popIndex,
+			};
+			AddItem(meteoPosNumber, "Adjustment", adjustment);
 
-			++popedPos;
-			++popIndex;
+			SaveFile(meteoPosNumber);
+		}
+
+		ImGui::SameLine();
+		if (ImGui::InputText("name", saveNameBuffe_, IM_ARRAYSIZE(saveNameBuffe_))) {
+			saveFileName_ = saveNameBuffe_;
 		}
 		ImGui::TreePop();
 	}
 
-	// saveを行う
-	if (ImGui::Button("Save")) {
-		std::string meteoPosNumber = saveFileName_;
-		// 調整項目の設定
-		Adjustment adjustment = {
-			rePopTime_,
-			popWidth_,
-			popNum_,
-		};
-		AddItem(meteoPosNumber, "Adjustment", adjustment);
-
-		// 位置の設定
-		uint32_t popIndex = 0;
-		for (std::list<Vector3>::iterator popedPos = popedList_.begin(); popedPos != popedList_.end();) {
-			Vector3 pos = *popedPos;
-			std::string name = "popPos" + std::to_string(popIndex);
-			AddItem(meteoPosNumber, name, pos);
-			popedPos++;
-			popIndex++;
+}
+void MeteoriteManager::EditConfigGui() {
+	if (ImGui::TreeNode("EditConfig")) {
+		if (ImGui::BeginCombo("fileList", currentFile_.c_str())) {
+			for (uint32_t oi = 0; oi < fileNameArray_.size(); oi++) {
+				bool isSelected = (currentFile_ == fileNameArray_[oi]);
+				if (ImGui::Selectable(fileNameArray_[oi].c_str(), isSelected)) {
+					currentFile_ = fileNameArray_[oi];
+				}
+				if (isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
 		}
 
-		SaveFile(meteoPosNumber);
+		ImGui::TreePop();
 	}
-
-	if (ImGui::InputText("name", saveNameBuffe_, IM_ARRAYSIZE(saveNameBuffe_))) {
-		saveFileName_ = saveNameBuffe_;
-	}
-
-	ImGui::End();
 }
+#endif 
 
 // ------------------- directory内にあるパスを取得 ------------------- //
 void MeteoriteManager::LoadAllFile() {
 	for (const auto& entry : std::filesystem::directory_iterator(kDirectoryPath_)) {
 		LoadFile(entry.path().stem().string());
+		fileNameArray_.push_back(entry.path().filename().string());
 	}
 }
-#endif 
 
 // ------------------- ファイルを保存する ------------------- //
 void MeteoriteManager::SaveFile(const std::string& groupName) {
