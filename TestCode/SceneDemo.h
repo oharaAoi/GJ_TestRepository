@@ -3,10 +3,15 @@
 #include "Engine/Game/Camera/Camera3D.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 
+#include <memory>
+
+class GameObject;
+class Camera3D;
+
 class SceneDemo : public BaseScene {
 public:
-	SceneDemo() = default;
-	~SceneDemo() = default;
+	SceneDemo();
+	~SceneDemo();
 
 public:
 	void load();
@@ -25,7 +30,8 @@ public:
 #endif // _DEBUG
 
 private:
+	std::unique_ptr<GameObject> parent;
+	std::unique_ptr<GameObject> child;
 
-
-
+	std::unique_ptr<Camera3D> camera3D;
 };

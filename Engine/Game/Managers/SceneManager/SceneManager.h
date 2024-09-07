@@ -18,11 +18,11 @@ public:
 	SceneManager& operator=(const SceneManager&) = delete;
 
 public:
-	static SceneManager& GetInstance();
+	static SceneManager& GetInstance() noexcept;
 
 public:
 	static void Initialize(std::unique_ptr<BaseScene>&& initScene);
-	static void Finalize();
+	static void Finalize() noexcept;
 
 	static void Begin();
 	static void Update();
@@ -34,7 +34,7 @@ public:
 		bool isStopLoad = true
 	);
 	static void PopScene();
-	static bool IsEndProgram();
+	static bool IsEndProgram() noexcept;
 
 	static const std::deque<std::unique_ptr<BaseScene>>& GetSceneQue();
 
@@ -59,8 +59,14 @@ private:
 		CHANGE_INSTANCE, // for debug
 	} sceneStatus;
 
+	enum class SceneChangeType {
+		CHANGE,
+		STACK,
+		POP,
+	};
+
 	struct SceneChangeInfo {
-		bool isStackInitial;
+		SceneChangeType changeType;
 		std::unique_ptr<BaseScene> next;
 		bool isStopLoad;
 	} sceneChangeInfo;

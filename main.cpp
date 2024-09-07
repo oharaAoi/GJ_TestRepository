@@ -7,6 +7,7 @@
 #include "Game/Scene/GameScene.h"
 #include "Engine/Game/Managers/SceneManager/SceneManager.h"
 #include "Engine/Utility/Utility.h"
+#include "TestCode/SceneDemo.h"
 
 #include "Engine/Game/Managers/PolygonMeshManager/PolygonMeshManager.h"
 #include "Engine/Utility//BackgroundLoader/BackgroundLoader.h"
