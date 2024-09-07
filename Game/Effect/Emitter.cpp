@@ -116,7 +116,7 @@ void Emitter::EditImGui() {
 			// 保存する
 			SaveFileEmitter(emitterName_);
 			std::string message = std::format("{}.json saved.", emitterName_);
-			/*MessageBoxA(nullptr, message.c_str(), "Adjustment", 0);*/
+			//MessageBoxA(nullptr, message.c_str(), "Adjustment", 0);
 		}
 
 		ImGui::TreePop();

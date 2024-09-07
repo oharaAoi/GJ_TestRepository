@@ -4,7 +4,7 @@
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Math/Matrix4x4.h"
 
-void Hierarchy::initialize(const TransformMatrix& transformMatrix) {
+void Hierarchy::initialize(const TransformMatrix& transformMatrix) noexcept {
 	currentMatrix = &transformMatrix.get_data()->world;
 }
 
@@ -17,9 +17,13 @@ const Hierarchy& Hierarchy::get_parent() const noexcept {
 }
 
 bool Hierarchy::has_parent() const noexcept {
-	return !parent;
+	return parent;
 }
 
 const Matrix4x4& Hierarchy::parent_matrix() const {
-	return *parent->currentMatrix;
+const Matrix4x4& Hierarchy::parent_matrix() const noexcept {
+	if (parent) {
+		return *parent->currentMatrix;
+	}
+	return CMatrix4x4::IDENTITY;
 }

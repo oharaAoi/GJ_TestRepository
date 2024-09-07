@@ -45,6 +45,7 @@ public:
 	const Matrix4x4& world_matrix() const;
 	const Vector3 world_position() const;
 	const Hierarchy& get_hierarchy() const;
+	void set_parent(const GameObject& object);
 
 #ifdef _DEBUG
 public:
@@ -74,4 +75,11 @@ private:
 protected:
 	std::unique_ptr<Transform3D> transform;
 	std::unique_ptr<Hierarchy> hierarchy;
+
+	struct MaterialDataRef {
+		Color* color;
+		Transform2D* uvTransform;
+	};
+
+	std::vector<MaterialDataRef> materialData;
 };
