@@ -26,9 +26,11 @@ void GravityRod::Init() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GravityRod::Update(const Vector3& playerPos, const Quaternion& quaternion) {
-	Vector3 translate = { playerPos.x, playerPos.y + 0.5f, playerPos.z };
+	Vector3 translate = Vector3{ playerPos.x, playerPos.y + 1.0f, playerPos.z };
+	Quaternion rightAngle = Quaternion::EulerDegree(0, 90, 0);
+	translate += Vector3(-1,0,0) * (quaternion * rightAngle);
 	transform->set_translate(translate);
-	transform->set_rotate(quaternion);
+	transform->set_rotate(quaternion * rightAngle);
 
 	// 両方の先端にオブジェクトを配置する
 	tipObject_[0]->Update(radius_, transform->get_quaternion(), transform->get_translate());

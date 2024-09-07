@@ -70,8 +70,10 @@ void Player::Move(const float& fieldRadius) {
 	
 		// playerを動かす
 		velocity = velocity * speed * (1.0f / 60);
-		translate.x += velocity.x;
-		translate.z += velocity.y;
+		if (!isAttack_) {
+			translate.x += velocity.x;
+			translate.z += velocity.y;
+		}
 
 		// -------------------------------------------------
 		// ↓ playerが円柱の面から出ない処理を行う
@@ -90,9 +92,16 @@ void Player::Move(const float& fieldRadius) {
 		// playerの向きを移動方向にする
 		float targetAngle = std::atan2f(velocity.x, velocity.y);
 		moveRotation = Quaternion::EulerRadian({0,targetAngle,0});
-		playerQuaternion = moveRotation;
-		forwordRotation = moveRotation;
-		transform->set_rotate(playerQuaternion);
+		// 攻撃中は滑らかに移動
+		if (isAttack_) {
+			Quaternion slerp = Quaternion::Slerp(playerQuaternion, moveRotation, 0.05f);
+			playerQuaternion = moveRotation;
+			forwordRotation = slerp;
+			transform->set_rotate(slerp);
+		} else {
+			forwordRotation = moveRotation;
+			transform->set_rotate(moveRotation);
+		}
 	}
 }
 

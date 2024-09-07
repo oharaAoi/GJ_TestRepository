@@ -28,6 +28,7 @@ void Meteorite::Init(const Vector3& pos) {
 void Meteorite::Update() {
 	transform->set_scale({ radius_, radius_, radius_ });
 	Move();
+	isAttraction_ = false;
 }
 
 void Meteorite::Move() {
