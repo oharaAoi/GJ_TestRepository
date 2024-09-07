@@ -1,12 +1,10 @@
 #pragma once
-#include <cmath>
+#include <memory>
+#include <algorithm>
 #include "Engine/Game/GameObject/GameObject.h"
-#include "Game/Input/Input.h"
 #include "Engine/Math/Vector2.h"
 #include "Engine/Math/Vector3.h"
 #include "Engine/Math/Quaternion.h"
-#include "Game/GameObject/GravityRod.h"
-#include "Engine/Game/Camera/Camera3D.h"
 
 class Boss 
 : public GameObject {
@@ -19,13 +17,27 @@ public:
 
 	void Update();
 
+	void Begin_Rendering(Camera3D* camera3d);
+
+	void Draw() const;
+
 public:	// メンバ変数
 
+	void Move();
 
+	void OnCollision();
+
+#ifdef _DEBUG
+	void EditImGui();
+#endif
 
 private:
 
+	Vector3 velocity_;
+	float pushBackValue_;
+	float pushBackStrength_ = 0.3f;
 
+	std::unique_ptr<GameObject> debugObject_;
 
 };
 

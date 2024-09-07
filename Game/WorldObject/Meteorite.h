@@ -58,6 +58,9 @@ public:	// accessor
 	void SetIsDead(const bool& isDead) { isDead_ = isDead; }
 	const bool GetIsDead() const { return isDead_; }
 
+	// ----------- 落下フラグ ----------- //
+	const bool GetIsFalling() const { return isFalling_; }
+
 private:
 
 	Vector3 velocity_;

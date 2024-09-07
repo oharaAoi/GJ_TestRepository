@@ -55,7 +55,12 @@ public:
 	/// <summary>
 	/// 隕石同士の当たり判定を取る
 	/// </summary>
-	void CheckCollision();
+	void CheckMeteoCollision();
+
+	/// <summary>
+	/// Bossとの当たり判定を取る
+	/// </summary>
+	void CheckBossCollision();
 
 private:
 

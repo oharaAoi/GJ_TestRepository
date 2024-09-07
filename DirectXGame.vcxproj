@@ -265,6 +265,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Effect\EffectManager.h" />
     <ClInclude Include="Game\Effect\Emitter.h" />
     <ClInclude Include="Game\Effect\Particle.h" />
+    <ClInclude Include="Game\Enviroment.h" />
     <ClInclude Include="Game\FollowCamera.h" />
     <ClInclude Include="Game\Function\TimedCall.h" />
     <ClInclude Include="Game\GameCharacter\Boss.h" />

@@ -85,14 +85,16 @@ void GameScene::update() {
 		CheckMeteoAttraction();
 	}
 
-	CheckCollision();
+	CheckMeteoCollision();
+
+	CheckBossCollision();
 }
 
 void GameScene::begin_rendering() {
 	field_->begin_rendering(*camera3D_);
 
 	player_->Begin_Rendering(camera3D_.get());
-	boss_->begin_rendering(*camera3D_);
+	boss_->Begin_Rendering(camera3D_.get());
 
 	for (Meteorite& meteo : meteoriteList_) {
 		meteo.begin_rendering(*camera3D_);
@@ -110,7 +112,7 @@ void GameScene::draw() const {
 	//DirectXCore::ShowGrid(*camera3D_);
 	field_->draw();
 	player_->Draw();
-	boss_->draw();
+	boss_->Draw();
 
 	for (const Meteorite& meteo : meteoriteList_) {
 		meteo.draw();
@@ -160,7 +162,7 @@ void GameScene::AddMeteorite(const Vector3& position) {
 	meteoriteList_.emplace_back(position);
 }
 
-void GameScene::CheckCollision() {
+void GameScene::CheckMeteoCollision() {
 	std::list<Meteorite>::iterator iterA = meteoriteList_.begin();
 	for (; iterA != meteoriteList_.end(); ++iterA) {
 		Meteorite* meteoA = &(*iterA);
@@ -182,6 +184,19 @@ void GameScene::CheckCollision() {
 	}
 }
 
+void GameScene::CheckBossCollision() {
+	for (Meteorite& meteo : meteoriteList_) {
+		if (meteo.GetIsFalling()) {
+			float length = (meteo.get_transform().get_translate().y - boss_->get_transform().get_translate().y);
+
+			if (length < meteo.GetRadius()) {
+				meteo.SetIsDead(true);
+				boss_->OnCollision();
+			}
+		}
+	}
+}
+
 #ifdef _DEBUG
 
 #include <externals/imgui/imgui.h>
@@ -196,9 +211,7 @@ void GameScene::debug_update() {
 	player_->debug_gui();
 	ImGui::End();
 
-	ImGui::Begin("Boss");
-	boss_->debug_gui();
-	ImGui::End();
+	boss_->EditImGui();
 
 	ImGui::Begin("Meteorite");
 	ImGui::DragFloat("attractionedStrength", &Meteorite::attractionedStrength_, 0.1f);

@@ -809,6 +809,9 @@
     <ClInclude Include="Game\GameCharacter\Boss.h">
       <Filter>MainGame\GameCharacter</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Enviroment.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
