@@ -20,7 +20,7 @@ void GameScene::initialize() {
 		CVector3::BASIS,
 		Quaternion::EulerDegree(55, 0, 0),
 		{ 0, 30, -18 }
-	});
+							 });
 
 	meteoriteManager_->SetGameScene(this);
 	meteoriteManager_->Init();
@@ -57,7 +57,7 @@ void GameScene::update() {
 			return true;
 		}
 		return false;
-	});
+							 });
 
 	// -------------------------------------------------
 	// ↓ Manager系の更新
@@ -76,7 +76,7 @@ void GameScene::update() {
 
 void GameScene::begin_rendering() {
 	field_->begin_rendering(*camera3D_);
-	
+
 	player_->Begin_Rendering(camera3D_.get());
 
 	for (Meteorite& meteo : meteoriteList_) {
@@ -107,28 +107,35 @@ void GameScene::draw() const {
 
 void GameScene::CheckMeteoAttraction() {
 	for (Meteorite& meteo : meteoriteList_) {
-		Vector3 meteoToRodOri = (meteo.get_transform().get_translate() - player_->GetGravityRodOrigine());
-		Vector3 projectVector = Vector3::Projection(meteoToRodOri, player_->GetGravityRodVector());
-		// 最近接点を求める
-		Vector3 closesPoint = player_->GetGravityRodOrigine() + projectVector;
-		// 最近接点と隕石の距離を求める
-		float length = Vector3::Length(meteo.get_transform().get_translate(), closesPoint);
+		Vector3 direction{};
+		float length = 0;
+		// 引き寄せる2つの球体との距離を測る
+		Vector3 meteoToAttractOrigine = player_->GetGravityRodOrigine() - meteo.get_transform().get_translate();
+		Vector3 meteoToAttractEnd = player_->GetGravityRodEnd() - meteo.get_transform().get_translate();
 
-		// 2点間の距離が重力圏の範囲と隕石の半径の合計より短かったら
-		if (length < player_->GetGravityRod()->GetAttractionRange() + meteo.GetRadius()) {
+		float origineLength = meteoToAttractOrigine.length();
+		float endLength = meteoToAttractEnd.length();
+
+		if (origineLength < player_->GetGravityRod()->GetAttractionRange() || endLength < player_->GetGravityRod()->GetAttractionRange()) {
 			meteo.SetIsAttraction(true);
-			meteo.SetAcceleration(Vector3::Normalize(closesPoint - meteo.get_transform().get_translate()));
-
-			// 一応死亡判定を取って置く
-			if (length < meteo.GetRadius()) {
-				meteo.SetIsDead(true);
-				effectManager_->AddEffect("default", meteo.get_transform().get_translate(), 
-										  Vector3::Normalize(meteo.get_transform().get_translate() - closesPoint));
+			// 距離を比較して近い方とのベクトルを加速度に加算する
+			if (origineLength < endLength) {
+				meteo.SetAcceleration(Vector3::Normalize(meteoToAttractOrigine));
+				length = origineLength;
+				direction = Vector3::Normalize(meteoToAttractOrigine);
+			} else {
+				meteo.SetAcceleration(Vector3::Normalize(meteoToAttractEnd));
+				length = endLength;
+				direction = Vector3::Normalize(meteoToAttractEnd);
 			}
-
 		} else {
 			meteo.SetIsAttraction(false);
 		}
+
+		/*if (length < meteo.GetRadius()) {
+			meteo.SetIsDead(true);
+			effectManager_->AddEffect("default", meteo.get_transform().get_translate(), direction);
+		}*/
 	}
 
 }
