@@ -18,12 +18,6 @@ void SceneDemo::load() {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/", "bunny.obj");
 }
 
-#include "Engine/Game/GameObject/GameObject.h"
-
-SceneDemo::SceneDemo() = default;
-
-SceneDemo::~SceneDemo() = default;
-
 void SceneDemo::initialize() {
 	camera3D = CreateUnique<Camera3D>();
 	camera3D->initialize();
