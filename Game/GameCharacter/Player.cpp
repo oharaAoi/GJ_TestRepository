@@ -69,7 +69,7 @@ void Player::Move() {
 		}
 	
 		// playerを動かす
-		velocity = velocity.normalize() * speed * (1.0f / 60);
+		velocity = velocity * speed * (1.0f / 60);
 		translate.x += velocity.x;
 		translate.z += velocity.y;
 		transform->set_translate(translate);

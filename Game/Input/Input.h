@@ -1,5 +1,6 @@
 #pragma once
 #define DIRECTINPUT_VERSION 0x0800
+#define NOMINMAX
 #include <dinput.h>
 #include <wrl.h>
 #include <memory>
@@ -12,9 +13,6 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "Xinput.lib")
-
-// デッドゾーン
-const float DEADZONE = 8000;
 
 class Input {
 public:
@@ -133,4 +131,6 @@ private:
 	static XINPUT_STATE gamepadState_;
 	static XINPUT_STATE preGamepadState_;
 
+	// デッドゾーン
+	static constexpr float DEADZONE = 0.1f;
 };

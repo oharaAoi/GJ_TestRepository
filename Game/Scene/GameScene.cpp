@@ -140,19 +140,8 @@ void GameScene::AddMeteorite(const Vector3& position) {
 #ifdef _DEBUG
 
 #include <externals/imgui/imgui.h>
-void GameScene::debug_update() {
-	ImGui::Begin("GameScene");
-	if (ImGui::Button("StackScene")) {
-		SceneManager::SetSceneChange(CreateUnique<GameScene>(), true);
-	}
-	if (ImGui::Button("ChangeScene")) {
-		SceneManager::SetSceneChange(CreateUnique<GameScene>(), false);
-	}
-	if (ImGui::Button("PopScene")) {
-		SceneManager::PopScene();
-	}
-	ImGui::End();
 
+void GameScene::debug_update() {
 	ImGui::Begin("Camera3D");
 	camera3D_->debug_gui();
 	ImGui::End();
