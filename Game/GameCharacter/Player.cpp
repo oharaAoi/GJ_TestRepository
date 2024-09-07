@@ -20,9 +20,9 @@ void Player::Init() {
 	transform->set_translate_y(4.5f);
 }
 
-void Player::Update() {
+void Player::Update(const float& fieldRadius) {
 	moveRotation = CQuaternion::IDENTITY;
-	Move();
+	Move(fieldRadius);
 	Attack();
 
 	if (isAttack_) {
@@ -54,7 +54,7 @@ void Player::Draw() const {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ------------------- 移動を行う関数 ------------------- //
-void Player::Move() {
+void Player::Move(const float& fieldRadius) {
 	Vector3 translate = transform->get_translate();
 	Quaternion playerQuaternion = transform->get_quaternion();
 
@@ -72,6 +72,19 @@ void Player::Move() {
 		velocity = velocity * speed * (1.0f / 60);
 		translate.x += velocity.x;
 		translate.z += velocity.y;
+
+		// -------------------------------------------------
+		// ↓ playerが円柱の面から出ない処理を行う
+		// -------------------------------------------------
+		// 中心からのベクトル
+		Vector3 distance = translate - Vector3(0, translate.y, 0);
+		// 中心からの長さ
+		float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
+		if (lenght > fieldRadius) {
+			distance = Vector3::Normalize(distance) * fieldRadius;
+			translate = {distance.x, translate.y, distance.z};
+		}
+
 		transform->set_translate(translate);
 
 		// playerの向きを移動方向にする

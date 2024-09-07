@@ -45,7 +45,7 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ GameObjectの更新
 	// -------------------------------------------------
-	player_->Update();
+	player_->Update(field_->GetRadius());
 
 	for (Meteorite& meteo : meteoriteList_) {
 		meteo.Update();
