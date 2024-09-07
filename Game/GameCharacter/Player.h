@@ -20,7 +20,7 @@ public:
 
 	void Init();
 
-	void Update();
+	void Update(const float& fieldRadius);
 
 	void Begin_Rendering(Camera3D* camera3d);
 
@@ -31,7 +31,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 移動をする関数
 	/// </summary>
-	void Move();
+	void Move(const float& fieldRadius);
 
 	/// <summary>
 	/// 攻撃を行う
