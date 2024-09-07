@@ -9,6 +9,7 @@ void GameScene::initialize() {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 	EffectManager::GetInstance()->Init();
 	effectManager_ = EffectManager::GetInstance();
+	meteoriteManager_ = std::make_unique<MeteoriteManager>();
 
 	field_ = std::make_unique<Field>();
 	player_ = std::make_unique<Player>();
@@ -17,8 +18,8 @@ void GameScene::initialize() {
 	camera3D_->initialize();
 	camera3D_->set_transform({
 		CVector3::BASIS,
-		Quaternion::EulerDegree(90, 0, 0),
-		{ 0, 35, 0 }
+		Quaternion::EulerDegree(55, 0, 0),
+		{ 0, 30, -18 }
 	});
 }
 
@@ -43,13 +44,6 @@ void GameScene::update() {
 	// -------------------------------------------------
 	player_->Update();
 
-	frameCount_++;
-
-	if (frameCount_ > 240) {
-		AddMeteoriteList();
-		frameCount_ = 0;
-	}
-
 	for (Meteorite& meteo : meteoriteList_) {
 		meteo.Update();
 	}
@@ -66,6 +60,8 @@ void GameScene::update() {
 	// ↓ Manager系の更新
 	// -------------------------------------------------
 	effectManager_->Update();
+
+	meteoriteManager_->Update();
 
 	// -------------------------------------------------
 	// ↓ 当たり判定系
@@ -170,5 +166,7 @@ void GameScene::debug_update() {
 	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f);
 	ImGui::DragFloat("radius", &Meteorite::radius_, 0.1f);
 	ImGui::End();
+
+	meteoriteManager_->EditImGui();
 }
 #endif // _DEBUG

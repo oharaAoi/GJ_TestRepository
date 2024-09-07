@@ -11,6 +11,7 @@
 
 // Manager
 #include "Game/Effect/EffectManager.h"
+#include "Game/WorldObject/MeteoriteManager.h"
 
 #include "Game/FollowCamera.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
@@ -61,6 +62,7 @@ private:
 
 	// ------------------- Manager ------------------- //
 	EffectManager* effectManager_ = nullptr;
+	std::unique_ptr<MeteoriteManager> meteoriteManager_ = nullptr;
 
 };
 

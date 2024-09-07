@@ -4,20 +4,22 @@ float Meteorite::attractionedStrength_ = 3;
 float Meteorite::kSpeed_ = 2.0f;
 float Meteorite::radius_ = 1.0f;
 
-Meteorite::Meteorite() {
-	Init();
+Meteorite::Meteorite(const Vector3& pos) {
+	Init(pos);
 }
 
 Meteorite::~Meteorite() {
 }
 
-void Meteorite::Init() {
+void Meteorite::Init(const Vector3& pos) {
 	reset_object("particle.obj");
 
+	transform->set_translate(pos);
+
 	velocity_ = { -2, 0, 0 };
-	transform->set_translate_y(5.0f);
-	transform->set_translate_x(10.0f);
-	transform->set_translate_z(RandomFloat(-4.0f, 4.0f));
+	//transform->set_translate_y(5.0f);
+	//transform->set_translate_x(10.0f);
+	//transform->set_translate_z(RandomFloat(-4.0f, 4.0f));
 
 	isDead_ = false;
 	isAttraction_ = false;
