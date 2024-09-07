@@ -259,6 +259,9 @@
     <Filter Include="MainGame\Function">
       <UniqueIdentifier>{f7529802-54a1-43a4-93a6-b186541fd27e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\GameCharacter\Manager">
+      <UniqueIdentifier>{e9a747c5-69bd-4edf-9926-01ff4b2e2731}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -527,6 +530,12 @@
     </ClCompile>
     <ClCompile Include="Game\GameCharacter\Boss.cpp">
       <Filter>MainGame\GameCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\Enemy.cpp">
+      <Filter>MainGame\GameCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\Manager\EnemyManager.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -810,6 +819,12 @@
       <Filter>MainGame\GameCharacter</Filter>
     </ClInclude>
     <ClInclude Include="Game\Enviroment.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\Enemy.h">
+      <Filter>MainGame\GameCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\Manager\EnemyManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

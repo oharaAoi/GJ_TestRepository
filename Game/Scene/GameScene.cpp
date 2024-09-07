@@ -10,6 +10,7 @@ void GameScene::initialize() {
 	EffectManager::GetInstance()->Init();
 	effectManager_ = EffectManager::GetInstance();
 	meteoriteManager_ = std::make_unique<MeteoriteManager>();
+	enemyManager_ = std::make_unique<EnemyManager>();
 
 	field_ = std::make_unique<Field>();
 	player_ = std::make_unique<Player>();
@@ -34,6 +35,7 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "GravityRod.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "mouth.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "mob.obj");
 }
 
 void GameScene::begin() {
@@ -69,7 +71,11 @@ void GameScene::update() {
 			return true;
 		}
 		return false;
-							 });
+	});
+
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->Update();
+	}
 
 	// -------------------------------------------------
 	// ↓ Manager系の更新
@@ -77,6 +83,8 @@ void GameScene::update() {
 	effectManager_->Update();
 
 	meteoriteManager_->Update();
+
+	enemyManager_->Update();
 
 	// -------------------------------------------------
 	// ↓ 当たり判定系
@@ -100,7 +108,12 @@ void GameScene::begin_rendering() {
 		meteo.begin_rendering(*camera3D_);
 	}
 
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->begin_rendering(*camera3D_);
+	}
+
 	effectManager_->BeginRendering(*camera3D_);
+	enemyManager_->Begin_Rendering(*camera3D_);
 }
 
 void GameScene::late_update() {
@@ -118,7 +131,12 @@ void GameScene::draw() const {
 		meteo.draw();
 	}
 
+	for (const std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->draw();
+	}
+
 	effectManager_->Draw();
+	enemyManager_->Draw();
 
 	RenderPathManager::Next();
 }
@@ -160,6 +178,10 @@ void GameScene::CheckMeteoAttraction() {
 
 void GameScene::AddMeteorite(const Vector3& position) {
 	meteoriteList_.emplace_back(position);
+}
+
+void GameScene::AddEnemy(const Vector3& position, const EnemyType& enemyType) {
+	enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType));
 }
 
 void GameScene::CheckMeteoCollision() {
@@ -220,5 +242,6 @@ void GameScene::debug_update() {
 	ImGui::End();
 
 	meteoriteManager_->EditImGui();
+	enemyManager_->EditImGui();
 }
 #endif // _DEBUG
