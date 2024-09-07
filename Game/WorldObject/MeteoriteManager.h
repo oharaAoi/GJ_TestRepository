@@ -19,6 +19,8 @@
 
 using json = nlohmann::json;
 
+class GameScene;
+
 static const uint32_t kAppearanceTime_ = 300;
 
 class MeteoriteManager {
@@ -54,8 +56,6 @@ public:
 	/// </summary>
 	void Update();
 
-	void Begin_Rendering();
-
 	/// <summary>
 	/// ImGuiを編集する
 	/// </summary>
@@ -81,11 +81,6 @@ public:	// メンバ関数
 	void SelectionArrange();
 
 	std::string GetRandomKey();
-
-	/// <summary>
-	/// 隕石のリストに追加を行う
-	/// </summary>
-	void AddMeteoriteList(const Vector3& position);
 
 public:
 
@@ -119,9 +114,13 @@ public:
 	template<typename T>
 	T GetValue(const std::string& groupName, const std::string& key, const T& defaultValue = T()) const;
 
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+
 private:
 
 	const std::string kDirectoryPath_ = "./Engine/Resources/Meteorite/";
+
+	GameScene* gameScene_ = nullptr;
 
 	// 隕石の情報が格納されたデータ
 	std::map<std::string, Group> groupMap_;

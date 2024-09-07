@@ -1,11 +1,8 @@
 #include "MeteoriteManager.h"
+#include "Game/Scene/GameScene.h"
 
-MeteoriteManager::MeteoriteManager() {
-	Init();
-}
-
-MeteoriteManager::~MeteoriteManager() {
-}
+MeteoriteManager::MeteoriteManager() {}
+MeteoriteManager::~MeteoriteManager() {}
 
 void MeteoriteManager::Init() {
 	LoadAllFile();
@@ -24,6 +21,19 @@ void MeteoriteManager::Update() {
 			++it;
 		}
 	}
+
+	for (Meteorite& meteo : meteoriteList_) {
+		meteo.Update();
+	}
+
+	// 死亡フラグのチェックを行う
+	meteoriteList_.remove_if([](const Meteorite& meteo) {
+		if (meteo.GetIsDead()) {
+			return true;
+		}
+		return false;
+		});
+
 
 	for (auto& times : timedCalls_) {
 		times.Update();
@@ -55,7 +65,7 @@ void MeteoriteManager::SelectionArrange() {
 	// 隕石の位置を取得する
 	for (uint32_t oi = 0; oi < itemArray.size(); ++oi) {
 		if (itemArray[oi] != "Adjustment") {
-			AddMeteoriteList(GetValue<Vector3>(randomKey, itemArray[oi]));
+			gameScene_->AddMeteorite(GetValue<Vector3>(randomKey, itemArray[oi]));
 		}
 	}
 
@@ -97,14 +107,14 @@ std::string MeteoriteManager::GetRandomKey() {
 	}
 }
 
-void MeteoriteManager::AddMeteoriteList(const Vector3& position) {
-	meteoriteList_.emplace_back(position);
-}
-
 #ifdef _DEBUG
 #include "externals/imgui/imgui.h"
 void MeteoriteManager::EditImGui() {
 	ImGui::Begin("(MeteoriteManger)");
+
+	if (ImGui::Button("ReLoad")) {
+		LoadAllFile();
+	}
 
 	ImGui::DragScalar("rePopTime", ImGuiDataType_U32, &rePopTime_);
 	ImGui::DragFloat("popWidth", &popWidth_);

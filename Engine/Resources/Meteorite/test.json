@@ -1,19 +1,24 @@
 {
-    "syoma": {
+    "test": {
         "Adjustment": {
             "popNum": 3,
             "rePopTime": 0,
             "rePopWidth": 5.0
         },
         "popPos0": [
-            6.0,
-            4.5,
-            -3.0
+            7.0,
+            5.0,
+            3.0
         ],
         "popPos1": [
             6.0,
-            4.5,
-            1.0
+            5.0,
+            4.0
+        ],
+        "popPos2": [
+            6.5,
+            5.0,
+            -2.0
         ]
     }
 }
