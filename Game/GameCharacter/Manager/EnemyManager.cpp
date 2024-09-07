@@ -4,7 +4,7 @@ EnemyManager::EnemyManager() { Init(); }
 EnemyManager::~EnemyManager() {}
 
 void EnemyManager::Init() {
-
+	LoadFileName();
 }
 
 void EnemyManager::Update() {
@@ -30,6 +30,7 @@ void EnemyManager::Draw() const {
 void EnemyManager::EditImGui() {
 	ImGui::Begin("EnemyManager");
 	CreateConfigGui();
+	EditConfigGui();
 	ImGui::End();
 }
 
@@ -38,7 +39,7 @@ void EnemyManager::CreateConfigGui() {
 
 		// 生成ボタン
 		if (ImGui::Button("create")) {
-
+			SaveFile();
 		}
 		ImGui::SameLine();
 		// テキストの入力
@@ -56,6 +57,7 @@ void EnemyManager::CreateConfigGui() {
 
 		if (ImGui::Button("pop")) {
 			enemyList_.emplace_back(std::make_unique<Enemy>(createPos_, createType_));
+			settingData_.emplace_back(createPos_, createType_);
 		}
 
 		ImGui::TreePop();
@@ -64,7 +66,40 @@ void EnemyManager::CreateConfigGui() {
 
 void EnemyManager::EditConfigGui() {
 	if (ImGui::TreeNode("EditConfig")) {
+		if (ImGui::Button("inport")) {
+			std::vector<std::string> itemArray;
+			for (const auto& pair : loadData_[currentFileName_].items) {
+				const std::string& category = pair.first;
+				itemArray.push_back(category);
+			}
 
+			SettingData data;
+			for (uint32_t oi = 0; oi < itemArray.size(); ++oi) {
+				if ("position" == itemArray[oi]) {
+					data.position = GetValue<Vector3>(currentFileName_, itemArray[oi]);
+				} else if ("enemyType" == itemArray[oi]) {
+					data.enemyType = static_cast<EnemyType>(GetValue<uint32_t>(currentFileName_, itemArray[oi]));
+				}
+			}
+
+			enemyList_.clear();
+			enemyList_.emplace_back(std::make_unique<Enemy>(data.position, data.enemyType));
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::BeginCombo("fileList", currentFileName_.c_str())) {
+			for (uint32_t oi = 0; oi < fileNameArray_.size(); oi++) {
+				bool isSelected = (currentFileName_ == fileNameArray_[oi]);
+				if (ImGui::Selectable(fileNameArray_[oi].c_str(), isSelected)) {
+					currentFileName_ = fileNameArray_[oi];
+				}
+				if (isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
 		ImGui::TreePop();
 	}
 }
@@ -83,6 +118,14 @@ void EnemyManager::SaveFile() {
 		};
 
 		++index;
+	}
+
+	// ------------------------------------------
+	// ↓ ディレクトリがなければ作成する
+	// ------------------------------------------
+	std::filesystem::path dire(kDirectoryPath_);
+	if (!std::filesystem::exists(kDirectoryPath_)) {
+		std::filesystem::create_directories(kDirectoryPath_);
 	}
 
 	std::string filePath = kDirectoryPath_ + createFileName_ + ".json";
@@ -105,16 +148,23 @@ void EnemyManager::SaveFile() {
 
 #endif // _DEBUG
 
-void EnemyManager::LoadFile() {
+void EnemyManager::LoadFileName() {
+	for (const auto& entry : std::filesystem::directory_iterator(kDirectoryPath_)) {
+		LoadFile(entry.path().stem().string());
+		fileNameArray_.push_back(entry.path().stem().string());
+	}
+}
+
+void EnemyManager::LoadFile(const std::string& fileName) {
 	// 読み込むjsonファイルのフルパスを合成する
-	std::string filePath = kDirectoryPath_ + currentFileName_ + ".json";
+	std::string filePath = kDirectoryPath_ + fileName + ".json";
 	// 読み込み用ファイルストリーム
 	std::ifstream ifs;
 	// ファイルを読み込みように開く
 	ifs.open(filePath);
 
 	if (ifs.fail()) {
-		std::string message = "not Exist " + currentFileName_ + ".json";
+		std::string message = "not Exist " + fileName + ".json";
 		return;
 	}
 
@@ -124,18 +174,20 @@ void EnemyManager::LoadFile() {
 	// ファイルを閉じる
 	ifs.close();
 
-	json::iterator itGroup = root.find(currentFileName_);
+	json::iterator itGroup = root.find(fileName);
 	assert(itGroup != root.end());
 	for (json::iterator itItem = itGroup->begin(); itItem != itGroup->end(); ++itItem) {
-		const std::string& itemName = itItem.key();
-		if (itItem->is_number_integer()) {
-			// int型の値を取得
-			uint32_t value = itItem->get<uint32_t>();
-			SetValue(currentFileName_, itemName, value);
-		} else if (itItem->is_array() && itItem->size() == 3) {
-			// float型のjson配列登録
-			Vector3 value = { itItem->at(0), itItem->at(1), itItem->at(2) };
-			SetValue(currentFileName_, itemName, value);
-		} 
+		for (json::iterator it = itItem->begin(); it != itItem->end(); ++it) {
+			const std::string& itemName = it.key();
+			if (it->is_number_integer()) {
+				// int型の値を取得
+				uint32_t value = it->get<uint32_t>();
+				SetValue(fileName, itemName, value);
+			} else if (it->is_array() && it->size() == 3) {
+				// float型のjson配列登録
+				Vector3 value = { it->at(0), it->at(1), it->at(2) };
+				SetValue(fileName, itemName, value);
+			}
+		}
 	}
 }
