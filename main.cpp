@@ -26,7 +26,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	BackgroundLoader::WaitEndExecute();
 
 	auto&& scene = CreateUnique<GameScene>();
-	scene->initialize();
 	SceneManager::Initialize(std::move(scene));
 
 

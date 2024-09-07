@@ -38,12 +38,16 @@ public:
 
 public:
 
-	void AddMeteoriteList();
-
 	/// <summary>
 	/// 隕石が吸い寄せられるかを判定する
 	/// </summary>
 	void CheckMeteoAttraction();
+
+	/// <summary>
+	/// 隕石をリストに追加する
+	/// </summary>
+	/// <param name="position"></param>
+	void AddMeteorite(const Vector3& position);
 
 private:
 

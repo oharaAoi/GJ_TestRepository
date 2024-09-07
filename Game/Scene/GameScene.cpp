@@ -21,6 +21,9 @@ void GameScene::initialize() {
 		Quaternion::EulerDegree(55, 0, 0),
 		{ 0, 30, -18 }
 	});
+
+	meteoriteManager_->SetGameScene(this);
+	meteoriteManager_->Init();
 }
 
 void GameScene::begin() {
@@ -102,12 +105,6 @@ void GameScene::draw() const {
 	RenderPathManager::Next();
 }
 
-
-void GameScene::AddMeteoriteList() {
-	meteoriteList_.emplace_back();
-}
-
-
 void GameScene::CheckMeteoAttraction() {
 	for (Meteorite& meteo : meteoriteList_) {
 		Vector3 meteoToRodOri = (meteo.get_transform().get_translate() - player_->GetGravityRodOrigine());
@@ -134,6 +131,10 @@ void GameScene::CheckMeteoAttraction() {
 		}
 	}
 
+}
+
+void GameScene::AddMeteorite(const Vector3& position) {
+	meteoriteList_.emplace_back(position);
 }
 
 #ifdef _DEBUG

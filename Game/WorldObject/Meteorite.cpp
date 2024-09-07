@@ -38,6 +38,15 @@ void Meteorite::Move() {
 		velocity_ += acceleration_ * (1.0f / 60) * attractionedStrength_;
 	}
 
+
+	if (translate.x < -10 || translate.x > 10) {
+		isDead_ = true;
+	}
+
+	if (translate.z < -10 || translate.z > 10) {
+		isDead_ = true;
+	}
+
 	transform->set_translate(translate);
 }
 
