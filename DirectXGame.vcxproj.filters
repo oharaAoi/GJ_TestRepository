@@ -525,6 +525,9 @@
     <ClCompile Include="Game\WorldObject\MeteoriteManager.cpp">
       <Filter>MainGame\WorldObject</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameCharacter\Boss.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WinApp.h">
@@ -802,6 +805,9 @@
     </ClInclude>
     <ClInclude Include="Game\WorldObject\MeteoriteManager.h">
       <Filter>MainGame\WorldObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\Boss.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

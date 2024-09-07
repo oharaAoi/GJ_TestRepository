@@ -1,7 +1,7 @@
 #include "GravityRod.h"
 
-GravityRod::GravityRod() {
-	Init();
+GravityRod::GravityRod(GameObject* gameObject) {
+	Init(gameObject);
 }
 
 GravityRod::~GravityRod() {
@@ -11,30 +11,29 @@ GravityRod::~GravityRod() {
 // ↓　初期化処理
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GravityRod::Init() {
+void GravityRod::Init(GameObject* gameObject) {
 	reset_object("GravityRod.obj");
 
-	tipObject_[0] = std::make_unique<GravityRodTip>();
-	tipObject_[1] = std::make_unique<GravityRodTip>();
+	set_parent(*gameObject);
+
+	tipObject_[0] = std::make_unique<GravityRodTip>(this);
+	tipObject_[1] = std::make_unique<GravityRodTip>(this);
 
 	tipObject_[0]->reset_object("particle.obj");
 	tipObject_[1]->reset_object("particle.obj");
+
+	transform->set_translate(Vector3{ 0, 2.5f, 1.0f });
+	transform->set_rotate(Quaternion::EulerDegree(0, 90, 0));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // ↓　更新処理
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GravityRod::Update(const Vector3& playerPos, const Quaternion& quaternion) {
-	Vector3 translate = Vector3{ playerPos.x, playerPos.y + 1.0f, playerPos.z };
-	Quaternion rightAngle = Quaternion::EulerDegree(0, 90, 0);
-	translate += Vector3(-1,0,0) * (quaternion * rightAngle);
-	transform->set_translate(translate);
-	transform->set_rotate(quaternion * rightAngle);
-
+void GravityRod::Update() {
 	// 両方の先端にオブジェクトを配置する
-	tipObject_[0]->Update(radius_, transform->get_quaternion(), transform->get_translate());
-	tipObject_[1]->Update(-radius_, transform->get_quaternion(), transform->get_translate());
+	tipObject_[0]->Update(radius_);
+	tipObject_[1]->Update(-radius_);
 
 	// rodのベクトルを求める
 	rodVector_ = Vector3::Normalize(tipObject_[0]->get_transform().get_translate() - tipObject_[1]->get_transform().get_translate());

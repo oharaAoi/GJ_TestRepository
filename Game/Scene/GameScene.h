@@ -6,6 +6,7 @@
 // GameObject
 #include "Game/GameCharacter/Player.h"
 #include "Game/WorldObject/Meteorite.h"
+#include "Game/GameCharacter/Boss.h"
 // Input
 #include "Game/Input/Input.h"
 
@@ -24,6 +25,8 @@ public:
 	~GameScene() = default;
 
 	void initialize() override;
+
+	void load() override;
 
 	void begin() override;
 	void update() override;
@@ -58,6 +61,7 @@ private:
 
 	// ------------------- GameObject ------------------- //
 	std::unique_ptr<Player> player_ = nullptr;
+	std::unique_ptr<Boss> boss_ = nullptr;
 
 	std::list<Meteorite> meteoriteList_;
 

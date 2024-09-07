@@ -11,18 +11,18 @@ class GravityRod :
 	public GameObject {
 public:
 
-	GravityRod();
+	GravityRod(GameObject* gameObject);
 	~GravityRod();
 
 	/// <summary>
 	/// 初期化関数
 	/// </summary>
-	void Init();
+	void Init(GameObject* gameObject);
 
 	/// <summary>
 	/// 描画関数
 	/// </summary>
-	void Update(const Vector3& playerPos, const Quaternion& quaternion);
+	void Update();
 
 	void Begin_Rendering(Camera3D* camera3d);
 

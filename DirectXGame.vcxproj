@@ -171,6 +171,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Effect\Particle.cpp" />
     <ClCompile Include="Game\FollowCamera.cpp" />
     <ClCompile Include="Game\Function\TimedCall.cpp" />
+    <ClCompile Include="Game\GameCharacter\Boss.cpp" />
     <ClCompile Include="Game\GameCharacter\Player.cpp" />
     <ClCompile Include="Game\GameObject\GravityRod.cpp" />
     <ClCompile Include="Game\GameObject\GravityRodTip.cpp" />
@@ -266,6 +267,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Effect\Particle.h" />
     <ClInclude Include="Game\FollowCamera.h" />
     <ClInclude Include="Game\Function\TimedCall.h" />
+    <ClInclude Include="Game\GameCharacter\Boss.h" />
     <ClInclude Include="Game\GameCharacter\Player.h" />
     <ClInclude Include="Game\GameObject\GravityRod.h" />
     <ClInclude Include="Game\GameObject\GravityRodTip.h" />

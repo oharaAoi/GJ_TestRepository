@@ -13,17 +13,27 @@ void GameScene::initialize() {
 
 	field_ = std::make_unique<Field>();
 	player_ = std::make_unique<Player>();
+	boss_ = std::make_unique<Boss>();
 
 	camera3D_ = std::make_unique<FollowCamera>();
 	camera3D_->initialize();
 	camera3D_->set_transform({
 		CVector3::BASIS,
-		Quaternion::EulerDegree(55, 0, 0),
-		{ 0, 30, -18 }
+		Quaternion::EulerDegree(40, 0, 0),
+		{ 0, 27, -25 }
 							 });
 
 	meteoriteManager_->SetGameScene(this);
 	meteoriteManager_->Init();
+}
+
+void GameScene::load() {
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Field.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "GravityRod.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "mouth.obj");
 }
 
 void GameScene::begin() {
@@ -46,6 +56,8 @@ void GameScene::update() {
 	// ↓ GameObjectの更新
 	// -------------------------------------------------
 	player_->Update(field_->GetRadius());
+
+	boss_->Update();
 
 	for (Meteorite& meteo : meteoriteList_) {
 		meteo.Update();
@@ -78,6 +90,7 @@ void GameScene::begin_rendering() {
 	field_->begin_rendering(*camera3D_);
 
 	player_->Begin_Rendering(camera3D_.get());
+	boss_->begin_rendering(*camera3D_);
 
 	for (Meteorite& meteo : meteoriteList_) {
 		meteo.begin_rendering(*camera3D_);
@@ -92,9 +105,10 @@ void GameScene::late_update() {
 
 void GameScene::draw() const {
 	RenderPathManager::BeginFrame();
-	DirectXCore::ShowGrid(*camera3D_);
+	//DirectXCore::ShowGrid(*camera3D_);
 	field_->draw();
 	player_->Draw();
+	boss_->draw();
 
 	for (const Meteorite& meteo : meteoriteList_) {
 		meteo.draw();
@@ -156,6 +170,10 @@ void GameScene::debug_update() {
 	field_->EditImGui();
 	ImGui::Begin("GameObject");
 	player_->debug_gui();
+	ImGui::End();
+
+	ImGui::Begin("Boss");
+	boss_->debug_gui();
 	ImGui::End();
 
 	ImGui::Begin("Meteorite");

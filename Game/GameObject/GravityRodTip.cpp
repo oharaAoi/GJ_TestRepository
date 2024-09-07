@@ -2,19 +2,19 @@
 
 float GravityRodTip::radius_ = 1.0f;
 
-GravityRodTip::GravityRodTip() {
-	Init();
+GravityRodTip::GravityRodTip(GameObject* gameObject) {
+	Init(gameObject);
 }
 
 GravityRodTip::~GravityRodTip() {
 }
 
-void GravityRodTip::Init() {
+void GravityRodTip::Init(GameObject* gameObject) {
 	reset_object("particle.obj");
+	set_parent(*gameObject);
 }
 
-void GravityRodTip::Update(const float& radius, const Quaternion& rodQuaternion, const Vector3& translation) {
-	Vector3 forword = Vector3{ 0,0,1 } * rodQuaternion;
-	transform->set_translate(translation + (forword * radius));
+void GravityRodTip::Update(const float& radius) {
+	transform->set_translate(Vector3{ 0, 0,radius });
 	transform->set_scale({ radius_, radius_, radius_ });
 }
