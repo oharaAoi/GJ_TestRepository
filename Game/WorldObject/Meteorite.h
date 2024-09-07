@@ -15,13 +15,13 @@ public:
 
 public:
 
-	Meteorite();
+	Meteorite(const Vector3& pos = Vector3(0,0,0));
 	~Meteorite();
 
 	/// <summary>
 	/// 初期化関数
 	/// </summary>
-	void Init();
+	void Init(const Vector3& pos);
 
 	/// <summary>
 	/// 更新関数
