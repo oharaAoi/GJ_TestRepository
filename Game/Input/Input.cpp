@@ -1,5 +1,7 @@
 #include "Input.h"
 
+#include <limits>
+
 BYTE Input::key_[256];
 BYTE Input::preKey_[256];
 
@@ -67,7 +69,7 @@ void Input::Update() {
 //=================================================================================================================
 void Input::KeyboardInitialize(HWND hwnd) {
 	HRESULT result;
-	
+
 	result = directInput_->CreateDevice(GUID_SysKeyboard, &keyboard_, NULL);
 	assert(SUCCEEDED(result));
 
@@ -223,23 +225,27 @@ bool Input::GetIsPadTrigger(int triggerNum) {
 }
 
 Vector2 Input::GetLeftJoyStick() {
-	float LX = gamepadState_.Gamepad.sThumbLX;
-	float LY = gamepadState_.Gamepad.sThumbLY;
+	Vector2 result;
+	result.x = (float)gamepadState_.Gamepad.sThumbLX / std::numeric_limits<SHORT>::max();
+	result.y = (float)gamepadState_.Gamepad.sThumbLY / std::numeric_limits<SHORT>::max();
 
-	if (std::abs(LX) < DEADZONE) LX = 0;
-	if (std::abs(LY) < DEADZONE) LY = 0;
+	if (result.length() < DEADZONE) {
+		result = CVector2::ZERO;
+	}
 
-	return Vector2(LX, LY);
+	return result;
 }
 
 Vector2 Input::GetRightJoyStick() {
-	float RX = gamepadState_.Gamepad.sThumbRX;
-	float RY = gamepadState_.Gamepad.sThumbRY;
+	Vector2 result;
+	result.x = (float)gamepadState_.Gamepad.sThumbRX / std::numeric_limits<SHORT>::max();
+	result.y = (float)gamepadState_.Gamepad.sThumbRY / std::numeric_limits<SHORT>::max();
 
-	if (std::abs(RX) < DEADZONE) RX = 0;
-	if (std::abs(RY) < DEADZONE) RY = 0;
+	if (result.length() < DEADZONE) {
+		result = CVector2::ZERO;
+	}
 
-	return Vector2(RX, RY);
+	return result;
 }
 
 bool Input::GetIsGamePadConnected(const int& index) {
