@@ -9,13 +9,17 @@
 #include "Engine/Utility/Utility.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 #include "Engine/DirectX/DirectXCore.h"
+#include "Engine/Game/Collision/Collider/SphereCollider.h"
+#include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
+
+#include "Engine/Game/Color/Color.h"
 
 SceneDemo::SceneDemo() = default;
 
 SceneDemo::~SceneDemo() = default;
 
 void SceneDemo::load() {
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/", "bunny.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/", "Sphere.obj");
 }
 
 void SceneDemo::initialize() {
@@ -27,10 +31,55 @@ void SceneDemo::initialize() {
 		{0,10,-10}
 		});
 	parent = CreateUnique<GameObject>();
-	parent->reset_object("bunny.obj");
+	parent->reset_object("Sphere.obj");
 	child = CreateUnique<GameObject>();
-	child->reset_object("bunny.obj");
-	child->set_parent(*parent);
+	child->reset_object("Sphere.obj");
+	child->set_parent(parent->get_hierarchy());
+
+	parentCollider = CreateShared<SphereCollider>();
+	parentCollider->initialize();
+	parentCollider->set_on_collision(
+		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &parent->get_materials()[0].color)
+	);
+	parentCollider->set_on_collision_enter(
+		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &parent->get_materials()[0].color)
+	);
+	parentCollider->set_on_collision_exit(
+		std::bind(&SceneDemo::on_collision_exit, this, std::placeholders::_1, &parent->get_materials()[0].color)
+	);
+	parentCollider->get_hierarchy().set_parent(parent->get_hierarchy());
+
+	childCollider = CreateShared<SphereCollider>();
+	childCollider->initialize();
+	childCollider->set_on_collision(
+		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &child->get_materials()[0].color)
+	);
+	childCollider->set_on_collision_enter(
+		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &child->get_materials()[0].color)
+	);
+	childCollider->set_on_collision_exit(
+		std::bind(&SceneDemo::on_collision_exit, this, std::placeholders::_1, &child->get_materials()[0].color)
+	);
+	childCollider->get_hierarchy().set_parent(child->get_hierarchy());
+
+	singleCollider = CreateShared<SphereCollider>();
+	singleCollider->initialize();
+#ifdef _DEBUG
+	singleCollider->set_on_collision(
+		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &singleCollider->get_collider_drawer().get_materials()[0].color)
+	);
+	singleCollider->set_on_collision_enter(
+		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &singleCollider->get_collider_drawer().get_materials()[0].color)
+	);
+	singleCollider->set_on_collision_exit(
+		std::bind(&SceneDemo::on_collision_exit, this, std::placeholders::_1, &singleCollider->get_collider_drawer().get_materials()[0].color)
+	);
+#endif // _DEBUG
+
+	collisionManager = CreateUnique<CollisionManager>();
+	collisionManager->register_collider("Parent", parentCollider);
+	collisionManager->register_collider("Single", singleCollider);
+	collisionManager->register_collider("Child", childCollider);
 }
 
 void SceneDemo::finalize() {
@@ -50,13 +99,31 @@ void SceneDemo::begin_rendering() {
 }
 
 void SceneDemo::late_update() {
+	collisionManager->update();
+	collisionManager->collision("Parent", "Single");
+	collisionManager->collision("Single", "Child");
 }
 
 void SceneDemo::draw() const {
 	RenderPathManager::BeginFrame();
 	parent->draw();
 	child->draw();
+#ifdef _DEBUG
+	collisionManager->debug_draw3d(*camera3D);
+#endif // _DEBUG
 	RenderPathManager::Next();
+}
+
+void SceneDemo::on_collision(const BaseCollider* const, Color* object) {
+	*object = { 1.0f,0,0,1.0f };
+}
+
+void SceneDemo::on_collision_enter(const BaseCollider* const, Color* object) {
+	*object = { 0,1.0f,0,1.0f };
+}
+
+void SceneDemo::on_collision_exit(const BaseCollider* const, Color* object) {
+	*object = { 1.0f,1.0f,1.0f,1.0f };
 }
 
 #ifdef _DEBUG
@@ -82,7 +149,7 @@ void SceneDemo::debug_update() {
 	ImGui::Begin("Parent");
 	parent->debug_gui();
 	ImGui::End();
-	
+
 	ImGui::Begin("Child");
 	child->debug_gui();
 	ImGui::End();

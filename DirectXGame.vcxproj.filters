@@ -226,9 +226,6 @@
     <Filter Include="Engine\Core\Game\Manager\AudioManager">
       <UniqueIdentifier>{ca9c8e09-c039-41ed-ba32-991aa0eac70f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Core\Game\Audio">
-      <UniqueIdentifier>{55de4d28-01f6-4fe6-9b64-bd66d1225ffc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Core\Game\Scene">
       <UniqueIdentifier>{a652764d-1091-4844-a8c3-ed92140a958e}</UniqueIdentifier>
     </Filter>
@@ -258,6 +255,21 @@
     </Filter>
     <Filter Include="MainGame\Function">
       <UniqueIdentifier>{f7529802-54a1-43a4-93a6-b186541fd27e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Game\Audio">
+      <UniqueIdentifier>{55de4d28-01f6-4fe6-9b64-bd66d1225ffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Game\Collision">
+      <UniqueIdentifier>{7f774c5d-b61d-4320-832b-43302f9b32b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Game\Collision\CollisionManager">
+      <UniqueIdentifier>{ea624482-b048-47fa-90ce-9ba8d983e52a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Game\Collision\Collider">
+      <UniqueIdentifier>{b5f12602-712a-4894-9e5f-cff174516b47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Utility\BitFlag">
+      <UniqueIdentifier>{849632df-0bd5-476b-b996-5329bb91d6cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -524,6 +536,15 @@
     </ClCompile>
     <ClCompile Include="Game\WorldObject\MeteoriteManager.cpp">
       <Filter>MainGame\WorldObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Game\Collision\Collider\SphereCollider.cpp">
+      <Filter>Engine\Core\Game\Collision\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Game\Collision\Collider\BaseCollider.cpp">
+      <Filter>Engine\Core\Game\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Game\Collision\CollisionManager\CollisionManager.cpp">
+      <Filter>Engine\Core\Game\Collision\CollisionManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -802,6 +823,18 @@
     </ClInclude>
     <ClInclude Include="Game\WorldObject\MeteoriteManager.h">
       <Filter>MainGame\WorldObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Game\Collision\Collider\SphereCollider.h">
+      <Filter>Engine\Core\Game\Collision\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Game\Collision\Collider\BaseCollider.h">
+      <Filter>Engine\Core\Game\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Game\Collision\CollisionManager\CollisionManager.h">
+      <Filter>Engine\Core\Game\Collision\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Game\Collision\CollisionManager\CollisionFunctions.h">
+      <Filter>Engine\Core\Game\Collision\CollisionManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
