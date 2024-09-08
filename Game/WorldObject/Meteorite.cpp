@@ -1,7 +1,7 @@
 #include "Meteorite.h"
 #include "Game/Enviroment.h"
 
-float Meteorite::kAttractionedStrength_ = 3;
+float Meteorite::kAttractionedStrength_ = 4;
 float Meteorite::kSpeed_ = 1.0f;
 float Meteorite::radius_ = 1.0f;
 
@@ -23,15 +23,17 @@ void Meteorite::Init(const Vector3& pos) {
 	
 	attractionedStrength_ = kAttractionedStrength_;
 	speed_ = kSpeed_;
+	attractionRange_ = 3.0f;
 
 	isDead_ = false;
 	isAttraction_ = false;
 	isFalling_ = false;
+	isEnemyHit_ = false;
 }
 
 void Meteorite::Update(const Vector3& playerPosition) {
+	attractionRange_ = 3.0f;
 	if (isEnemyHit_) {
-		attractionedStrength_ = 6.0f;
 		speed_ = 0.5f;
 	}
 
@@ -50,7 +52,6 @@ void Meteorite::Move(const Vector3& playerPosition) {
 	translate += (velocity_ * kSpeed_) * kDeltaTime;
 	// 引き寄せられている間の処理
 	if (isAttraction_) {
-
 		acceleration_ += Vector3::Normalize(targetPosition_ - world_position()) * kDeltaTime;
 		velocity_ = (acceleration_ * attractionedStrength_);
 	}

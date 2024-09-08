@@ -64,6 +64,8 @@ public:	// accessor
 
 	void SetTargetPosition(const Vector3& targetPosition) { targetPosition_ = targetPosition; }
 
+	const float GetAttractRange() const { return attractionRange_; }
+
 private:
 
 	Vector3 targetPosition_;
@@ -73,6 +75,7 @@ private:
 
 	float speed_;
 	float attractionedStrength_;
+	float attractionRange_;
 
 	bool isFalling_;
 	bool isAttraction_;	// 引き寄せられているか

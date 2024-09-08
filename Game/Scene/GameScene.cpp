@@ -156,7 +156,7 @@ void GameScene::CheckMeteoAttraction() {
 		float origineLength = meteoToAttractOrigine.length();
 		float endLength = meteoToAttractEnd.length();
 
-		if (origineLength < player_->GetGravityRod()->GetAttractionRange() || endLength < player_->GetGravityRod()->GetAttractionRange()) {
+		if (origineLength < meteo.GetAttractRange() || endLength < meteo.GetAttractRange()) {
 			
 			meteo.SetIsAttraction(true);
 			// 距離を比較して近い方とのベクトルを加速度に加算する
