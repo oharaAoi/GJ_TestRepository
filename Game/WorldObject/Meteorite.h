@@ -2,14 +2,12 @@
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Math/Vector3.h"
 
-#include "Game/MyRandom.h"
-
 class Meteorite
 	: public GameObject {
 
 public:
 
-	static float attractionedStrength_;
+	static float kAttractionedStrength_;
 	static float kSpeed_;
 	static float radius_;
 
@@ -26,13 +24,19 @@ public:
 	/// <summary>
 	/// 更新関数
 	/// </summary>
-	void Update();
+	void Update(const Vector3& playerPosition);
 
 public:	// メンバ関数
 
-	void Move();
+	void Move(const Vector3& playerPosition);
 
+	void Falling();
+
+	void OnCollision(const Vector3& other = Vector3{0,0,0});
+
+#ifdef _DEBUG
 	void EditImGui();
+#endif
 
 public:	// accessor
 
@@ -42,6 +46,9 @@ public:	// accessor
 	// ----------- 加速度 ----------- //
 	void SetAcceleration(const Vector3& acceleration) { acceleration_ = acceleration; }
 
+	// ----------- 速度 ----------- //
+	const Vector3 GetVelocity() const { return velocity_; }
+
 	// ----------- 半径 ----------- //
 	const float GetRadius() const { return radius_; }
 
@@ -49,12 +56,31 @@ public:	// accessor
 	void SetIsDead(const bool& isDead) { isDead_ = isDead; }
 	const bool GetIsDead() const { return isDead_; }
 
+	// ----------- 落下フラグ ----------- //
+	const bool GetIsFalling() const { return isFalling_; }
+
+	// -----------  ----------- //
+	void SetIsEnemyHit(const bool& ishit) { isEnemyHit_ = ishit; }
+
+	void SetTargetPosition(const Vector3& targetPosition) { targetPosition_ = targetPosition; }
+
+	const float GetAttractRange() const { return attractionRange_; }
+
 private:
+
+	Vector3 targetPosition_;
 
 	Vector3 velocity_;
 	Vector3 acceleration_;
 
-	bool isAttraction_;
+	float speed_;
+	float attractionedStrength_;
+	float attractionRange_;
+
+	bool isFalling_;
+	bool isAttraction_;	// 引き寄せられているか
 	bool isDead_;
+
+	bool isEnemyHit_;
 };
 

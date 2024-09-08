@@ -10,20 +10,34 @@ void GameScene::initialize() {
 	EffectManager::GetInstance()->Init();
 	effectManager_ = EffectManager::GetInstance();
 	meteoriteManager_ = std::make_unique<MeteoriteManager>();
+	enemyManager_ = std::make_unique<EnemyManager>(this);
 
 	field_ = std::make_unique<Field>();
 	player_ = std::make_unique<Player>();
+	boss_ = std::make_unique<Boss>();
 
 	camera3D_ = std::make_unique<FollowCamera>();
 	camera3D_->initialize();
 	camera3D_->set_transform({
 		CVector3::BASIS,
 		Quaternion::EulerDegree(55, 0, 0),
-		{ 0, 30, -18 }
+		{ 0, 50, -28.0 }
 							 });
 
 	meteoriteManager_->SetGameScene(this);
 	meteoriteManager_->Init();
+}
+
+void GameScene::load() {
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "GravityRod.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "mouth.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "mob.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "Field.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariEnemy.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariSpEnemy.obj");
 }
 
 void GameScene::begin() {
@@ -47,8 +61,10 @@ void GameScene::update() {
 	// -------------------------------------------------
 	player_->Update(field_->GetRadius());
 
+	boss_->Update();
+
 	for (Meteorite& meteo : meteoriteList_) {
-		meteo.Update();
+		meteo.Update(player_->get_transform().get_translate());
 	}
 
 	// 死亡フラグのチェックを行う
@@ -59,12 +75,18 @@ void GameScene::update() {
 		return false;
 							 });
 
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->Update(player_->get_transform().get_translate());
+	}
+
 	// -------------------------------------------------
 	// ↓ Manager系の更新
 	// -------------------------------------------------
 	effectManager_->Update();
 
-	meteoriteManager_->Update();
+	meteoriteManager_->Update(player_->get_transform().get_translate());
+
+	enemyManager_->Update(player_->get_transform().get_translate());
 
 	// -------------------------------------------------
 	// ↓ 当たり判定系
@@ -72,18 +94,30 @@ void GameScene::update() {
 	if (player_->GetIsAttack()) {
 		CheckMeteoAttraction();
 	}
+
+	CheckMeteoCollision();
+
+	CheckBossCollision();
+
+	CheckEnemyCollison();
 }
 
 void GameScene::begin_rendering() {
 	field_->begin_rendering(*camera3D_);
 
 	player_->Begin_Rendering(camera3D_.get());
+	boss_->Begin_Rendering(camera3D_.get());
 
 	for (Meteorite& meteo : meteoriteList_) {
 		meteo.begin_rendering(*camera3D_);
 	}
 
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->begin_rendering(*camera3D_);
+	}
+
 	effectManager_->BeginRendering(*camera3D_);
+	enemyManager_->Begin_Rendering(*camera3D_);
 }
 
 void GameScene::late_update() {
@@ -92,15 +126,21 @@ void GameScene::late_update() {
 
 void GameScene::draw() const {
 	RenderPathManager::BeginFrame();
-	DirectXCore::ShowGrid(*camera3D_);
+	//DirectXCore::ShowGrid(*camera3D_);
 	field_->draw();
 	player_->Draw();
+	boss_->Draw();
 
 	for (const Meteorite& meteo : meteoriteList_) {
 		meteo.draw();
 	}
 
+	for (const std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->draw();
+	}
+
 	effectManager_->Draw();
+	enemyManager_->Draw();
 
 	RenderPathManager::Next();
 }
@@ -110,23 +150,26 @@ void GameScene::CheckMeteoAttraction() {
 		Vector3 direction{};
 		float length = 0;
 		// 引き寄せる2つの球体との距離を測る
-		Vector3 meteoToAttractOrigine = player_->GetGravityRodOrigine() - meteo.get_transform().get_translate();
-		Vector3 meteoToAttractEnd = player_->GetGravityRodEnd() - meteo.get_transform().get_translate();
+		Vector3 meteoToAttractOrigine = player_->GetGravityRodOrigine() - meteo.world_position();
+		Vector3 meteoToAttractEnd = player_->GetGravityRodEnd() - meteo.world_position();
 
 		float origineLength = meteoToAttractOrigine.length();
 		float endLength = meteoToAttractEnd.length();
 
-		if (origineLength < player_->GetGravityRod()->GetAttractionRange() || endLength < player_->GetGravityRod()->GetAttractionRange()) {
+		if (origineLength < meteo.GetAttractRange() || endLength < meteo.GetAttractRange()) {
+			
 			meteo.SetIsAttraction(true);
 			// 距離を比較して近い方とのベクトルを加速度に加算する
 			if (origineLength < endLength) {
 				meteo.SetAcceleration(Vector3::Normalize(meteoToAttractOrigine));
 				length = origineLength;
 				direction = Vector3::Normalize(meteoToAttractOrigine);
+				meteo.SetTargetPosition(player_->GetGravityRodOrigine());
 			} else {
 				meteo.SetAcceleration(Vector3::Normalize(meteoToAttractEnd));
 				length = endLength;
 				direction = Vector3::Normalize(meteoToAttractEnd);
+				meteo.SetTargetPosition(player_->GetGravityRodEnd());
 			}
 		} else {
 			meteo.SetIsAttraction(false);
@@ -144,6 +187,99 @@ void GameScene::AddMeteorite(const Vector3& position) {
 	meteoriteList_.emplace_back(position);
 }
 
+void GameScene::AddEnemy(const Vector3& position, const EnemyType& enemyType) {
+	enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType));
+}
+
+void GameScene::CheckMeteoCollision() {
+	std::list<Meteorite>::iterator iterA = meteoriteList_.begin();
+	for (; iterA != meteoriteList_.end(); ++iterA) {
+		Meteorite* meteoA = &(*iterA);
+
+		std::list<Meteorite>::iterator iterB = iterA;
+		iterB++;
+
+		for (; iterB != meteoriteList_.end(); ++iterB) {
+			Meteorite* meteoB = &(*iterB);
+
+			//float length = Vector3::Length(meteoA->world_position() - meteoB->world_position());
+			float length = Vector3::Length(meteoA->get_transform().get_translate() - meteoB->get_transform().get_translate());
+
+			if (length < meteoA->GetRadius() + meteoB->GetRadius()) {
+				meteoA->OnCollision(meteoB->get_transform().get_translate());
+				meteoB->OnCollision(meteoA->get_transform().get_translate());
+			}
+		}
+	}
+}
+
+void GameScene::CheckBossCollision() {
+	for (Meteorite& meteo : meteoriteList_) {
+		if (meteo.GetIsFalling()) {
+			float length = (meteo.get_transform().get_translate().y - boss_->get_transform().get_translate().y);
+
+			if (length < meteo.GetRadius()) {
+				meteo.SetIsDead(true);
+				boss_->OnCollision();
+			}
+		}
+	}
+}
+
+void GameScene::CheckEnemyCollison() {
+	// -------------------------------------------------
+	// ↓ playerと敵
+	// -------------------------------------------------
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		if (!enemy->GetIsAttack()) {
+			float length = Vector3::Length(player_->get_transform().get_translate() - enemy->get_transform().get_translate());
+
+			if (length < player_->GetRadius() + enemy->GetRadius()) {
+				enemy->OnCollision(player_->get_transform().get_translate(), 0);
+			}
+		}
+	}
+
+	// -------------------------------------------------
+	// ↓ 隕石と敵
+	// -------------------------------------------------
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		if (!enemy->GetIsAttack()) {
+			for (Meteorite& meteo : meteoriteList_) {
+				float length = Vector3::Length(meteo.get_transform().get_translate() - enemy->get_transform().get_translate());
+				if (length < meteo.GetRadius() + enemy->GetRadius()) {
+					enemy->OnCollision(meteo.get_transform().get_translate(), 1);
+					meteo.SetIsEnemyHit(true);
+				}
+			}
+		}
+	}
+
+	// -------------------------------------------------
+	// ↓ 敵同士
+	// -------------------------------------------------
+	std::list<std::unique_ptr<Enemy>>::iterator iterA = enemyList_.begin();
+	for (; iterA != enemyList_.end(); ++iterA) {
+		Enemy* enemyA = (*iterA).get();
+
+		std::list<std::unique_ptr<Enemy >>::iterator iterB = iterA;
+		iterB++;
+
+		for (; iterB != enemyList_.end(); ++iterB) {
+			Enemy* enemyB = (*iterB).get();
+			float length = Vector3::Length(enemyA->get_transform().get_translate() - enemyB->get_transform().get_translate());
+
+			if (length < enemyA->GetRadius() + enemyB->GetRadius()) {
+				enemyA->OnCollision(enemyB->get_transform().get_translate(), 2);
+				enemyB->OnCollision(enemyA->get_transform().get_translate(), 2);
+
+				/*Vector3 pos = RandomVector3(-4.0f, 4.0f);
+				AddEnemy(pos, EnemyType::SpecialPop_Type);*/
+			}
+		}
+	}
+}
+
 #ifdef _DEBUG
 
 #include <externals/imgui/imgui.h>
@@ -158,12 +294,14 @@ void GameScene::debug_update() {
 	player_->debug_gui();
 	ImGui::End();
 
+	boss_->EditImGui();
+
 	ImGui::Begin("Meteorite");
-	ImGui::DragFloat("attractionedStrength", &Meteorite::attractionedStrength_, 0.1f);
-	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f);
-	ImGui::DragFloat("radius", &Meteorite::radius_, 0.1f);
+	ImGui::DragFloat("attractionedStrength", &Meteorite::kAttractionedStrength_, 0.1f, 0.0f, 200.0f);
+	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f, 0.0f, 5.0f);
 	ImGui::End();
 
 	meteoriteManager_->EditImGui();
+	enemyManager_->EditImGui();
 }
 #endif // _DEBUG

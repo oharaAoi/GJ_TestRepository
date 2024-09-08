@@ -19,13 +19,6 @@ const std::int32_t kClientHight = 720;
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp::Initialize("DirectXGame", kClientWidth, kClientHight);
 
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Field.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "GravityRod.obj");
-	BackgroundLoader::WaitEndExecute();
-
 	auto&& scene = CreateUnique<GameScene>();
 	SceneManager::Initialize(std::move(scene));
 

@@ -271,6 +271,12 @@
     <Filter Include="Engine\Utility\BitFlag">
       <UniqueIdentifier>{849632df-0bd5-476b-b996-5329bb91d6cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\GameCharacter\Manager">
+      <UniqueIdentifier>{e9a747c5-69bd-4edf-9926-01ff4b2e2731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\GameCharacter\State">
+      <UniqueIdentifier>{1fd89ad6-ae02-4534-ab1e-9199fac06e88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -545,6 +551,27 @@
     </ClCompile>
     <ClCompile Include="Engine\Game\Collision\CollisionManager\CollisionManager.cpp">
       <Filter>Engine\Core\Game\Collision\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\Boss.cpp">
+      <Filter>MainGame\GameCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\Enemy.cpp">
+      <Filter>MainGame\GameCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\Manager\EnemyManager.cpp">
+      <Filter>MainGame\GameCharacter\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\State\BaseEnemyState.cpp">
+      <Filter>MainGame\GameCharacter\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\State\EnemyApproachState.cpp">
+      <Filter>MainGame\GameCharacter\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\State\EnemyRootState.cpp">
+      <Filter>MainGame\GameCharacter\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\State\EnemyBlownState.cpp">
+      <Filter>MainGame\GameCharacter\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -835,6 +862,30 @@
     </ClInclude>
     <ClInclude Include="Engine\Game\Collision\CollisionManager\CollisionFunctions.h">
       <Filter>Engine\Core\Game\Collision\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\Boss.h">
+      <Filter>MainGame\GameCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enviroment.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\Enemy.h">
+      <Filter>MainGame\GameCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\Manager\EnemyManager.h">
+      <Filter>MainGame\GameCharacter\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\State\BaseEnemyState.h">
+      <Filter>MainGame\GameCharacter\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\State\EnemyApproachState.h">
+      <Filter>MainGame\GameCharacter\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\State\EnemyRootState.h">
+      <Filter>MainGame\GameCharacter\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\State\EnemyBlownState.h">
+      <Filter>MainGame\GameCharacter\State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

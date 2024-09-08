@@ -12,12 +12,12 @@ Player::~Player() {
 void Player::Init() {
 	reset_object("player.obj");
 
-	gravityRod_ = std::make_unique<GravityRod>();
+	gravityRod_ = std::make_unique<GravityRod>(this);
 	isAttack_ = false;
 
 	input_ = Input::GetInstance();
 	Vector3 translate = transform->get_translate();
-	transform->set_translate_y(4.5f);
+	transform->set_translate_y(12.5f);
 }
 
 void Player::Update(const float& fieldRadius) {
@@ -26,8 +26,11 @@ void Player::Update(const float& fieldRadius) {
 	Attack();
 
 	if (isAttack_) {
-		gravityRod_->Update(transform->get_translate(), forwordRotation);
+		gravityRod_->Update();
 	}
+
+
+
 #ifdef _DEBUG
 	ImGui::Begin("GravityRod");
 	gravityRod_->EditImGui();

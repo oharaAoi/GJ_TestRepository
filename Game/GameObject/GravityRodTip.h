@@ -17,18 +17,18 @@ public:
 
 public:
 
-	GravityRodTip();
+	GravityRodTip(GameObject* gameObject);
 	~GravityRodTip();
 
 	/// <summary>
 	/// 初期化関数
 	/// </summary>
-	void Init();
+	void Init(GameObject* gameObject);
 
 	/// <summary>
 	/// 更新関数
 	/// </summary>
-	void Update(const float& radius, const Quaternion& rodQuaternion, const Vector3& translation);
+	void Update(const float& radius);
 
 private:
 

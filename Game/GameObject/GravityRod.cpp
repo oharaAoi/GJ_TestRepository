@@ -1,7 +1,7 @@
 #include "GravityRod.h"
 
-GravityRod::GravityRod() {
-	Init();
+GravityRod::GravityRod(GameObject* gameObject) {
+	Init(gameObject);
 }
 
 GravityRod::~GravityRod() {
@@ -11,45 +11,44 @@ GravityRod::~GravityRod() {
 // ↓　初期化処理
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GravityRod::Init() {
+void GravityRod::Init(GameObject* gameObject) {
 	reset_object("GravityRod.obj");
 
-	tipObject_[0] = std::make_unique<GravityRodTip>();
-	tipObject_[1] = std::make_unique<GravityRodTip>();
+	set_parent(*gameObject);
 
-	tipObject_[0]->reset_object("particle.obj");
-	tipObject_[1]->reset_object("particle.obj");
+	tipObject_[Tips::Tips_origine] = std::make_unique<GravityRodTip>(this);
+	tipObject_[Tips::Tips_end] = std::make_unique<GravityRodTip>(this);
+
+	tipObject_[Tips::Tips_origine]->reset_object("particle.obj");
+	tipObject_[Tips::Tips_end]->reset_object("particle.obj");
+
+	transform->set_translate(Vector3{ 0, 2.5f, 1.0f });
+	transform->set_rotate(Quaternion::EulerDegree(0, 90, 0));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // ↓　更新処理
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GravityRod::Update(const Vector3& playerPos, const Quaternion& quaternion) {
-	Vector3 translate = Vector3{ playerPos.x, playerPos.y + 1.0f, playerPos.z };
-	Quaternion rightAngle = Quaternion::EulerDegree(0, 90, 0);
-	translate += Vector3(-1,0,0) * (quaternion * rightAngle);
-	transform->set_translate(translate);
-	transform->set_rotate(quaternion * rightAngle);
-
+void GravityRod::Update() {
 	// 両方の先端にオブジェクトを配置する
-	tipObject_[0]->Update(radius_, transform->get_quaternion(), transform->get_translate());
-	tipObject_[1]->Update(-radius_, transform->get_quaternion(), transform->get_translate());
+	tipObject_[Tips::Tips_origine]->Update(radius_);
+	tipObject_[Tips::Tips_end]->Update(-radius_);
 
 	// rodのベクトルを求める
-	rodVector_ = Vector3::Normalize(tipObject_[0]->get_transform().get_translate() - tipObject_[1]->get_transform().get_translate());
+	//rodVector_ = Vector3::Normalize(tipObject_[Tips::Tips_end]->world_position() - tipObject_[Tips::Tips_origine]->world_position());
 }
 
 void GravityRod::Begin_Rendering(Camera3D* camera3d) {
 	begin_rendering(*camera3d);
-	tipObject_[0]->begin_rendering(*camera3d);
-	tipObject_[1]->begin_rendering(*camera3d);
+	tipObject_[Tips::Tips_origine]->begin_rendering(*camera3d);
+	tipObject_[Tips::Tips_end]->begin_rendering(*camera3d);
 }
 
 void GravityRod::Draw() const {
 	draw();
-	tipObject_[0]->draw();
-	tipObject_[1]->draw();
+	tipObject_[Tips::Tips_origine]->draw();
+	tipObject_[Tips::Tips_end]->draw();
 }
 
 #ifdef _DEBUG

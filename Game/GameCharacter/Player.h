@@ -50,6 +50,8 @@ public:
 
 	const bool& GetIsAttack() const { return isAttack_; }
 
+	const float GetRadius() const { return radius_; }
+
 private:
 
 	const float speed = 2.0f;
@@ -61,5 +63,6 @@ private:
 	std::unique_ptr<GravityRod> gravityRod_ = nullptr;
 	bool isAttack_ = false;
 
+	float radius_ = 1.0f;
 };
 

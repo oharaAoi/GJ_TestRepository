@@ -36,7 +36,7 @@ public:	// accessor
 
 private:
 
-	float radius_ = 3.5f;
+	float radius_ = 5.7f;
 
 };
 
