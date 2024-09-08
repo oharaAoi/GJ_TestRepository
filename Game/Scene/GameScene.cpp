@@ -293,7 +293,7 @@ void GameScene::debug_update() {
 	boss_->EditImGui();
 
 	ImGui::Begin("Meteorite");
-	ImGui::DragFloat("attractionedStrength", &Meteorite::kAttractionedStrength_, 0.1f);
+	ImGui::DragFloat("attractionedStrength", &Meteorite::kAttractionedStrength_, 0.1f, 100.0f, 200.0f);
 	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f);
 	ImGui::End();
 
