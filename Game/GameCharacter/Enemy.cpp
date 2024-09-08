@@ -1,7 +1,7 @@
 #include "Enemy.h"
 #include "Game/Enviroment.h"
 
-Enemy::Enemy(const Vector3& position, const EnemyType& enemyType) { Init(position, enemyType);}
+Enemy::Enemy(const Vector3& position, const EnemyType& enemyType) { Init(position, enemyType); }
 Enemy::~Enemy() {
 }
 
@@ -17,11 +17,16 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 	isFalling_ = false;
 
-	behaviorRequest_ = EnemyState::Root_State;
+	behaviorRequest_ = EnemyState::Approach_State;
 }
 
 void Enemy::Update(const Vector3& playerPosition) {
 	playerPosition_ = playerPosition;
+
+	if (isAttack_) {
+		Attack();
+		return;
+	}
 
 	CheckBehaviorRequest();
 
@@ -36,6 +41,25 @@ void Enemy::Update(const Vector3& playerPosition) {
 		float targetAngle = std::atan2f(velocity_.x, velocity_.z);
 		Quaternion moveRotate = Quaternion::EulerRadian({ 0,targetAngle,0 });
 		transform->set_rotate(moveRotate);
+	}
+
+	transform->set_translate_y(13.0f);
+}
+
+void Enemy::Attack() {
+	if (++frameCount_ < 30) {
+		Vector3 translate = transform->get_translate();
+		translate += -Vector3::Normalize(playerPosition_ - translate) * kDeltaTime;
+		transform->set_translate(translate);
+	} else if(++frameCount_ < 50) {
+		Vector3 translate = transform->get_translate();
+		translate += Vector3::Normalize(playerPosition_ - translate) * 8.0f * kDeltaTime;
+		transform->set_translate(translate);
+	} else {
+		isAttack_ = false;
+		velocity_ = { 0,0,0 };
+		frameCount_ = 0;
+		behaviorRequest_ = EnemyState::Root_State;
 	}
 }
 
@@ -57,7 +81,7 @@ void Enemy::OnCollision(const Vector3& other, const uint32_t& typeId) {
 		velocity_ = Vector3::Normalize(other - transform->get_translate()) * -1.0f;
 		acceleration_ = Vector3::Normalize(other - transform->get_translate()) * -3.0f;
 		behaviorRequest_ = EnemyState::Blown_State;
-	}
+	} 
 }
 
 void Enemy::ChangeState(std::unique_ptr<BaseEnemyState> state) {

@@ -2,7 +2,7 @@
 #include "Game/Enviroment.h"
 
 float Meteorite::kAttractionedStrength_ = 100;
-float Meteorite::kSpeed_ = 1.0f;
+float Meteorite::kSpeed_ = -2.0f;
 float Meteorite::radius_ = 1.0f;
 
 Meteorite::Meteorite(const Vector3& pos) {
@@ -47,6 +47,7 @@ void Meteorite::Update(const Vector3& playerPosition) {
 }
 
 void Meteorite::Move(const Vector3& playerPosition) {
+	velocity_ = { kSpeed_, 0, 0 };
 	velocity_.y = 0;
 	acceleration_.y = 0;
 	Vector3 translate = transform->get_translate();
@@ -61,7 +62,7 @@ void Meteorite::Move(const Vector3& playerPosition) {
 		isDead_ = true;
 	}
 
-	translate += (velocity_ * kSpeed_) * kDeltaTime;
+	translate += velocity_ * kDeltaTime;
 	transform->set_translate(translate);
 }
 

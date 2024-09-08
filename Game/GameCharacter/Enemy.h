@@ -31,6 +31,8 @@ public:	// メンバ関数
 	void Init(const Vector3& position, const EnemyType& enemyType);
 	void Update(const Vector3& playerPosition);
 
+	void Attack();
+
 	void OnCollision(const Vector3& other, const uint32_t& typeId);
 
 	void ChangeState(std::unique_ptr<BaseEnemyState> state);
@@ -83,9 +85,14 @@ private:
 
 	Vector3 playerPosition_;
 
+	Vector3 preAttackPos_;
+
 	bool isFalling_ = false;
 	bool isCharge_ = false;
 	bool isAttack_ = false;
 
+	uint32_t frameCount_;
+	const uint32_t chargeTime_ = 100;
+	const uint32_t attackTime_ = 40;
 };
 

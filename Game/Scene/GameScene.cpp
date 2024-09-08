@@ -231,10 +231,12 @@ void GameScene::CheckEnemyCollison() {
 	// ↓ playerと敵
 	// -------------------------------------------------
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		float length = Vector3::Length(player_->get_transform().get_translate() - enemy->get_transform().get_translate());
+		if (!enemy->GetIsAttack()) {
+			float length = Vector3::Length(player_->get_transform().get_translate() - enemy->get_transform().get_translate());
 
-		if (length < player_->GetRadius() + enemy->GetRadius()) {
-			enemy->OnCollision(player_->get_transform().get_translate(), 0);
+			if (length < player_->GetRadius() + enemy->GetRadius()) {
+				enemy->OnCollision(player_->get_transform().get_translate(), 0);
+			}
 		}
 	}
 
@@ -242,11 +244,13 @@ void GameScene::CheckEnemyCollison() {
 	// ↓ 隕石と敵
 	// -------------------------------------------------
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		for (Meteorite& meteo : meteoriteList_) {
-			float length = Vector3::Length(meteo.get_transform().get_translate() - enemy->get_transform().get_translate());
-			if (length < meteo.GetRadius() + enemy->GetRadius()) {
-				enemy->OnCollision(meteo.get_transform().get_translate(), 1);
-				meteo.SetIsEnemyHit(true);
+		if (!enemy->GetIsAttack()) {
+			for (Meteorite& meteo : meteoriteList_) {
+				float length = Vector3::Length(meteo.get_transform().get_translate() - enemy->get_transform().get_translate());
+				if (length < meteo.GetRadius() + enemy->GetRadius()) {
+					enemy->OnCollision(meteo.get_transform().get_translate(), 1);
+					meteo.SetIsEnemyHit(true);
+				}
 			}
 		}
 	}
@@ -293,8 +297,8 @@ void GameScene::debug_update() {
 	boss_->EditImGui();
 
 	ImGui::Begin("Meteorite");
-	ImGui::DragFloat("attractionedStrength", &Meteorite::kAttractionedStrength_, 0.1f, 100.0f, 200.0f);
-	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f);
+	ImGui::DragFloat("attractionedStrength", &Meteorite::kAttractionedStrength_, 0.1f, 0.0f, 200.0f);
+	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f, 0.0f, 5.0f);
 	ImGui::End();
 
 	meteoriteManager_->EditImGui();

@@ -14,8 +14,8 @@ void EnemyApproachState::Update() {
 
 	playerToLenght_ = Vector3::Length(enemy_->GetPlayerPosition(), enemy_->get_transform().get_translate());
 
-	if (playerToLenght_ < enemy_->GetRadius() * 2.0f) {
-
+	if (playerToLenght_ < enemy_->GetRadius() * 3.0f) {
+		enemy_->SetIsAttack(true);
 	}
 }
 

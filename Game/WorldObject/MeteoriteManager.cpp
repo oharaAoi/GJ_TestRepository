@@ -66,7 +66,7 @@ void MeteoriteManager::SelectionArrange() {
 	for (uint32_t oi = 0; oi < itemArray.size(); ++oi) {
 		if (itemArray[oi] != "Adjustment") {
 			gameScene_->AddMeteorite(GetValue<Vector3>(randomKey, itemArray[oi]));
-			gameScene_->AddMeteorite(Vector3{RandomFloat(14, 18), 0, RandomFloat(-8, 8) });
+			//gameScene_->AddMeteorite(Vector3{RandomFloat(14, 18), 0, RandomFloat(-8, 8) });
 		}
 	}
 
