@@ -20,8 +20,8 @@ void GameScene::initialize() {
 	camera3D_->initialize();
 	camera3D_->set_transform({
 		CVector3::BASIS,
-		Quaternion::EulerDegree(40, 0, 0),
-		{ 0, 27, -25 }
+		Quaternion::EulerDegree(55, 0, 0),
+		{ 0, 50, -26.5 }
 							 });
 
 	meteoriteManager_->SetGameScene(this);
@@ -30,12 +30,12 @@ void GameScene::initialize() {
 
 void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Field.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "GravityRod.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "mouth.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "mob.obj");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "Field.obj");
 }
 
 void GameScene::begin() {
@@ -71,10 +71,10 @@ void GameScene::update() {
 			return true;
 		}
 		return false;
-	});
+							 });
 
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		enemy->Update();
+		enemy->Update(player_->get_transform().get_translate());
 	}
 
 	// -------------------------------------------------
@@ -84,7 +84,7 @@ void GameScene::update() {
 
 	meteoriteManager_->Update();
 
-	enemyManager_->Update();
+	enemyManager_->Update(player_->get_transform().get_translate());
 
 	// -------------------------------------------------
 	// ↓ 当たり判定系
@@ -96,6 +96,8 @@ void GameScene::update() {
 	CheckMeteoCollision();
 
 	CheckBossCollision();
+
+	CheckEnemyCollison();
 }
 
 void GameScene::begin_rendering() {
@@ -220,14 +222,29 @@ void GameScene::CheckBossCollision() {
 }
 
 void GameScene::CheckEnemyCollison() {
+	// -------------------------------------------------
+	// ↓ playerと敵
+	// -------------------------------------------------
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		float length = Vector3::Length(player_->get_transform().get_translate() - enemy->get_transform().get_translate());
 
 		if (length < player_->GetRadius() + enemy->GetRadius()) {
-
+			enemy->OnCollision(player_->get_transform().get_translate(), 0);
 		}
 	}
 
+	// -------------------------------------------------
+	// ↓ 隕石と敵
+	// -------------------------------------------------
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		for (Meteorite& meteo : meteoriteList_) {
+			float length = Vector3::Length(meteo.get_transform().get_translate() - enemy->get_transform().get_translate());
+			if (length < meteo.GetRadius() + enemy->GetRadius()) {
+				enemy->OnCollision(meteo.get_transform().get_translate(), 1);
+				meteo.OnCollision(enemy->get_transform().get_translate());
+			}
+		}
+	}
 }
 
 #ifdef _DEBUG

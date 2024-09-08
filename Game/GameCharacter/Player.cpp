@@ -17,7 +17,7 @@ void Player::Init() {
 
 	input_ = Input::GetInstance();
 	Vector3 translate = transform->get_translate();
-	transform->set_translate_y(4.5f);
+	transform->set_translate_y(12.5f);
 }
 
 void Player::Update(const float& fieldRadius) {

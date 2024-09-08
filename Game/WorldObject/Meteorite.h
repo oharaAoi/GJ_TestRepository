@@ -2,8 +2,6 @@
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Math/Vector3.h"
 
-static const float kGravity_ = -9.8f;
-
 class Meteorite
 	: public GameObject {
 

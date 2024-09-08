@@ -57,7 +57,6 @@ public:
 	/// </summary>
 	void CheckBossCollision();
 
-
 	void CheckEnemyCollison();
 
 	/// <summary>

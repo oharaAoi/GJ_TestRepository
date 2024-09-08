@@ -51,7 +51,7 @@ public:	// accessor
 
 private:
 
-	float radius_ = 6.0f;
+	float radius_ = 3.7f;
 	float attractionRange_ = 3.0f;
 
 	std::unique_ptr<GravityRodTip> tipObject_[2];

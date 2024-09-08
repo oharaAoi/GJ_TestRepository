@@ -175,6 +175,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameCharacter\Enemy.cpp" />
     <ClCompile Include="Game\GameCharacter\Manager\EnemyManager.cpp" />
     <ClCompile Include="Game\GameCharacter\Player.cpp" />
+    <ClCompile Include="Game\GameCharacter\State\BaseEnemyState.cpp" />
+    <ClCompile Include="Game\GameCharacter\State\EnemyApproachState.cpp" />
+    <ClCompile Include="Game\GameCharacter\State\EnemyBlownState.cpp" />
+    <ClCompile Include="Game\GameCharacter\State\EnemyRootState.cpp" />
     <ClCompile Include="Game\GameObject\GravityRod.cpp" />
     <ClCompile Include="Game\GameObject\GravityRodTip.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
@@ -274,6 +278,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameCharacter\Enemy.h" />
     <ClInclude Include="Game\GameCharacter\Manager\EnemyManager.h" />
     <ClInclude Include="Game\GameCharacter\Player.h" />
+    <ClInclude Include="Game\GameCharacter\State\BaseEnemyState.h" />
+    <ClInclude Include="Game\GameCharacter\State\EnemyApproachState.h" />
+    <ClInclude Include="Game\GameCharacter\State\EnemyBlownState.h" />
+    <ClInclude Include="Game\GameCharacter\State\EnemyRootState.h" />
     <ClInclude Include="Game\GameObject\GravityRod.h" />
     <ClInclude Include="Game\GameObject\GravityRodTip.h" />
     <ClInclude Include="Game\Input\Input.h" />

@@ -46,7 +46,7 @@ public:
 public:	// メンバ関数
 
 	void Init(GameScene* gameScene);
-	void Update();
+	void Update(const Vector3& playerPosition);
 
 #ifdef _DEBUG
 

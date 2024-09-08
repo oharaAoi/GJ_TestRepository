@@ -1,4 +1,5 @@
 #include "Meteorite.h"
+#include "Game/Enviroment.h"
 
 float Meteorite::attractionedStrength_ = 3;
 float Meteorite::kSpeed_ = 2.0f;
@@ -13,8 +14,9 @@ Meteorite::~Meteorite() {
 
 void Meteorite::Init(const Vector3& pos) {
 	reset_object("particle.obj");
-
+	Vector3 position = pos;
 	transform->set_translate(pos);
+	transform->set_translate_y(14.0f);
 	transform->set_scale({ radius_, radius_, radius_ });
 
 	velocity_ = { -2, 0, 0 };
@@ -37,11 +39,13 @@ void Meteorite::Update() {
 }
 
 void Meteorite::Move() {
+	velocity_.y = 0;
+	acceleration_.y = 0;
 	Vector3 translate = transform->get_translate();
-	translate += velocity_ * (1.0f / 60) * kSpeed_;
+	translate += velocity_ * kDeltaTime * kSpeed_;
 	// 引き寄せられている間の処理
 	if (isAttraction_) {
-		velocity_ += acceleration_ * (1.0f / 60) * attractionedStrength_;
+		velocity_ += acceleration_ * kDeltaTime * attractionedStrength_;
 	}
 
 	// 範囲外に出たら削除する処理
@@ -55,8 +59,8 @@ void Meteorite::Move() {
 void Meteorite::Falling() {
 	acceleration_ = { 0,kGravity_,0 };
 	Vector3 translate = transform->get_translate();
-	velocity_ += acceleration_ * (1.0f / 60);
-	translate += velocity_ * (1.0f / 60);
+	velocity_ += acceleration_ * kDeltaTime;
+	translate += velocity_ * kDeltaTime;
 	transform->set_translate(translate);
 }
 

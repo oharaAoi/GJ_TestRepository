@@ -8,12 +8,12 @@ void EnemyManager::Init(GameScene* gameScene) {
 	gameScene_ = gameScene;
 	LoadFileName();
 
-	AddEnemy(Vector3{ 1.0f, 4.5f, 0.0f }, EnemyType::Normal_Type);
+	AddEnemy(Vector3{ 2.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
 }
 
-void EnemyManager::Update() {
+void EnemyManager::Update(const Vector3& playerPosition) {
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		enemy->Update();
+		enemy->Update(playerPosition);
 	}
 }
 
@@ -87,7 +87,8 @@ void EnemyManager::EditConfigGui() {
 			}
 
 			enemyList_.clear();
-			enemyList_.emplace_back(std::make_unique<Enemy>(data.position, data.enemyType));
+			//enemyList_.emplace_back(std::make_unique<Enemy>(data.position, data.enemyType));
+			AddEnemy(data.position, data.enemyType);
 		}
 
 		ImGui::SameLine();
