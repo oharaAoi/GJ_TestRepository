@@ -14,7 +14,7 @@ GravityRod::~GravityRod() {
 void GravityRod::Init(GameObject* gameObject) {
 	reset_object("GravityRod.obj");
 
-	set_parent(*gameObject);
+	set_parent(gameObject->get_hierarchy());
 
 	tipObject_[Tips::Tips_origine] = std::make_unique<GravityRodTip>(this);
 	tipObject_[Tips::Tips_end] = std::make_unique<GravityRodTip>(this);

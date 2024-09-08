@@ -22,7 +22,7 @@ void Boss::Init() {
 
 	debugObject_ = std::make_unique<GameObject>();
 	debugObject_->reset_object("GravityRod.obj");
-	debugObject_->set_parent(*this);
+	debugObject_->set_parent(*hierarchy);
 }
 
 void Boss::Update() {

@@ -11,7 +11,7 @@ GravityRodTip::~GravityRodTip() {
 
 void GravityRodTip::Init(GameObject* gameObject) {
 	reset_object("particle.obj");
-	set_parent(*gameObject);
+	set_parent(gameObject->get_hierarchy());
 
 }
 
