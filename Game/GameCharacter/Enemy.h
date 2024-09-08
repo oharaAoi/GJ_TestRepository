@@ -1,7 +1,6 @@
 #pragma once
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Math/Vector3.h"
-#include "Engine/Math/Quaternion.h"
 
 enum class EnemyType {
 	Normal_Type,
@@ -21,9 +20,19 @@ public:	// メンバ関数
 	void Init(const Vector3& position, const EnemyType& enemyType);
 	void Update();
 
+	void OnCollision(const Vector3& other, const uint32_t& typeId);
+
+public:
+
+	const float GetRadius() const { return radius_; }
+
 private:
 
 	EnemyType enemyType_;
+
+	float radius_ = 1.0f;
+
+	Vector3 velocity_;
 
 };
 

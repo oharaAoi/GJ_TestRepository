@@ -12,6 +12,8 @@
 
 using json = nlohmann::json;
 
+class GameScene;
+
 /// <summary>
 /// Enemyの生成を管理するクラス
 /// </summary>
@@ -38,12 +40,12 @@ public:	// データ構造体
 
 public:
 
-	EnemyManager();
+	EnemyManager(GameScene* gameScene);
 	~EnemyManager();
 
 public:	// メンバ関数
 
-	void Init();
+	void Init(GameScene* gameScene);
 	void Update();
 
 #ifdef _DEBUG
@@ -62,6 +64,8 @@ public:	// メンバ関数
 
 #endif // _DEBUG
 
+	void AddEnemy(const Vector3& positoin, const EnemyType& type);
+
 	void LoadFileName();
 
 	void LoadFile(const std::string& fileName);
@@ -73,6 +77,8 @@ public:	// メンバ関数
 	T GetValue(const std::string& groupName, const std::string& key, const T& defaultValue = T()) const;
 
 private:
+
+	GameScene* gameScene_ = nullptr;
 
 	const std::string kDirectoryPath_ = "./Engine/Resources/EnemyData/";
 

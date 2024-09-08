@@ -1,10 +1,14 @@
 #include "EnemyManager.h"
+#include "Game/Scene/GameScene.h"
 
-EnemyManager::EnemyManager() { Init(); }
+EnemyManager::EnemyManager(GameScene* gameScene) { Init(gameScene); }
 EnemyManager::~EnemyManager() {}
 
-void EnemyManager::Init() {
+void EnemyManager::Init(GameScene* gameScene) {
+	gameScene_ = gameScene;
 	LoadFileName();
+
+	AddEnemy(Vector3{ 1.0f, 4.5f, 0.0f }, EnemyType::Normal_Type);
 }
 
 void EnemyManager::Update() {
@@ -147,6 +151,10 @@ void EnemyManager::SaveFile() {
 }
 
 #endif // _DEBUG
+
+void EnemyManager::AddEnemy(const Vector3& positoin, const EnemyType& type) {
+	gameScene_->AddEnemy(positoin, type);
+}
 
 void EnemyManager::LoadFileName() {
 	for (const auto& entry : std::filesystem::directory_iterator(kDirectoryPath_)) {

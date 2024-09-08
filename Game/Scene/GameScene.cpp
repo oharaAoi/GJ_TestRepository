@@ -10,7 +10,7 @@ void GameScene::initialize() {
 	EffectManager::GetInstance()->Init();
 	effectManager_ = EffectManager::GetInstance();
 	meteoriteManager_ = std::make_unique<MeteoriteManager>();
-	enemyManager_ = std::make_unique<EnemyManager>();
+	enemyManager_ = std::make_unique<EnemyManager>(this);
 
 	field_ = std::make_unique<Field>();
 	player_ = std::make_unique<Player>();
@@ -217,6 +217,17 @@ void GameScene::CheckBossCollision() {
 			}
 		}
 	}
+}
+
+void GameScene::CheckEnemyCollison() {
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		float length = Vector3::Length(player_->get_transform().get_translate() - enemy->get_transform().get_translate());
+
+		if (length < player_->GetRadius() + enemy->GetRadius()) {
+
+		}
+	}
+
 }
 
 #ifdef _DEBUG
