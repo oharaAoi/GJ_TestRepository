@@ -1,7 +1,14 @@
 #include "Enemy.h"
 #include "Game/Enviroment.h"
 
-Enemy::Enemy(const Vector3& position, const EnemyType& enemyType) { Init(position, enemyType); }
+uint32_t Enemy::nextSerialNumber = 0;
+
+Enemy::Enemy(const Vector3& position, const EnemyType& enemyType) {
+	serialNumber_ = nextSerialNumber;
+	// 次の番号を加算
+	++nextSerialNumber;
+	Init(position, enemyType); 
+}
 Enemy::~Enemy() {
 }
 
@@ -11,13 +18,19 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 	} else if (enemyType == EnemyType::SpecialPop_Type) {
 		reset_object("kariSpEnemy.obj");
 	}
+
+	sphereCollider_ = std::make_unique<SphereCollider>();
+	sphereCollider_->initialize();
+	sphereCollider_->get_hierarchy().set_parent(this->get_hierarchy());
+	sphereCollider_->set_on_collision(std::bind(&Enemy::On_Collision, this, std::placeholders::_1));
+
 	transform->set_translate(position);
 	transform->set_translate_y(13.0f);
 	enemyType_ = enemyType;
 
 	isFalling_ = false;
 
-	behaviorRequest_ = EnemyState::Approach_State;
+	behaviorRequest_ = EnemyState::Root_State;
 }
 
 void Enemy::Update(const Vector3& playerPosition) {
@@ -108,4 +121,29 @@ void Enemy::CheckBehaviorRequest() {
 		// ふるまいリクエストをリセット
 		behaviorRequest_ = std::nullopt;
 	}
+}
+
+void Enemy::On_Collision(const BaseCollider* const other) {
+	if (nextCollisionType_ == 0) { // player
+		if (!isFalling_) {
+			velocity_ = { 0,0,0 };
+			velocity_ = Vector3::Normalize(other->world_position() - world_position()) * -7.0f;
+			acceleration_ = Vector3::Normalize(other->world_position() - world_position()) * -10.0f;
+			behaviorRequest_ = EnemyState::Blown_State;
+		}
+	} else if(nextCollisionType_ == 1){ // 隕石
+		isDead_ = true;
+	} else if (nextCollisionType_ == 2) {// 敵同士
+		velocity_ = { 0,0,0 };
+		velocity_ = Vector3::Normalize(other->world_position() - world_position()) * -1.0f;
+		acceleration_ = Vector3::Normalize(other->world_position() - world_position()) * -3.0f;
+		behaviorRequest_ = EnemyState::Blown_State;
+	}
+}
+
+void Enemy::On_Collision_Enter(const BaseCollider* const) {
+}
+
+void Enemy::On_Collision_Exit(const BaseCollider* const) {
+
 }

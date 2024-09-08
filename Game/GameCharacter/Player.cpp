@@ -12,6 +12,11 @@ Player::~Player() {
 void Player::Init() {
 	reset_object("player.obj");
 
+	sphereCollider_ = std::make_unique<SphereCollider>();
+	sphereCollider_->initialize();
+	sphereCollider_->get_hierarchy().set_parent(this->get_hierarchy());
+	sphereCollider_->set_on_collision(std::bind(&Player::On_Collision, this, std::placeholders::_1));
+
 	gravityRod_ = std::make_unique<GravityRod>(this);
 	isAttack_ = false;
 
@@ -50,6 +55,18 @@ void Player::Draw() const {
 	if (isAttack_) {
 		gravityRod_->Draw();
 	}
+}
+
+void Player::On_Collision(const BaseCollider* const other) {
+	other->world_position();
+}
+
+void Player::On_Collision_Enter(const BaseCollider* const) {
+
+}
+
+void Player::On_Collision_Exit(const BaseCollider* const) {
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

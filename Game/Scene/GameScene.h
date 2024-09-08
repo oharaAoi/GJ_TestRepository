@@ -15,6 +15,7 @@
 #include "Game/Effect/EffectManager.h"
 #include "Game/WorldObject/MeteoriteManager.h"
 #include "Game/GameCharacter/Manager/EnemyManager.h"
+#include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
 #include "Game/FollowCamera.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 
@@ -83,8 +84,7 @@ private:
 	std::unique_ptr<Player> player_ = nullptr;
 	std::unique_ptr<Boss> boss_ = nullptr;
 	std::list<std::unique_ptr<Enemy>> enemyList_;
-
-	std::list<Meteorite> meteoriteList_;
+	std::list<std::unique_ptr<Meteorite>> meteoriteList_;
 
 	// ------------------- Camera ------------------- //
 	std::unique_ptr<FollowCamera> camera3D_ = nullptr;
@@ -94,6 +94,8 @@ private:
 	std::unique_ptr<MeteoriteManager> meteoriteManager_ = nullptr;
 
 	std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
+
+	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
 };
 

@@ -8,6 +8,8 @@
 #include "Game/GameObject/GravityRod.h"
 #include "Engine/Game/Camera/Camera3D.h"
 
+#include "Engine/Game/Collision/Collider/SphereCollider.h"
+
 class Transform3D;
 
 class Player :
@@ -26,6 +28,10 @@ public:
 
 	void Draw() const;
 
+	void On_Collision(const BaseCollider* const other);
+	void On_Collision_Enter(const BaseCollider* const);
+	void On_Collision_Exit(const BaseCollider* const);
+
 public:	// メンバ関数
 
 	/// <summary>
@@ -39,6 +45,8 @@ public:	// メンバ関数
 	void Attack();
 
 public:
+
+	std::weak_ptr<BaseCollider> GetCollider() { return sphereCollider_; }
 
 	const GravityRod* GetGravityRod() { return gravityRod_.get(); }
 
@@ -55,6 +63,8 @@ public:
 private:
 
 	const float speed = 2.0f;
+
+	std::shared_ptr<SphereCollider> sphereCollider_ = nullptr;
 
 	Input* input_ = nullptr;
 	Quaternion moveRotation;

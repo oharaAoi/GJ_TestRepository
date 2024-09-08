@@ -7,6 +7,8 @@
 #include "Game/GameCharacter/State/EnemyApproachState.h"
 #include "Game/GameCharacter/State/EnemyBlownState.h"
 
+#include "Engine/Game/Collision/Collider/SphereCollider.h"
+
 enum class EnemyType {
 	Normal_Type,
 	SpecialPop_Type
@@ -43,7 +45,15 @@ public:	// メンバ関数
 		behaviorRequest_ = request;
 	}
 
+	void On_Collision(const BaseCollider* const other);
+	void On_Collision_Enter(const BaseCollider* const);
+	void On_Collision_Exit(const BaseCollider* const);
+
 public:
+
+	const std::string GetMeteoId() const { return "Enemy" + std::to_string(serialNumber_); }
+
+	std::weak_ptr<BaseCollider> GetCollider() { return sphereCollider_; }
 
 	// ----------- 半径 ----------- //
 	const float GetRadius() const { return radius_; }
@@ -62,20 +72,29 @@ public:
 	// ----------- 落下しているか ----------- //
 	const bool GetIsFalling() const { return isFalling_; }
 
-	// ----------- 攻撃を溜めているか ----------- //
-	const bool GetIsCharge() const { return isCharge_; }
-	void SetIsCharge(const bool& isChaege) { isCharge_ = isChaege; }
-
 	// ----------- 攻撃中か ----------- //
 	const bool GetIsAttack() const { return isAttack_; }
 	void SetIsAttack(const bool& isAttack) { isAttack_ = isAttack; }
 
+	// ----------- 生存フラグ ----------- //
+	const bool GetIsDead() const { return isDead_;}
+	void SetIsDead(const bool& isDead) { isDead_ = isDead; }
+
+	// ----------- 次に当たり判定を取る対象 ----------- //
+	void SetNextCollision(const uint32_t& num) { nextCollisionType_ = num; }
+
 private:
 
+	uint32_t serialNumber_ = 0;
+	static uint32_t nextSerialNumber;
+
 	std::unique_ptr<BaseEnemyState> state_ = nullptr;
+	std::shared_ptr<SphereCollider> sphereCollider_ = nullptr;
 
 	EnemyState behavior_ = EnemyState::Root_State;
 	std::optional<EnemyState> behaviorRequest_ = std::nullopt;
+
+	uint32_t nextCollisionType_;
 
 	EnemyType enemyType_;
 	float radius_ = 1.0f;
@@ -85,14 +104,11 @@ private:
 
 	Vector3 playerPosition_;
 
-	Vector3 preAttackPos_;
-
 	bool isFalling_ = false;
-	bool isCharge_ = false;
 	bool isAttack_ = false;
+	bool isDead_ = false;
 
 	uint32_t frameCount_;
-	const uint32_t chargeTime_ = 100;
 	const uint32_t attackTime_ = 40;
 };
 

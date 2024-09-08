@@ -1,19 +1,19 @@
 {
-    "syoma": {
+    "hisaiti": {
         "Adjustment": {
-            "popNum": 3,
+            "popNum": 2,
             "rePopTime": 120,
             "rePopWidth": 5.0
         },
         "popPos0": [
-            17.0,
-            6.0,
-            -4.0
+            19.0,
+            0.0,
+            8.0
         ],
         "popPos1": [
-            18.0,
-            6.0,
-            4.0
+            21.0,
+            0.0,
+            9.0
         ]
     }
 }

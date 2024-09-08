@@ -1,19 +1,19 @@
 {
-    "syoma": {
+    "otu": {
         "Adjustment": {
-            "popNum": 3,
-            "rePopTime": 120,
+            "popNum": 2,
+            "rePopTime": 150,
             "rePopWidth": 5.0
         },
         "popPos0": [
-            17.0,
-            6.0,
-            -4.0
+            20.0,
+            0.0,
+            5.0
         ],
         "popPos1": [
             18.0,
-            6.0,
-            4.0
+            0.0,
+            -5.0
         ]
     }
 }

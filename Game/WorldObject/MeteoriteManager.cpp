@@ -135,6 +135,11 @@ void MeteoriteManager::CreateConfigGui() {
 			popedList_.emplace_back(editMeteoPos_);
 		}
 
+		if (ImGui::Button("clear")) {
+			popedList_.clear();
+			debugMeteoriteList_.clear();
+		}
+
 		if (ImGui::TreeNode("popedList")) {
 			uint32_t popIndex = 0;
 			for (std::list<Vector3>::iterator popedPos = popedList_.begin(); popedPos != popedList_.end();) {

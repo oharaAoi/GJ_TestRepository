@@ -1,11 +1,17 @@
 #include "Meteorite.h"
+#include "Engine/Game/Color/Color.h"
 #include "Game/Enviroment.h"
+
+uint32_t Meteorite::nextSerialNumber = 0;
 
 float Meteorite::kAttractionedStrength_ = 100;
 float Meteorite::kSpeed_ = -2.0f;
 float Meteorite::radius_ = 1.0f;
 
 Meteorite::Meteorite(const Vector3& pos) {
+	serialNumber_ = nextSerialNumber;
+	// 次の番号を加算
+	++nextSerialNumber;
 	Init(pos);
 }
 
@@ -18,6 +24,12 @@ void Meteorite::Init(const Vector3& pos) {
 	transform->set_translate(pos);
 	transform->set_translate_y(14.0f);
 	transform->set_scale({ radius_, radius_, radius_ });
+
+	sphereCollider_ = std::make_unique<SphereCollider>();
+	sphereCollider_->initialize();
+	sphereCollider_->get_hierarchy().set_parent(this->get_hierarchy());
+	sphereCollider_->set_on_collision(std::bind(&Meteorite::On_Collision, this, std::placeholders::_1, &this->get_materials()[0].color));
+	sphereCollider_->set_radius(1.0f);
 
 	velocity_ = { -2, 0, 0 };
 	
@@ -36,6 +48,7 @@ void Meteorite::Update(const Vector3& playerPosition) {
 	attractionRange_ = 3.0f;
 	if (isEnemyHit_) {
 		speed_ = 0.5f;
+		attractionedStrength_ = 120.0f;
 	}
 
 	if (!isFalling_) {
@@ -46,8 +59,7 @@ void Meteorite::Update(const Vector3& playerPosition) {
 	}
 }
 
-void Meteorite::Move(const Vector3& playerPosition) {
-	velocity_ = { kSpeed_, 0, 0 };
+void Meteorite::Move(const Vector3& playerPosition) {;
 	velocity_.y = 0;
 	acceleration_.y = 0;
 	Vector3 translate = transform->get_translate();
@@ -79,6 +91,24 @@ void Meteorite::OnCollision(const Vector3& other) {
 		velocity_ += Vector3::Normalize(other - transform->get_translate()) * -2.0f;
 	}
 	isFalling_ = true;
+}
+
+void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
+	if (nextCollisionType_ == 0) {	// 隕石
+		if (!isFalling_) {
+			velocity_ += Vector3::Normalize(other->get_transform().get_translate() - transform->get_translate()) * -2.0f;
+		}
+		isFalling_ = true;
+	} else if (nextCollisionType_ == 1) { // Enemy
+		isEnemyHit_ = true;
+		*object = { 1.0f,0,0,1.0f };
+	}
+}
+
+void Meteorite::On_Collision_Enter(const BaseCollider* const) {
+}
+
+void Meteorite::On_Collision_Exit(const BaseCollider* const) {
 }
 
 #ifdef _DEBUG

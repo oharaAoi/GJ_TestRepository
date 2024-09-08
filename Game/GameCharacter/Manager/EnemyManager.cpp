@@ -8,13 +8,25 @@ void EnemyManager::Init(GameScene* gameScene) {
 	gameScene_ = gameScene;
 	LoadFileName();
 
+	SelectArrange();
 	//AddEnemy(Vector3{ 2.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
 }
 
 void EnemyManager::Update(const Vector3& playerPosition) {
-	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+	/*for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->Update(playerPosition);
+	}*/
+
+	for (auto& times : timedCalls_) {
+		times.Update();
 	}
+
+	timedCalls_.remove_if([](const TimedCall& timeCalls) {
+		if (timeCalls.IsFinished()) {
+			return true;
+		}
+		return false;
+	});
 }
 
 #ifdef _DEBUG
@@ -30,9 +42,37 @@ void EnemyManager::Draw() const {
 		enemy->draw();
 	}
 }
+
+// ------------------- ファイルの選出を行う ------------------- //
+void EnemyManager::SelectArrange() {
+	std::vector<std::string> keyArray;
+	for (const auto& pair : loadData_) {
+		keyArray.push_back(pair.first);
+	}
+
+	int randomNum = RandomInt(0, static_cast<int>(keyArray.size() - 1));
+	std::vector<std::string> enemyArray;
+	for (auto item : loadData_[keyArray[randomNum]].items) {
+		enemyArray.push_back(item.first);
+	}
+
+	for (uint32_t oi = 0; oi < enemyArray.size(); ++oi) {
+		SettingData data{};
+		data.position = loadData_[keyArray[randomNum]].items[enemyArray[oi]].position;
+		data.enemyType = loadData_[keyArray[randomNum]].items[enemyArray[oi]].enemyType;
+
+		gameScene_->AddEnemy(data.position, data.enemyType);
+	}
+
+	// timedCallをリセットする
+	timedCalls_.push_back(TimedCall(std::bind(&EnemyManager::SelectArrange, this), popTime_));
+}
+
+
 #include <externals/imgui/imgui.h>
 void EnemyManager::EditImGui() {
 	ImGui::Begin("EnemyManager");
+	ImGui::Text("popTime:%d", popTime_);
 	CreateConfigGui();
 	EditConfigGui();
 	ImGui::End();

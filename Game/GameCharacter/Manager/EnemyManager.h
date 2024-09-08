@@ -9,6 +9,7 @@
 #include "Game/GameCharacter/Enemy.h"
 #include "Engine/Game/Camera/Camera3D.h"
 #include "externals/nlohmann/json.hpp"
+#include "Game/Function/TimedCall.h"
 
 using json = nlohmann::json;
 
@@ -50,6 +51,8 @@ public:	// メンバ関数
 
 	void Draw() const;
 
+	void SelectArrange();
+
 	void EditImGui();
 
 	void CreateConfigGui();
@@ -76,11 +79,14 @@ private:
 
 	std::vector<std::string> fileNameArray_;
 
+	std::list<TimedCall> timedCalls_;
+
+	uint32_t popTime_ = 400;
+
 #ifdef _DEBUG
 
 	char fileNameBuffer_[36] = "";
 	std::string createFileName_;
-
 	std::string currentFileName_;
 
 	std::list<std::unique_ptr<Enemy>> enemyList_;

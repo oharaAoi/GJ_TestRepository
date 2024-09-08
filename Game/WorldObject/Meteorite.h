@@ -1,6 +1,8 @@
 #pragma once
 #include "Engine/Game/GameObject/GameObject.h"
+#include "Engine/Game/Collision/Collider/SphereCollider.h"
 #include "Engine/Math/Vector3.h"
+class Color;
 
 class Meteorite
 	: public GameObject {
@@ -34,11 +36,19 @@ public:	// メンバ関数
 
 	void OnCollision(const Vector3& other = Vector3{0,0,0});
 
+	void On_Collision(const BaseCollider* const other, Color* object);
+	void On_Collision_Enter(const BaseCollider* const);
+	void On_Collision_Exit(const BaseCollider* const);
+
 #ifdef _DEBUG
 	void EditImGui();
 #endif
 
 public:	// accessor
+
+	std::weak_ptr<BaseCollider> GetCollider() { return sphereCollider_; }
+
+	const std::string GetMeteoId() const { return "Meteo" + std::to_string(serialNumber_); }
 
 	// ----------- 引き寄せられているか ----------- //
 	void SetIsAttraction(const bool& isAttraction) { isAttraction_ = isAttraction; }
@@ -66,7 +76,14 @@ public:	// accessor
 
 	const float GetAttractRange() const { return attractionRange_; }
 
+	void SetNextCollision(const uint32_t& num) { nextCollisionType_ = num; }
+
 private:
+
+	uint32_t serialNumber_ = 0;
+	static uint32_t nextSerialNumber;
+
+	std::shared_ptr<SphereCollider> sphereCollider_ = nullptr;
 
 	Vector3 targetPosition_;
 
@@ -82,5 +99,7 @@ private:
 	bool isDead_;
 
 	bool isEnemyHit_;
+
+	uint32_t nextCollisionType_;
 };
 

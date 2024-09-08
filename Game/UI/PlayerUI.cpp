@@ -12,9 +12,9 @@ void PlayerUI::Init() {
 }
 
 void PlayerUI::Update() {
-	ImGui::Begin("PlayerUI", nullptr);
+	/*ImGui::Begin("PlayerUI", nullptr);
 	playerUI.debug_gui();
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void PlayerUI::BeginRendering(){
