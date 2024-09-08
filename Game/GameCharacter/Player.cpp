@@ -28,6 +28,9 @@ void Player::Update(const float& fieldRadius) {
 	if (isAttack_) {
 		gravityRod_->Update();
 	}
+
+
+
 #ifdef _DEBUG
 	ImGui::Begin("GravityRod");
 	gravityRod_->EditImGui();

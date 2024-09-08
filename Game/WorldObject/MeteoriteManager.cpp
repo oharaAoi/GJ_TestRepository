@@ -10,7 +10,7 @@ void MeteoriteManager::Init() {
 	SelectionArrange();
 }
 
-void MeteoriteManager::Update() {
+void MeteoriteManager::Update(const Vector3& playerPosition) {
 	// 選出されているファイルの選出不可時間を更新する
 	auto it = groupRefs_.begin();
 	while (it != groupRefs_.end()) {
@@ -23,7 +23,7 @@ void MeteoriteManager::Update() {
 	}
 
 	for (Meteorite& meteo : meteoriteList_) {
-		meteo.Update();
+		meteo.Update(playerPosition);
 	}
 
 	// 死亡フラグのチェックを行う
@@ -66,6 +66,7 @@ void MeteoriteManager::SelectionArrange() {
 	for (uint32_t oi = 0; oi < itemArray.size(); ++oi) {
 		if (itemArray[oi] != "Adjustment") {
 			gameScene_->AddMeteorite(GetValue<Vector3>(randomKey, itemArray[oi]));
+			gameScene_->AddMeteorite(Vector3{RandomFloat(14, 18), 0, RandomFloat(-8, 8) });
 		}
 	}
 

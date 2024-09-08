@@ -7,19 +7,21 @@ class Enemy;
 /// Enemyが追いかけてくる時の処理
 /// </summary>
 class EnemyApproachState :
-    public BaseEnemyState {
+	public BaseEnemyState {
 public:
 
-    EnemyApproachState(Enemy* enemy);
-    ~EnemyApproachState();
+	EnemyApproachState(Enemy* enemy);
+	~EnemyApproachState();
 
-    void Update()override;
+	void Update()override;
 
-    void Draw() override;
+	void Draw() override;
 
 private:
 
-    float kSpeed_ = 0.3f;
+	float kSpeed_ = 0.3f;
+
+	float playerToLenght_ = 0;
 
 };
 

@@ -8,7 +8,7 @@ void EnemyManager::Init(GameScene* gameScene) {
 	gameScene_ = gameScene;
 	LoadFileName();
 
-	AddEnemy(Vector3{ 2.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
+	//AddEnemy(Vector3{ 2.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
 }
 
 void EnemyManager::Update(const Vector3& playerPosition) {
@@ -77,18 +77,15 @@ void EnemyManager::EditConfigGui() {
 				itemArray.push_back(category);
 			}
 
+			// 対応するデータをloadDataから持ってくる
 			SettingData data;
 			for (uint32_t oi = 0; oi < itemArray.size(); ++oi) {
-				if ("position" == itemArray[oi]) {
-					data.position = GetValue<Vector3>(currentFileName_, itemArray[oi]);
-				} else if ("enemyType" == itemArray[oi]) {
-					data.enemyType = static_cast<EnemyType>(GetValue<uint32_t>(currentFileName_, itemArray[oi]));
-				}
+				data.position = loadData_[currentFileName_].items[itemArray[oi]].position;
+				data.enemyType = loadData_[currentFileName_].items[itemArray[oi]].enemyType;
+				AddEnemy(data.position, data.enemyType);
 			}
 
-			enemyList_.clear();
-			//enemyList_.emplace_back(std::make_unique<Enemy>(data.position, data.enemyType));
-			AddEnemy(data.position, data.enemyType);
+			////enemyList_.emplace_back(std::make_unique<Enemy>(data.position, data.enemyType));
 		}
 
 		ImGui::SameLine();
@@ -186,17 +183,29 @@ void EnemyManager::LoadFile(const std::string& fileName) {
 	json::iterator itGroup = root.find(fileName);
 	assert(itGroup != root.end());
 	for (json::iterator itItem = itGroup->begin(); itItem != itGroup->end(); ++itItem) {
-		for (json::iterator it = itItem->begin(); it != itItem->end(); ++it) {
-			const std::string& itemName = it.key();
-			if (it->is_number_integer()) {
-				// int型の値を取得
-				uint32_t value = it->get<uint32_t>();
-				SetValue(fileName, itemName, value);
-			} else if (it->is_array() && it->size() == 3) {
-				// float型のjson配列登録
-				Vector3 value = { it->at(0), it->at(1), it->at(2) };
-				SetValue(fileName, itemName, value);
-			}
+		const std::string& Name = itItem.key();
+		// それぞれのアイテムのデータを取得
+		json itemData = itItem.value();
+
+		// SettingData の読み込み
+		Vector3 position;
+		EnemyType enemyType;
+
+		// position の読み込み (例として "position" キーがある場合)
+		if (itemData.contains("position")) {
+			json posData = itemData["position"];
+			position.x = posData[0].get<float>();  // x 座標
+			position.y = posData[1].get<float>();  // y 座標
+			position.z = posData[2].get<float>();  // z 座標
 		}
+
+		// enemyType の読み込み (例として "enemyType" キーがある場合)
+		if (itemData.contains("enemyType")) {
+			enemyType = static_cast<EnemyType>(itemData["enemyType"].get<int>());  // int から enum への変換
+		}
+
+		// SettingData オブジェクトを生成して items に追加
+		Group group;
+		loadData_[fileName].items[Name] = SettingData(position, enemyType);
 	}
 }

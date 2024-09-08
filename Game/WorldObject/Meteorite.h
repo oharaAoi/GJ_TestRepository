@@ -7,7 +7,7 @@ class Meteorite
 
 public:
 
-	static float attractionedStrength_;
+	static float kAttractionedStrength_;
 	static float kSpeed_;
 	static float radius_;
 
@@ -24,11 +24,11 @@ public:
 	/// <summary>
 	/// 更新関数
 	/// </summary>
-	void Update();
+	void Update(const Vector3& playerPosition);
 
 public:	// メンバ関数
 
-	void Move();
+	void Move(const Vector3& playerPosition);
 
 	void Falling();
 
@@ -59,15 +59,25 @@ public:	// accessor
 	// ----------- 落下フラグ ----------- //
 	const bool GetIsFalling() const { return isFalling_; }
 
+	// -----------  ----------- //
+	void SetIsEnemyHit(const bool& ishit) { isEnemyHit_ = ishit; }
+
+	void SetTargetPosition(const Vector3& targetPosition) { targetPosition_ = targetPosition; }
+
 private:
+
+	Vector3 targetPosition_;
 
 	Vector3 velocity_;
 	Vector3 acceleration_;
+
+	float speed_;
+	float attractionedStrength_;
 
 	bool isFalling_;
 	bool isAttraction_;	// 引き寄せられているか
 	bool isDead_;
 
-
+	bool isEnemyHit_;
 };
 

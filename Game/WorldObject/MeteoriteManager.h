@@ -54,7 +54,7 @@ public:
 	/// <summary>
 	/// 更新関数
 	/// </summary>
-	void Update();
+	void Update(const Vector3& playerPosition);
 
 #ifdef _DEBUG
 	/// <summary>

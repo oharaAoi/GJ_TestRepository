@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Math/Vector3.h"
 #include "Game/GameCharacter/State/BaseEnemyState.h"
@@ -14,7 +15,7 @@ enum class EnemyType {
 enum class EnemyState {
 	Root_State,
 	Approach_State,
-	Blown_State
+	Blown_State,
 };
 
 class Enemy
@@ -33,6 +34,12 @@ public:	// メンバ関数
 	void OnCollision(const Vector3& other, const uint32_t& typeId);
 
 	void ChangeState(std::unique_ptr<BaseEnemyState> state);
+
+	void CheckBehaviorRequest();
+
+	void SetBehaviorRequest(const EnemyState& request) {
+		behaviorRequest_ = request;
+	}
 
 public:
 
@@ -53,9 +60,20 @@ public:
 	// ----------- 落下しているか ----------- //
 	const bool GetIsFalling() const { return isFalling_; }
 
+	// ----------- 攻撃を溜めているか ----------- //
+	const bool GetIsCharge() const { return isCharge_; }
+	void SetIsCharge(const bool& isChaege) { isCharge_ = isChaege; }
+
+	// ----------- 攻撃中か ----------- //
+	const bool GetIsAttack() const { return isAttack_; }
+	void SetIsAttack(const bool& isAttack) { isAttack_ = isAttack; }
+
 private:
 
 	std::unique_ptr<BaseEnemyState> state_ = nullptr;
+
+	EnemyState behavior_ = EnemyState::Root_State;
+	std::optional<EnemyState> behaviorRequest_ = std::nullopt;
 
 	EnemyType enemyType_;
 	float radius_ = 1.0f;
@@ -66,6 +84,8 @@ private:
 	Vector3 playerPosition_;
 
 	bool isFalling_ = false;
+	bool isCharge_ = false;
+	bool isAttack_ = false;
 
 };
 

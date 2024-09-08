@@ -1,8 +1,8 @@
 #include "Meteorite.h"
 #include "Game/Enviroment.h"
 
-float Meteorite::attractionedStrength_ = 3;
-float Meteorite::kSpeed_ = 2.0f;
+float Meteorite::kAttractionedStrength_ = 3;
+float Meteorite::kSpeed_ = 1.0f;
 float Meteorite::radius_ = 1.0f;
 
 Meteorite::Meteorite(const Vector3& pos) {
@@ -20,32 +20,39 @@ void Meteorite::Init(const Vector3& pos) {
 	transform->set_scale({ radius_, radius_, radius_ });
 
 	velocity_ = { -2, 0, 0 };
-	//transform->set_translate_y(5.0f);
-	//transform->set_translate_x(10.0f);
-	//transform->set_translate_z(RandomFloat(-4.0f, 4.0f));
+	
+	attractionedStrength_ = kAttractionedStrength_;
+	speed_ = kSpeed_;
 
 	isDead_ = false;
 	isAttraction_ = false;
 	isFalling_ = false;
 }
 
-void Meteorite::Update() {
+void Meteorite::Update(const Vector3& playerPosition) {
+	if (isEnemyHit_) {
+		attractionedStrength_ = 6.0f;
+		speed_ = 0.5f;
+	}
+
 	if (!isFalling_) {
-		Move();
+		Move(playerPosition);
 		isAttraction_ = false;
 	} else {
 		Falling();
 	}
 }
 
-void Meteorite::Move() {
+void Meteorite::Move(const Vector3& playerPosition) {
 	velocity_.y = 0;
 	acceleration_.y = 0;
 	Vector3 translate = transform->get_translate();
-	translate += velocity_ * kDeltaTime * kSpeed_;
+	translate += (velocity_ * kSpeed_) * kDeltaTime;
 	// 引き寄せられている間の処理
 	if (isAttraction_) {
-		velocity_ += acceleration_ * kDeltaTime * attractionedStrength_;
+
+		acceleration_ += Vector3::Normalize(targetPosition_ - world_position()) * kDeltaTime;
+		velocity_ = (acceleration_ * attractionedStrength_);
 	}
 
 	// 範囲外に出たら削除する処理
