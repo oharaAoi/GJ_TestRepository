@@ -277,6 +277,12 @@
     <Filter Include="MainGame\GameCharacter\State">
       <UniqueIdentifier>{1fd89ad6-ae02-4534-ab1e-9199fac06e88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Utility\TimedCall">
+      <UniqueIdentifier>{acddb53d-a76f-40e3-845e-7717d3817d01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Game\GameTimer">
+      <UniqueIdentifier>{aa787078-d9a9-4d2f-974b-8632c343151e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -572,6 +578,9 @@
     </ClCompile>
     <ClCompile Include="Game\GameCharacter\State\EnemyBlownState.cpp">
       <Filter>MainGame\GameCharacter\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Game\GameTimer\GameTimer.cpp">
+      <Filter>Engine\Core\Game\GameTimer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -886,6 +895,12 @@
     </ClInclude>
     <ClInclude Include="Game\GameCharacter\State\EnemyBlownState.h">
       <Filter>MainGame\GameCharacter\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\TimedCall\TimedCall.h">
+      <Filter>Engine\Utility\TimedCall</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Game\GameTimer\GameTimer.h">
+      <Filter>Engine\Core\Game\GameTimer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
