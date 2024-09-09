@@ -1,18 +1,18 @@
 #include "TimedCall.h"
 #include <externals/imgui/imgui.h>
 
-TimedCall::TimedCall(std::function<void(void)> callback, const uint32_t& time) :
+Test::TimedCall::TimedCall(std::function<void(void)> callback, const uint32_t& time) :
 callback_(callback),
 time_(time)
 {}
 
-TimedCall::~TimedCall() {
+Test::TimedCall::~TimedCall() {
 }
 
-void TimedCall::Init() {
+void Test::TimedCall::Init() {
 }
 
-void TimedCall::Update() {
+void Test::TimedCall::Update() {
 	// 完了なら
 	if (isFinish_) {
 		return;

@@ -79,7 +79,7 @@ private:
 
 	std::vector<std::string> fileNameArray_;
 
-	std::list<TimedCall> timedCalls_;
+	std::list<Test::TimedCall> timedCalls_;
 
 	uint32_t popTime_ = 500;
 	uint32_t firstPopCount_ = 0;

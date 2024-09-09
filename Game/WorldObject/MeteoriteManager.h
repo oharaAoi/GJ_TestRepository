@@ -139,7 +139,7 @@ private:
 	std::map<std::string, Group> groupMap_;
 	std::vector<Group*> groupRefs_;
 	
-	std::list<TimedCall> timedCalls_;
+	std::list<Test::TimedCall> timedCalls_;
 
 	std::list<Meteorite> meteoriteList_;
 

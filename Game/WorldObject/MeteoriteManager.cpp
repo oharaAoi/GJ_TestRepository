@@ -39,7 +39,7 @@ void MeteoriteManager::Update(const Vector3& playerPosition) {
 		times.Update();
 	}
 
-	timedCalls_.remove_if([](const TimedCall& timeCalls) {
+	timedCalls_.remove_if([](const Test::TimedCall& timeCalls) {
 		if (timeCalls.IsFinished()) {
 			return true;
 		}
@@ -77,7 +77,7 @@ void MeteoriteManager::SelectionArrange() {
 	groupRefs_.push_back(&groupMap_[randomKey]);
 
 	// timedCallをリセットする
-	timedCalls_.push_back(TimedCall(std::bind(&MeteoriteManager::SelectionArrange, this), kAppearanceTime_));
+	timedCalls_.push_back(Test::TimedCall(std::bind(&MeteoriteManager::SelectionArrange, this), kAppearanceTime_));
 }
 
 // ------------------- ランダムなファイルを選出する ------------------- //

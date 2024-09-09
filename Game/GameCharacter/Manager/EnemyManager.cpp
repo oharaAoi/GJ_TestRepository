@@ -30,7 +30,7 @@ void EnemyManager::Update(const Vector3& playerPosition) {
 		times.Update();
 	}
 
-	timedCalls_.remove_if([](const TimedCall& timeCalls) {
+	timedCalls_.remove_if([](const Test::TimedCall& timeCalls) {
 		if (timeCalls.IsFinished()) {
 			return true;
 		}
@@ -74,7 +74,7 @@ void EnemyManager::SelectArrange() {
 	}
 
 	// timedCallをリセットする
-	timedCalls_.push_back(TimedCall(std::bind(&EnemyManager::SelectArrange, this), popTime_));
+	timedCalls_.push_back(Test::TimedCall(std::bind(&EnemyManager::SelectArrange, this), popTime_));
 }
 
 
