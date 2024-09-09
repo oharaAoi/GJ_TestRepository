@@ -18,7 +18,7 @@ void Boss::Init() {
 	velocity_ = { 0,0.2f,0 };
 
 	pushBackValue_ = 0.0f;
-	pushBackStrength_ = 0.3f;
+	pushBackStrength_ = 0.2f;
 
 	debugObject_ = std::make_unique<GameObject>();
 	debugObject_->reset_object("GravityRod.obj");
@@ -51,6 +51,7 @@ void Boss::Move() {
 }
 
 void Boss::OnCollision() {
+	satietyLevel_++;
 	pushBackValue_ += pushBackStrength_;
 }
 
@@ -59,6 +60,8 @@ void Boss::OnCollision() {
 #include "externals/imgui/imgui.h"
 void Boss::EditImGui() {
 	ImGui::Begin("Boss");
+	ImGui::SliderInt("satietyLevel", &satietyLevel_, 0, satietyLevelLimit_);
+	ImGui::DragInt("satietyLevelLimit", &satietyLevelLimit_);
 	ImGui::DragFloat("pushBackStrength", &pushBackStrength_, 0.1f, 0.0f, 1.0f);
 	ImGui::Separator();
 	debug_gui();
