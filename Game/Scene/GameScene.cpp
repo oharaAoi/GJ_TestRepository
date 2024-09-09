@@ -42,7 +42,7 @@ void GameScene::initialize() {
 
 #ifdef _DEBUG
 	editor = CreateUnique<EditorController>();
-	editor->initialize(camera3D_.get(), meteoriteManager_.get());
+	editor->initialize(camera3D_.get(), meteoriteManager_.get(), enemyManager_.get());
 	meteoriteManager_->SetEditor(editor.get());
 #endif // _DEBUG
 
@@ -94,7 +94,13 @@ void GameScene::update() {
 	
 	player_->Update(field_->GetRadius());
 
+#ifdef _DEBUG
+	if (!editor->is_edit()) {
+		boss_->Update();
+	}
+#else
 	boss_->Update();
+#endif // _DEBUG
 
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		meteo->Update(player_->get_transform().get_translate());

@@ -3,10 +3,11 @@
 
 #include <externals/imgui/imgui.h>
 
-void EditorController::initialize(const Camera3D* camera_, MeteoriteManager* meteoManager) {
+void EditorController::initialize(const Camera3D* camera_, MeteoriteManager* meteoManager, EnemyManager* enemyManager) {
 	isEdit = false;
 	editState = EditState::None;
 	enemyEditor = std::make_unique<EnemyPopEditor>();
+	enemyEditor->initialize(enemyManager);
 	meteoriteEditor = std::make_unique<MeteoritePopEditor>();
 	meteoriteEditor->initialize(meteoManager);
 
@@ -42,7 +43,7 @@ void EditorController::draw_debug3d() {
 		return;
 	}
 	if (editState == EditState::Enemy) {
-		enemyEditor->draw_editor();
+		enemyEditor->debug_draw3d(camera);
 	}
 	if (editState == EditState::Meteorite) {
 		meteoriteEditor->debug_draw3d(camera);

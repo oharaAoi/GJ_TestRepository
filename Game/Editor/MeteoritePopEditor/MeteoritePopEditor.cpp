@@ -23,8 +23,9 @@ void MeteoritePopEditor::edit_window() {
 	ImGui::Begin("MeteoriteEditorMain");
 	// エクスポート処理
 	if (ImGui::Button("Export")) {
-		compress();
 		resultString = save(exportFileName);
+		manager->LoadAllFile();
+		get_group_map_keys();
 	}
 	ImGui::SameLine();
 	ImGui::PushItemWidth(150);
@@ -65,7 +66,7 @@ void MeteoritePopEditor::edit_window() {
 }
 
 void MeteoritePopEditor::group_config() {
-	ImGui::Begin("GroupConfig");
+	ImGui::Begin("GroupConfig##Meteorite");
 	ImGui::DragScalar("RepopTime", ImGuiDataType_U32, &repopTime);
 	ImGui::DragFloat("PopWidth", &popWidth);
 
@@ -113,6 +114,7 @@ void MeteoritePopEditor::stop_demo_play() {
 }
 
 std::string MeteoritePopEditor::save(const std::string& fileName) {
+	compress();
 	if (fileName.empty()) {
 		return "FileName is void.";
 	}

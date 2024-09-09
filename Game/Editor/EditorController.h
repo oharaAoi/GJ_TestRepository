@@ -18,7 +18,8 @@ public:
 public:
 	void initialize(
 		const Camera3D* camera,
-		MeteoriteManager* meteoManager
+		MeteoriteManager* meteoManager,
+		EnemyManager* enemyManager
 	);
 	void draw_gui();
 	void draw_debug3d();

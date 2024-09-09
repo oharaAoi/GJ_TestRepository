@@ -33,9 +33,7 @@ private:
 	void get_group_map_keys();
 
 private:
-	bool isEdit;
 	MeteoriteManager* manager;
-	int specificsIndex;
 
 	std::vector<std::string> fileList;
 	char exportFileName[64];
