@@ -27,6 +27,10 @@ public:	// メンバ変数
 
 	void OnCollision();
 
+	bool GetIsClear();
+
+	bool GetIsGameOver(const float& cylinderHight);
+
 #ifdef _DEBUG
 	void EditImGui();
 #endif

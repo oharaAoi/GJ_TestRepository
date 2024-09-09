@@ -62,6 +62,17 @@ void GameScene::update() {
 	camera3D_->update_matrix();
 
 	// -------------------------------------------------
+	// ↓ ゲームクリア/オーバー確認
+	// -------------------------------------------------
+	if (boss_->GetIsClear()) {
+		SceneManager::SetSceneChange(CreateUnique<ClearScene>(), false);
+	}
+
+	if (boss_->GetIsGameOver(field_->GetCylinderHight())) {
+		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(), false);
+	}
+
+	// -------------------------------------------------
 	// ↓ GameObjectの更新
 	// -------------------------------------------------
 	field_->Update();

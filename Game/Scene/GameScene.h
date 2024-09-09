@@ -10,6 +10,9 @@
 #include "Game/GameCharacter/Enemy.h"
 // Input
 #include "Game/Input/Input.h"
+// Scene
+#include "Game/Scene/ClearScene.h"
+#include "Game/Scene/GameOverScene.h"
 
 // Manager
 #include "Game/Effect/EffectManager.h"

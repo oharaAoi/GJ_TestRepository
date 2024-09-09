@@ -192,6 +192,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\Scene\TutorialScene.cpp" />
+    <ClCompile Include="Game\UI\GameOverUI.cpp" />
     <ClCompile Include="Game\UI\PlayerUI.cpp" />
     <ClCompile Include="Game\WorldObject\Field.cpp" />
     <ClCompile Include="Game\WorldObject\Meteorite.cpp" />
@@ -305,6 +306,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Scene\TutorialScene.h" />
+    <ClInclude Include="Game\UI\GameOverUI.h" />
     <ClInclude Include="Game\UI\PlayerUI.h" />
     <ClInclude Include="Game\WorldObject\Field.h" />
     <ClInclude Include="Game\WorldObject\Meteorite.h" />

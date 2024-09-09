@@ -5,6 +5,8 @@
 #include "Game/Input/Input.h"
 #include "Game/Scene/TitleScene.h"
 #include "Game/Scene/GameScene.h"
+#include "Game/UI/GameOverUI.h"
+#include "Engine/Game/Camera/Camera2D.h"
 
 class GameOverScene :
     public BaseScene {
@@ -33,6 +35,9 @@ private:
 	Input* input_ = nullptr;
 
 	std::unique_ptr<Camera3D> camera3D_ = nullptr;
+
+	// ------------------- UI ------------------- //
+	std::unique_ptr<GameOverUI> gameOverUI_ = nullptr;
 
 };
 

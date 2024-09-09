@@ -55,6 +55,21 @@ void Boss::OnCollision() {
 	pushBackValue_ += pushBackStrength_;
 }
 
+bool Boss::GetIsClear() {
+	if (satietyLevel_ >= satietyLevelLimit_) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Boss::GetIsGameOver(const float& cylinderHight) {
+	if (cylinderHight < world_position().y) {
+		return true;
+	}
+	return false;
+}
+
 
 #ifdef _DEBUG
 #include "externals/imgui/imgui.h"
