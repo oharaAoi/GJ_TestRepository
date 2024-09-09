@@ -105,12 +105,7 @@ void GameScene::update() {
 	if (player_->GetIsAttack()) {
 		CheckMeteoAttraction();
 	}
-
-	//CheckMeteoCollision();
-
 	CheckBossCollision();
-
-	//CheckEnemyCollison();
 }
 
 void GameScene::begin_rendering() {
@@ -140,9 +135,15 @@ void GameScene::late_update() {
 	
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->SetNextCollision(0);
+		if (enemy->GetIsAttack()) {
+			player_->SetIsAttackofEnmey(true);
+		} else {
+			player_->SetIsAttackofEnmey(false);
+		}
 		collisionManager_->collision("Player", enemy->GetMeteoId());
 	}
 
+	// メテオ同士
 	std::list<std::unique_ptr<Meteorite>>::iterator iterA = meteoriteList_.begin();
 	for (; iterA != meteoriteList_.end(); ++iterA) {
 		Meteorite* meteoA = iterA->get();

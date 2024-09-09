@@ -25,7 +25,7 @@ public:	// データ構造体
 		Vector3 position;
 		EnemyType enemyType;
 
-		SettingData(const Vector3& pos = Vector3{0,0,0}, const EnemyType& type = EnemyType::Normal_Type) {
+		SettingData(const Vector3& pos = Vector3{ 0,0,0 }, const EnemyType& type = EnemyType::Normal_Type) {
 			position = pos;
 			enemyType = type;
 		}
@@ -81,7 +81,9 @@ private:
 
 	std::list<TimedCall> timedCalls_;
 
-	uint32_t popTime_ = 400;
+	uint32_t popTime_ = 500;
+	uint32_t firstPopCount_ = 0;
+	bool isPop_ = false;
 
 #ifdef _DEBUG
 

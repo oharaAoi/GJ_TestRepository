@@ -18,7 +18,7 @@ void Boss::Init() {
 	velocity_ = { 0,0.2f,0 };
 
 	pushBackValue_ = 0.0f;
-	pushBackStrength_ = 0.3f;
+	pushBackStrength_ = 0.2f;
 
 	debugObject_ = std::make_unique<GameObject>();
 	debugObject_->reset_object("GravityRod.obj");

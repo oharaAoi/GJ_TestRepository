@@ -11,6 +11,7 @@
 #include "Engine/Game/Collision/Collider/SphereCollider.h"
 
 class Transform3D;
+class Color;
 
 class Player :
 	public GameObject {
@@ -60,6 +61,8 @@ public:
 
 	const float GetRadius() const { return radius_; }
 
+	void SetIsAttackofEnmey(const bool& isAttack) { isAttackofEnmey_ = isAttack; }
+
 private:
 
 	const float speed = 2.0f;
@@ -72,6 +75,12 @@ private:
 
 	std::unique_ptr<GravityRod> gravityRod_ = nullptr;
 	bool isAttack_ = false;
+
+	bool isAttackofEnmey_;
+
+	bool isStan_ = false;
+	uint32_t stanFrame_ = 0;
+	uint32_t stanTime_ = 360;
 
 	float radius_ = 1.0f;
 };

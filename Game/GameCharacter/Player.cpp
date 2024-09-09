@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Engine/Game/Transform3D/Transform3D.h"
+#include "Engine/Game/Color/Color.h"
 #include <externals/imgui/imgui.h>
 
 Player::Player() {
@@ -26,6 +27,16 @@ void Player::Init() {
 }
 
 void Player::Update(const float& fieldRadius) {
+	if (isStan_) {
+		if (++stanFrame_ < stanTime_) {
+			return;
+		} else {
+			isStan_ = false;
+			stanFrame_ = 0;
+			this->get_materials()[0].color = { 1,1.0f,1.0f,1 };
+		}
+	}
+	
 	moveRotation = CQuaternion::IDENTITY;
 	Move(fieldRadius);
 	Attack();
@@ -58,7 +69,11 @@ void Player::Draw() const {
 }
 
 void Player::On_Collision(const BaseCollider* const other) {
-	other->world_position();
+	if (isAttackofEnmey_) {
+		isAttack_ = false;
+		isStan_ = true;
+		this->get_materials()[0].color = { 1,0.0f,0.0f,1 };
+	}
 }
 
 void Player::On_Collision_Enter(const BaseCollider* const) {

@@ -125,6 +125,11 @@ void Enemy::CheckBehaviorRequest() {
 
 void Enemy::On_Collision(const BaseCollider* const other) {
 	if (nextCollisionType_ == 0) { // player
+		if (isAttack_) {
+			velocity_ *= -1.0f;
+			return;
+		}
+		
 		if (!isFalling_) {
 			velocity_ = { 0,0,0 };
 			velocity_ = Vector3::Normalize(other->world_position() - world_position()) * -7.0f;

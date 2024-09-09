@@ -17,6 +17,15 @@ void EnemyManager::Update(const Vector3& playerPosition) {
 		enemy->Update(playerPosition);
 	}*/
 
+	if (!isPop_) {
+		firstPopCount_++;
+
+		if (firstPopCount_ > popTime_) {
+			SelectArrange();
+			isPop_ = true;
+		}
+	}
+
 	for (auto& times : timedCalls_) {
 		times.Update();
 	}
