@@ -5,6 +5,14 @@
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 #include "Engine/DirectX/DirectXCore.h"
 
+#ifdef _DEBUG
+#include "Game/Editor/EditorController.h"
+#endif // _DEBUG
+
+GameScene::GameScene() = default;
+
+GameScene::~GameScene() = default;
+
 void GameScene::initialize() {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 	EffectManager::GetInstance()->Init();
@@ -30,6 +38,13 @@ void GameScene::initialize() {
 	enemyManager_ = std::make_unique<EnemyManager>(this);
 
 	collisionManager_->register_collider("Player", player_->GetCollider());
+
+#ifdef _DEBUG
+	editor = CreateUnique<EditorController>();
+	editor->initialize(camera3D_.get(), meteoriteManager_.get());
+	meteoriteManager_->SetEditor(editor.get());
+#endif // _DEBUG
+
 }
 
 void GameScene::load() {
@@ -201,6 +216,7 @@ void GameScene::draw() const {
 #ifdef _DEBUG
 	enemyManager_->Draw();
 	collisionManager_->debug_draw3d(*camera3D_);
+	editor->draw_debug3d();
 #endif
 	RenderPathManager::Next();
 }
@@ -297,7 +313,8 @@ void GameScene::debug_update() {
 	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f, 0.0f, 5.0f);
 	ImGui::End();
 
-	meteoriteManager_->EditImGui();
 	enemyManager_->EditImGui();
+
+	editor->draw_gui();
 }
 #endif // _DEBUG

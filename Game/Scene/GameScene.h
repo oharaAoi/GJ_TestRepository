@@ -19,12 +19,13 @@
 #include "Game/FollowCamera.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 
+class EditorController;
+
 class GameScene :
 	public BaseScene {
 public:
-
-	GameScene() = default;
-	~GameScene() = default;
+	GameScene();
+	~GameScene();
 
 	void initialize() override;
 
@@ -92,5 +93,8 @@ private:
 
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
+#ifdef _DEBUG
+	std::unique_ptr<EditorController> editor;
+#endif // _DEBUG
 };
 

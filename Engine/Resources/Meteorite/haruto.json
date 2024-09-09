@@ -1,16 +1,16 @@
 {
     "haruto": {
         "Adjustment": {
-            "popNum": 3,
-            "rePopTime": 200,
-            "rePopWidth": 5.0
+            "RepopTime": 200,
+            "PopWidth": 5.0,
+            "NumMeteorites": 2
         },
-        "popPos0": [
+        "Position0": [
             18.0,
             6.0,
             7.0
         ],
-        "popPos1": [
+        "Position1": [
             18.0,
             6.0,
             4.0

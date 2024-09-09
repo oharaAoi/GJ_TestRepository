@@ -1,16 +1,16 @@
 {
     "otu": {
         "Adjustment": {
-            "popNum": 2,
-            "rePopTime": 150,
-            "rePopWidth": 5.0
+            "NumMeteorites": 2,
+            "RepopTime": 150,
+            "PopWidth": 5.0
         },
-        "popPos0": [
+        "Position0": [
             20.0,
             0.0,
             5.0
         ],
-        "popPos1": [
+        "Position1": [
             18.0,
             0.0,
             -5.0
