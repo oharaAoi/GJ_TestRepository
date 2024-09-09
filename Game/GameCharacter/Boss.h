@@ -6,8 +6,8 @@
 #include "Engine/Math/Vector3.h"
 #include "Engine/Math/Quaternion.h"
 
-class Boss 
-: public GameObject {
+class Boss
+	: public GameObject {
 public:
 
 	Boss();
@@ -27,17 +27,29 @@ public:	// メンバ変数
 
 	void OnCollision();
 
+	bool GetIsClear();
+
+	bool GetIsGameOver(const float& cylinderHight);
+
 #ifdef _DEBUG
 	void EditImGui();
 #endif
 
+public:	// accesser
+
+	// ------------------- 満腹度 ------------------- //
+	const int GetSatietyLevel() const { return satietyLevel_; }
+
 private:
+
+	std::unique_ptr<GameObject> debugObject_;
 
 	Vector3 velocity_;
 	float pushBackValue_;
-	float pushBackStrength_ = 0.3f;
+	float pushBackStrength_ = 0.2f;
 
-	std::unique_ptr<GameObject> debugObject_;
+	int satietyLevel_ = 0;
+	int satietyLevelLimit_ = 200;
 
 };
 

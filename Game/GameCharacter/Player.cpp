@@ -19,7 +19,7 @@ void Player::Init() {
 	sphereCollider_->initialize();
 	sphereCollider_->get_hierarchy().set_parent(this->get_hierarchy());
 	sphereCollider_->set_on_collision(std::bind(&Player::On_Collision, this, std::placeholders::_1));
-	sphereCollider_->set_on_collision_enter(std::bind(&Player::On_Collision_Enter, this, std::placeholders::_1));
+	sphereCollider_->set_on_collision_enter(std::bind(&Player::On_Collision_Enter, this, std::placeholders::_1, (&isAttackofEnmey_)));
 
 	gravityRod_ = std::make_unique<GravityRod>(this);
 	isAttack_ = false;
@@ -55,8 +55,6 @@ void Player::Update(const float& fieldRadius) {
 		gravityRod_->Update();
 	}
 
-
-
 #ifdef _DEBUG
 	ImGui::Begin("GravityRod");
 	gravityRod_->EditImGui();
@@ -86,7 +84,7 @@ void Player::On_Collision(const BaseCollider* const other) {
 	}
 }
 
-void Player::On_Collision_Enter(const BaseCollider* const other) {
+void Player::On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAttack) {
 	if (isAttackofEnmey_) {
 		isAttack_ = false;
 		isStan_ = true;
@@ -95,7 +93,6 @@ void Player::On_Collision_Enter(const BaseCollider* const other) {
 		Vector3 direction = (other->world_position() - world_position()).normalize_safe();
 		KnockBack(direction);
 	}
-
 }
 
 void Player::On_Collision_Exit(const BaseCollider* const) {

@@ -32,7 +32,7 @@ void Meteorite::Init(const Vector3& pos) {
 	sphereCollider_->set_radius(1.0f);
 
 	velocity_ = { -2, 0, 0 };
-	
+
 	attractionedStrength_ = kAttractionedStrength_;
 	speed_ = kSpeed_;
 	attractionRange_ = 3.0f;
@@ -59,7 +59,8 @@ void Meteorite::Update(const Vector3& playerPosition) {
 	}
 }
 
-void Meteorite::Move(const Vector3& playerPosition) {;
+void Meteorite::Move(const Vector3& playerPosition) {
+	;
 	velocity_.y = 0;
 	acceleration_.y = 0;
 	Vector3 translate = transform->get_translate();
@@ -86,20 +87,14 @@ void Meteorite::Falling() {
 	transform->set_translate(translate);
 }
 
-void Meteorite::OnCollision(const Vector3& other) {
-	if (!isFalling_) {
-		velocity_ += (other - transform->get_translate()).normalize_safe() * -2.0f;
-	}
-	isFalling_ = true;
-}
-
 void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
-	if (nextCollisionType_ == ObjectType::Meteorite_Type) {	// 隕石
+	if (other->group() == "Meteo") {
 		if (!isFalling_) {
-			velocity_ += (other->get_transform().get_translate() - transform->get_translate()).normalize_safe() * -2.0f;
+			velocity_ += (other->world_position() - world_position()).normalize_safe() * -2.0f;
 		}
 		isFalling_ = true;
-	} else if (nextCollisionType_ == ObjectType::Enemy_Type) { // Enemy
+
+	} else if (other->group() == "Enemy") { // Enemy
 		isEnemyHit_ = true;
 		*object = { 1.0f,0,0,1.0f };
 	}
@@ -114,5 +109,8 @@ void Meteorite::On_Collision_Exit(const BaseCollider* const) {
 #ifdef _DEBUG
 #include <externals/imgui/imgui.h>
 void Meteorite::EditImGui() {
+	ImGui::Begin("Field");
+	debug_gui();
+	ImGui::End();
 }
 #endif // _DEBUG

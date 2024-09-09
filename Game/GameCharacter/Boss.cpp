@@ -51,7 +51,23 @@ void Boss::Move() {
 }
 
 void Boss::OnCollision() {
+	satietyLevel_++;
 	pushBackValue_ += pushBackStrength_;
+}
+
+bool Boss::GetIsClear() {
+	if (satietyLevel_ >= satietyLevelLimit_) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Boss::GetIsGameOver(const float& cylinderHight) {
+	if (cylinderHight < world_position().y) {
+		return true;
+	}
+	return false;
 }
 
 
@@ -59,6 +75,8 @@ void Boss::OnCollision() {
 #include "externals/imgui/imgui.h"
 void Boss::EditImGui() {
 	ImGui::Begin("Boss");
+	ImGui::SliderInt("satietyLevel", &satietyLevel_, 0, satietyLevelLimit_);
+	ImGui::DragInt("satietyLevelLimit", &satietyLevelLimit_);
 	ImGui::DragFloat("pushBackStrength", &pushBackStrength_, 0.1f, 0.0f, 1.0f);
 	ImGui::Separator();
 	debug_gui();

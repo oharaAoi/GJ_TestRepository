@@ -21,6 +21,7 @@ void GameScene::initialize() {
 
 	field_ = std::make_unique<Field>();
 	player_ = std::make_unique<Player>();
+	player_->set_parent(field_->get_hierarchy());
 	boss_ = std::make_unique<Boss>();
 
 	camera3D_ = std::make_unique<FollowCamera>();
@@ -76,8 +77,21 @@ void GameScene::update() {
 	camera3D_->update_matrix();
 
 	// -------------------------------------------------
+	// ↓ ゲームクリア/オーバー確認
+	// -------------------------------------------------
+	if (boss_->GetIsClear()) {
+		SceneManager::SetSceneChange(CreateUnique<ClearScene>(), false);
+	}
+
+	if (boss_->GetIsGameOver(field_->GetCylinderHight())) {
+		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(), false);
+	}
+
+	// -------------------------------------------------
 	// ↓ GameObjectの更新
 	// -------------------------------------------------
+	field_->Update();
+	
 	player_->Update(field_->GetRadius());
 
 	boss_->Update();
@@ -121,6 +135,8 @@ void GameScene::update() {
 		CheckMeteoAttraction();
 	}
 	CheckBossCollision();
+
+	CheckMeteoToField();
 }
 
 void GameScene::begin_rendering() {
@@ -147,53 +163,14 @@ void GameScene::begin_rendering() {
 void GameScene::late_update() {
 	collisionManager_->update();
 
-	// 敵とplayer
-	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		enemy->SetNextCollision(ObjectType::Player_Type);
-		if (enemy->GetIsAttack()) {
-			player_->SetIsAttackofEnmey(true);
-		} else {
-			player_->SetIsAttackofEnmey(false);
-		}
-		collisionManager_->collision("Player", enemy->GetMeteoId());
-	}
-
-	// メテオ同士
-	std::list<std::unique_ptr<Meteorite>>::iterator iterA = meteoriteList_.begin();
-	for (; iterA != meteoriteList_.end(); ++iterA) {
-		Meteorite* meteoA = iterA->get();
-		std::list<std::unique_ptr<Meteorite>>::iterator iterB = iterA;
-		iterB++;
-		for (; iterB != meteoriteList_.end(); ++iterB) {
-			Meteorite* meteoB = iterB->get();
-			meteoA->SetNextCollision(ObjectType::Meteorite_Type);
-			meteoB->SetNextCollision(ObjectType::Meteorite_Type);
-			collisionManager_->collision(meteoA->GetMeteoId(), meteoB->GetMeteoId());
-		}
-	}
-
-	// Enemy同士
-	std::list<std::unique_ptr<Enemy>>::iterator eIterA = enemyList_.begin();
-	for (; eIterA != enemyList_.end(); ++eIterA) {
-		Enemy* enemyA = eIterA->get();
-		std::list<std::unique_ptr<Enemy>>::iterator eIterB = eIterA;
-		eIterB++;
-		for (; eIterB != enemyList_.end(); ++eIterB) {
-			Enemy* enemyB = eIterB->get();
-			enemyA->SetNextCollision(ObjectType::Enemy_Type);
-			enemyB->SetNextCollision(ObjectType::Enemy_Type);
-			collisionManager_->collision(enemyA->GetMeteoId(), enemyB->GetMeteoId());
-		}
-	}
-
-	// Enemyと隕石
-	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
-		for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-			enemy->SetNextCollision(ObjectType::Meteorite_Type);
-			meteo->SetNextCollision(ObjectType::Enemy_Type);
-			collisionManager_->collision(meteo->GetMeteoId(), enemy->GetMeteoId());
-		}
-	}
+	// 敵とPlayer --------------------------------------------------
+	collisionManager_->collision("Enemy", "Player");
+	// メテオ同士 ---------------------------------------------------
+	collisionManager_->collision("Meteo", "Meteo");
+	// Enemy同士 ---------------------------------------------------
+	collisionManager_->collision("Enemy", "Enemy");
+	// Enemyと隕石 -------------------------------------------------
+	collisionManager_->collision("Enemy", "Meteo");
 }
 
 void GameScene::draw() const {
@@ -219,6 +196,29 @@ void GameScene::draw() const {
 	editor->draw_debug3d();
 #endif
 	RenderPathManager::Next();
+}
+
+void GameScene::CheckMeteoToField() {
+	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		if (meteo->GetIsFalling()) {
+			// 円柱に面の上にあるか
+			Vector3 meteoPos = meteo->get_transform().get_translate();
+			meteoPos.y = 0;
+			float length = Vector3::Length(meteoPos - Vector3{0, 0,0});
+
+			// 円の範囲内に隕石がある
+			if (length > field_->GetRadius() + meteo->GetRadius()) {
+				continue;
+			}
+
+			// 隕石が面と同じ高さにある
+			if (meteo->get_transform().get_translate().y < 12.5f) {
+				meteo->SetIsDead(true);
+				field_->SetVelocityY(-3.0f);
+				boss_->OnCollision();
+			}
+		}
+	}
 }
 
 void GameScene::CheckMeteoAttraction() {
@@ -256,12 +256,13 @@ void GameScene::CheckMeteoAttraction() {
 
 void GameScene::AddMeteorite(const Vector3& position) {
 	auto& newMeteo = meteoriteList_.emplace_back(std::make_unique<Meteorite>(position));
-	collisionManager_->register_collider(newMeteo->GetMeteoId(), newMeteo->GetCollider());
+	collisionManager_->register_collider("Meteo", newMeteo->GetCollider());
 }
 
 void GameScene::AddEnemy(const Vector3& position, const EnemyType& enemyType) {
 	auto& newEnemy = enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType));
-	collisionManager_->register_collider(newEnemy->GetMeteoId(), newEnemy->GetCollider());
+	collisionManager_->register_collider("Enemy", newEnemy->GetCollider());
+	newEnemy->SetIsPlayerFlragPtr(player_->GetIsAttackofEnmey());
 }
 
 void GameScene::CheckBossCollision() {
@@ -277,21 +278,6 @@ void GameScene::CheckBossCollision() {
 	}
 }
 
-void GameScene::CheckEnemyCollison() {
-	// -------------------------------------------------
-	// ↓ playerと敵
-	// -------------------------------------------------
-	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		if (!enemy->GetIsAttack()) {
-			float length = Vector3::Length(player_->get_transform().get_translate() - enemy->get_transform().get_translate());
-
-			if (length < player_->GetRadius() + enemy->GetRadius()) {
-				enemy->OnCollision(player_->get_transform().get_translate(), 0);
-			}
-		}
-	}
-}
-
 #ifdef _DEBUG
 
 #include <externals/imgui/imgui.h>
@@ -299,6 +285,13 @@ void GameScene::CheckEnemyCollison() {
 void GameScene::debug_update() {
 	ImGui::Begin("Camera3D");
 	camera3D_->debug_gui();
+	ImGui::End();
+
+	ImGui::Begin("field");
+	if (ImGui::Button("exit")) {
+		field_->SetVelocityY(-3.0f);
+		boss_->OnCollision();
+	}
 	ImGui::End();
 
 	field_->EditImGui();

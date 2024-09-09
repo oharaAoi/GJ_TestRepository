@@ -34,8 +34,6 @@ public:	// メンバ関数
 
 	void Falling();
 
-	void OnCollision(const Vector3& other = Vector3{0,0,0});
-
 	void On_Collision(const BaseCollider* const other, Color* object);
 	void On_Collision_Enter(const BaseCollider* const);
 	void On_Collision_Exit(const BaseCollider* const);

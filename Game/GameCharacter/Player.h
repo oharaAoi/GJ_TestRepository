@@ -30,7 +30,7 @@ public:
 	void Draw() const;
 
 	void On_Collision(const BaseCollider* const other);
-	void On_Collision_Enter(const BaseCollider* const other);
+	void On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAttack);
 	void On_Collision_Exit(const BaseCollider* const);
 
 public:	// メンバ関数
@@ -80,10 +80,11 @@ public:
 
 	// ----------- 敵が攻撃中か ----------- //
 	void SetIsAttackofEnmey(const bool& isAttack) { isAttackofEnmey_ = isAttack; }
+	bool* GetIsAttackofEnmey() { return &isAttackofEnmey_; }
 
 private:
 
-	const float speed = 2.0f;
+	const float speed = 4.0f;
 
 	float fieldRadius_ = 0.0f;
 

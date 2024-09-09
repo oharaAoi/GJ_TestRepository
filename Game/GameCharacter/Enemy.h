@@ -35,8 +35,6 @@ public:	// メンバ関数
 
 	void Attack();
 
-	void OnCollision(const Vector3& other, const uint32_t& typeId);
-
 	void ChangeState(std::unique_ptr<BaseEnemyState> state);
 
 	void CheckBehaviorRequest();
@@ -83,6 +81,8 @@ public:
 	// ----------- 次に当たり判定を取る対象 ----------- //
 	void SetNextCollision(const uint32_t& num) { nextCollisionType_ = num; }
 
+	void SetIsPlayerFlragPtr(bool* isBool) { isPlayerFlragPtr_ = isBool; }
+
 private:
 
 	uint32_t serialNumber_ = 0;
@@ -107,6 +107,8 @@ private:
 	bool isFalling_ = false;
 	bool isAttack_ = false;
 	bool isDead_ = false;
+
+	bool* isPlayerFlragPtr_ = nullptr;
 
 	uint32_t frameCount_;
 	const uint32_t attackTime_ = 50;

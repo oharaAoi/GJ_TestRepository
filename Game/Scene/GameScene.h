@@ -10,6 +10,9 @@
 #include "Game/GameCharacter/Enemy.h"
 // Input
 #include "Game/Input/Input.h"
+// Scene
+#include "Game/Scene/ClearScene.h"
+#include "Game/Scene/GameOverScene.h"
 
 // Manager
 #include "Game/Effect/EffectManager.h"
@@ -45,6 +48,11 @@ public:
 public:
 
 	/// <summary>
+	/// 隕石とフィールドの当たり判定を取る
+	/// </summary>
+	void CheckMeteoToField();
+
+	/// <summary>
 	/// 隕石が吸い寄せられるかを判定する
 	/// </summary>
 	void CheckMeteoAttraction();
@@ -53,8 +61,6 @@ public:
 	/// Bossとの当たり判定を取る
 	/// </summary>
 	void CheckBossCollision();
-
-	void CheckEnemyCollison();
 
 	/// <summary>
 	/// 隕石をリストに追加する
