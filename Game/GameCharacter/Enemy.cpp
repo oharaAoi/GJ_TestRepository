@@ -115,7 +115,7 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 		*isPlayerFlragPtr_ = false;
 	}
 
-	if (nextCollisionType_ == ObjectType::Player_Type) { // player
+	if (other->group() == "Player") { // player
 		if (isAttack_) {
 			velocity_ *= -0.1f;
 			return;
@@ -127,10 +127,10 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -10.0f;
 			behaviorRequest_ = EnemyState::Blown_State;
 		}
-	} else if (nextCollisionType_ == ObjectType::Meteorite_Type) { // 隕石
+	} else if (other->group() == "Meteo") { // 隕石
 		isDead_ = true;
 
-	} else if (nextCollisionType_ == ObjectType::Enemy_Type) {// 敵同士
+	} else if (other->group() == "Enemy") { // 敵同士
 		velocity_ = { 0,0,0 };
 		velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
 		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;

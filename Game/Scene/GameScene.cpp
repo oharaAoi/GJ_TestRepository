@@ -132,41 +132,13 @@ void GameScene::begin_rendering() {
 void GameScene::late_update() {
 	collisionManager_->update();
 
-	// 敵とplayer
-	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		enemy->SetNextCollision(ObjectType::Player_Type);
-	}
-
-	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		enemy->SetNextCollision(ObjectType::Player_Type);
-		if (enemy->GetIsAttack()) {
-			player_->SetIsAttackofEnmey(true);
-		} else {
-			player_->SetIsAttackofEnmey(false);
-		}
-		
-	}
+	// 敵とPlayer --------------------------------------------------
 	collisionManager_->collision("Enemy", "Player");
-
 	// メテオ同士 ---------------------------------------------------
-	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
-		meteo->SetNextCollision(ObjectType::Meteorite_Type);
-	}
 	collisionManager_->collision("Meteo", "Meteo");
-
 	// Enemy同士 ---------------------------------------------------
-	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		enemy->SetNextCollision(ObjectType::Enemy_Type);
-	}
 	collisionManager_->collision("Enemy", "Enemy");
-
-	// Enemyと隕石 ---------------------------------------------------
-	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
-		meteo->SetNextCollision(ObjectType::Enemy_Type);
-	}
-	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		enemy->SetNextCollision(ObjectType::Meteorite_Type);
-	}
+	// Enemyと隕石 -------------------------------------------------
 	collisionManager_->collision("Enemy", "Meteo");
 }
 
