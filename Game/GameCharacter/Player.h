@@ -84,7 +84,7 @@ public:
 
 private:
 
-	const float speed = 2.0f;
+	const float speed = 4.0f;
 
 	float fieldRadius_ = 0.0f;
 

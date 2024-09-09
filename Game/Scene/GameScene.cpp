@@ -13,6 +13,7 @@ void GameScene::initialize() {
 
 	field_ = std::make_unique<Field>();
 	player_ = std::make_unique<Player>();
+	player_->set_parent(field_->get_hierarchy());
 	boss_ = std::make_unique<Boss>();
 
 	camera3D_ = std::make_unique<FollowCamera>();
@@ -63,6 +64,8 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ GameObjectの更新
 	// -------------------------------------------------
+	field_->Update();
+	
 	player_->Update(field_->GetRadius());
 
 	boss_->Update();
@@ -106,6 +109,8 @@ void GameScene::update() {
 		CheckMeteoAttraction();
 	}
 	CheckBossCollision();
+
+	CheckMeteoToField();
 }
 
 void GameScene::begin_rendering() {
@@ -164,6 +169,29 @@ void GameScene::draw() const {
 	collisionManager_->debug_draw3d(*camera3D_);
 #endif
 	RenderPathManager::Next();
+}
+
+void GameScene::CheckMeteoToField() {
+	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		if (meteo->GetIsFalling()) {
+			// 円柱に面の上にあるか
+			Vector3 meteoPos = meteo->get_transform().get_translate();
+			meteoPos.y = 0;
+			float length = Vector3::Length(meteoPos - Vector3{0, 0,0});
+
+			// 円の範囲内に隕石がある
+			if (length > field_->GetRadius() + meteo->GetRadius()) {
+				continue;
+			}
+
+			// 隕石が面と同じ高さにある
+			if (meteo->get_transform().get_translate().y < 12.5f) {
+				meteo->SetIsDead(true);
+				field_->SetVelocityY(-3.0f);
+				boss_->OnCollision();
+			}
+		}
+	}
 }
 
 void GameScene::CheckMeteoAttraction() {
@@ -230,6 +258,13 @@ void GameScene::CheckBossCollision() {
 void GameScene::debug_update() {
 	ImGui::Begin("Camera3D");
 	camera3D_->debug_gui();
+	ImGui::End();
+
+	ImGui::Begin("field");
+	if (ImGui::Button("exit")) {
+		field_->SetVelocityY(-3.0f);
+		boss_->OnCollision();
+	}
 	ImGui::End();
 
 	field_->EditImGui();

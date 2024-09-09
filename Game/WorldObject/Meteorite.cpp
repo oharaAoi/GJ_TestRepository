@@ -109,5 +109,8 @@ void Meteorite::On_Collision_Exit(const BaseCollider* const) {
 #ifdef _DEBUG
 #include <externals/imgui/imgui.h>
 void Meteorite::EditImGui() {
+	ImGui::Begin("Field");
+	debug_gui();
+	ImGui::End();
 }
 #endif // _DEBUG

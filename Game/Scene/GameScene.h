@@ -44,6 +44,11 @@ public:
 public:
 
 	/// <summary>
+	/// 隕石とフィールドの当たり判定を取る
+	/// </summary>
+	void CheckMeteoToField();
+
+	/// <summary>
 	/// 隕石が吸い寄せられるかを判定する
 	/// </summary>
 	void CheckMeteoAttraction();
