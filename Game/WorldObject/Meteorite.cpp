@@ -94,12 +94,12 @@ void Meteorite::OnCollision(const Vector3& other) {
 }
 
 void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
-	if (nextCollisionType_ == 0) {	// 隕石
+	if (nextCollisionType_ == ObjectType::Meteorite_Type) {	// 隕石
 		if (!isFalling_) {
 			velocity_ += (other->get_transform().get_translate() - transform->get_translate()).normalize_safe() * -2.0f;
 		}
 		isFalling_ = true;
-	} else if (nextCollisionType_ == 1) { // Enemy
+	} else if (nextCollisionType_ == ObjectType::Enemy_Type) { // Enemy
 		isEnemyHit_ = true;
 		*object = { 1.0f,0,0,1.0f };
 	}

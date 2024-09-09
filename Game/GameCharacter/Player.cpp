@@ -2,6 +2,8 @@
 #include "Engine/Game/Transform3D/Transform3D.h"
 #include "Engine/Game/Color/Color.h"
 #include <externals/imgui/imgui.h>
+#include "Game/Enviroment.h"
+
 
 Player::Player() {
 	Init();
@@ -17,6 +19,7 @@ void Player::Init() {
 	sphereCollider_->initialize();
 	sphereCollider_->get_hierarchy().set_parent(this->get_hierarchy());
 	sphereCollider_->set_on_collision(std::bind(&Player::On_Collision, this, std::placeholders::_1));
+	sphereCollider_->set_on_collision_enter(std::bind(&Player::On_Collision_Enter, this, std::placeholders::_1));
 
 	gravityRod_ = std::make_unique<GravityRod>(this);
 	isAttack_ = false;
@@ -27,8 +30,15 @@ void Player::Init() {
 }
 
 void Player::Update(const float& fieldRadius) {
+	fieldRadius_ = fieldRadius;
+
 	if (isStan_) {
 		if (++stanFrame_ < stanTime_) {
+			Vector3 translate = transform->get_translate();
+			translate += preFrameVelocity_ * kDeltaTime;
+			ConstrainToField(translate);
+			transform->set_translate(translate);
+			transform->set_translate_y(12.5f);
 			return;
 		} else {
 			isStan_ = false;
@@ -38,7 +48,7 @@ void Player::Update(const float& fieldRadius) {
 	}
 	
 	moveRotation = CQuaternion::IDENTITY;
-	Move(fieldRadius);
+	Move();
 	Attack();
 
 	if (isAttack_) {
@@ -76,7 +86,15 @@ void Player::On_Collision(const BaseCollider* const other) {
 	}
 }
 
-void Player::On_Collision_Enter(const BaseCollider* const) {
+void Player::On_Collision_Enter(const BaseCollider* const other) {
+	if (isAttackofEnmey_) {
+		isAttack_ = false;
+		isStan_ = true;
+		this->get_materials()[0].color = { 1,0.0f,0.0f,1 };
+
+		Vector3 direction = (other->world_position() - world_position()).normalize_safe();
+		KnockBack(direction);
+	}
 
 }
 
@@ -89,7 +107,7 @@ void Player::On_Collision_Exit(const BaseCollider* const) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ------------------- 移動を行う関数 ------------------- //
-void Player::Move(const float& fieldRadius) {
+void Player::Move() {
 	Vector3 translate = transform->get_translate();
 	Quaternion playerQuaternion = transform->get_quaternion();
 
@@ -113,16 +131,9 @@ void Player::Move(const float& fieldRadius) {
 		// -------------------------------------------------
 		// ↓ playerが円柱の面から出ない処理を行う
 		// -------------------------------------------------
-		// 中心からのベクトル
-		Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
-		// 中心からの長さ
-		float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
-		if (lenght > fieldRadius) {
-			distance = distance * fieldRadius;
-			translate = {distance.x, translate.y, distance.z};
-		}
-
+		ConstrainToField(translate);
 		transform->set_translate(translate);
+		transform->set_translate_y(12.5f);
 
 		// playerの向きを移動方向にする
 		float targetAngle = std::atan2f(velocity.x, velocity.y);
@@ -146,6 +157,20 @@ void Player::Attack() {
 		if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 			isAttack_ = !isAttack_;
 		}
+	}
+}
+
+void Player::KnockBack(const Vector3& dire) {
+	preFrameVelocity_ = -(dire * 4.0f);
+}
+
+void Player::ConstrainToField(Vector3& translate) {
+	Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
+	// 中心からの長さ
+	float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
+	if (lenght > fieldRadius_) {
+		distance = distance * fieldRadius_;
+		translate = { distance.x, translate.y, distance.z };
 	}
 }
 

@@ -23,6 +23,7 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 	sphereCollider_->initialize();
 	sphereCollider_->get_hierarchy().set_parent(this->get_hierarchy());
 	sphereCollider_->set_on_collision(std::bind(&Enemy::On_Collision, this, std::placeholders::_1));
+	sphereCollider_->set_on_collision_enter(std::bind(&Enemy::On_Collision_Enter, this, std::placeholders::_1));
 
 	transform->set_translate(position);
 	transform->set_translate_y(13.0f);
@@ -30,7 +31,7 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 	isFalling_ = false;
 
-	behaviorRequest_ = EnemyState::Root_State;
+	behaviorRequest_ = EnemyState::Approach_State;
 }
 
 void Enemy::Update(const Vector3& playerPosition) {
@@ -77,19 +78,19 @@ void Enemy::Attack() {
 }
 
 void Enemy::OnCollision(const Vector3& other, const uint32_t& typeId) {
-	if (typeId == 0) {
-		if (!isFalling_) {
+	if (typeId == ObjectType::Player_Type) {	// 
+		if (!isAttack_) {
 			velocity_ = { 0,0,0 };
 			velocity_ = (other - transform->get_translate()).normalize_safe() * -7.0f;
 			acceleration_ = (other - transform->get_translate()).normalize_safe() * -10.0f;
 			behaviorRequest_ = EnemyState::Blown_State;
 		}
-	} else if (typeId == 1) {
+	} else if (typeId == ObjectType::Meteorite_Type) {
 		isFalling_ = true;
 		velocity_ += (other - transform->get_translate()).normalize_safe() * -2.0f;
 		behaviorRequest_ = EnemyState::Blown_State;
 
-	} else if (typeId == 2) {
+	} else if (typeId == ObjectType::Enemy_Type) {
 		velocity_ = { 0,0,0 };
 		velocity_ = (other - transform->get_translate()).normalize_safe() * -1.0f;
 		acceleration_ = (other - transform->get_translate()).normalize_safe() * -3.0f;
@@ -124,29 +125,30 @@ void Enemy::CheckBehaviorRequest() {
 }
 
 void Enemy::On_Collision(const BaseCollider* const other) {
-	if (nextCollisionType_ == 0) { // player
+	
+}
+
+void Enemy::On_Collision_Enter(const BaseCollider* const other) {
+	if (nextCollisionType_ == ObjectType::Player_Type) { // player
 		if (isAttack_) {
-			velocity_ *= -1.0f;
+			velocity_ *= -0.1f;
 			return;
 		}
-		
+
 		if (!isFalling_) {
 			velocity_ = { 0,0,0 };
 			velocity_ = (other->world_position() - world_position()).normalize_safe() * -7.0f;
 			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -10.0f;
 			behaviorRequest_ = EnemyState::Blown_State;
 		}
-	} else if(nextCollisionType_ == 1){ // 隕石
+	} else if (nextCollisionType_ == ObjectType::Meteorite_Type) { // 隕石
 		isDead_ = true;
-	} else if (nextCollisionType_ == 2) {// 敵同士
+	} else if (nextCollisionType_ == ObjectType::Enemy_Type) {// 敵同士
 		velocity_ = { 0,0,0 };
 		velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
 		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;
 		behaviorRequest_ = EnemyState::Blown_State;
 	}
-}
-
-void Enemy::On_Collision_Enter(const BaseCollider* const) {
 }
 
 void Enemy::On_Collision_Exit(const BaseCollider* const) {

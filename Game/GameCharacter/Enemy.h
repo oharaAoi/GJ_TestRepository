@@ -46,7 +46,7 @@ public:	// メンバ関数
 	}
 
 	void On_Collision(const BaseCollider* const other);
-	void On_Collision_Enter(const BaseCollider* const);
+	void On_Collision_Enter(const BaseCollider* const other);
 	void On_Collision_Exit(const BaseCollider* const);
 
 public:
@@ -109,6 +109,6 @@ private:
 	bool isDead_ = false;
 
 	uint32_t frameCount_;
-	const uint32_t attackTime_ = 40;
+	const uint32_t attackTime_ = 50;
 };
 
