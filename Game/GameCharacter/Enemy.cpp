@@ -39,6 +39,7 @@ void Enemy::Update(const Vector3& playerPosition) {
 
 	if (isAttack_) {
 		Attack();
+		*isPlayerFlragPtr_ = true;
 		return;
 	}
 
@@ -77,27 +78,6 @@ void Enemy::Attack() {
 	}
 }
 
-void Enemy::OnCollision(const Vector3& other, const uint32_t& typeId) {
-	if (typeId == ObjectType::Player_Type) {	// 
-		if (!isAttack_) {
-			velocity_ = { 0,0,0 };
-			velocity_ = (other - transform->get_translate()).normalize_safe() * -7.0f;
-			acceleration_ = (other - transform->get_translate()).normalize_safe() * -10.0f;
-			behaviorRequest_ = EnemyState::Blown_State;
-		}
-	} else if (typeId == ObjectType::Meteorite_Type) {
-		isFalling_ = true;
-		velocity_ += (other - transform->get_translate()).normalize_safe() * -2.0f;
-		behaviorRequest_ = EnemyState::Blown_State;
-
-	} else if (typeId == ObjectType::Enemy_Type) {
-		velocity_ = { 0,0,0 };
-		velocity_ = (other - transform->get_translate()).normalize_safe() * -1.0f;
-		acceleration_ = (other - transform->get_translate()).normalize_safe() * -3.0f;
-		behaviorRequest_ = EnemyState::Blown_State;
-	} 
-}
-
 void Enemy::ChangeState(std::unique_ptr<BaseEnemyState> state) {
 	state_ = std::move(state);
 }
@@ -129,6 +109,12 @@ void Enemy::On_Collision(const BaseCollider* const other) {
 }
 
 void Enemy::On_Collision_Enter(const BaseCollider* const other) {
+	if (isAttack_) {
+		*isPlayerFlragPtr_ = true;
+	} else {
+		*isPlayerFlragPtr_ = false;
+	}
+
 	if (nextCollisionType_ == ObjectType::Player_Type) { // player
 		if (isAttack_) {
 			velocity_ *= -0.1f;
@@ -143,6 +129,7 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 		}
 	} else if (nextCollisionType_ == ObjectType::Meteorite_Type) { // 隕石
 		isDead_ = true;
+
 	} else if (nextCollisionType_ == ObjectType::Enemy_Type) {// 敵同士
 		velocity_ = { 0,0,0 };
 		velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;

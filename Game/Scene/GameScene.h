@@ -53,8 +53,6 @@ public:
 	/// </summary>
 	void CheckBossCollision();
 
-	void CheckEnemyCollison();
-
 	/// <summary>
 	/// 隕石をリストに追加する
 	/// </summary>

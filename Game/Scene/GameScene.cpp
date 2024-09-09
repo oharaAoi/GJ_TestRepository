@@ -135,50 +135,39 @@ void GameScene::late_update() {
 	// 敵とplayer
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->SetNextCollision(ObjectType::Player_Type);
+	}
+
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->SetNextCollision(ObjectType::Player_Type);
 		if (enemy->GetIsAttack()) {
 			player_->SetIsAttackofEnmey(true);
 		} else {
 			player_->SetIsAttackofEnmey(false);
 		}
-		collisionManager_->collision("Player", enemy->GetMeteoId());
+		
 	}
+	collisionManager_->collision("Enemy", "Player");
 
-	// メテオ同士
-	std::list<std::unique_ptr<Meteorite>>::iterator iterA = meteoriteList_.begin();
-	for (; iterA != meteoriteList_.end(); ++iterA) {
-		Meteorite* meteoA = iterA->get();
-		std::list<std::unique_ptr<Meteorite>>::iterator iterB = iterA;
-		iterB++;
-		for (; iterB != meteoriteList_.end(); ++iterB) {
-			Meteorite* meteoB = iterB->get();
-			meteoA->SetNextCollision(ObjectType::Meteorite_Type);
-			meteoB->SetNextCollision(ObjectType::Meteorite_Type);
-			collisionManager_->collision(meteoA->GetMeteoId(), meteoB->GetMeteoId());
-		}
-	}
-
-	// Enemy同士
-	std::list<std::unique_ptr<Enemy>>::iterator eIterA = enemyList_.begin();
-	for (; eIterA != enemyList_.end(); ++eIterA) {
-		Enemy* enemyA = eIterA->get();
-		std::list<std::unique_ptr<Enemy>>::iterator eIterB = eIterA;
-		eIterB++;
-		for (; eIterB != enemyList_.end(); ++eIterB) {
-			Enemy* enemyB = eIterB->get();
-			enemyA->SetNextCollision(ObjectType::Enemy_Type);
-			enemyB->SetNextCollision(ObjectType::Enemy_Type);
-			collisionManager_->collision(enemyA->GetMeteoId(), enemyB->GetMeteoId());
-		}
-	}
-
-	// Enemyと隕石
+	// メテオ同士 ---------------------------------------------------
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
-		for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-			enemy->SetNextCollision(ObjectType::Meteorite_Type);
-			meteo->SetNextCollision(ObjectType::Enemy_Type);
-			collisionManager_->collision(meteo->GetMeteoId(), enemy->GetMeteoId());
-		}
+		meteo->SetNextCollision(ObjectType::Meteorite_Type);
 	}
+	collisionManager_->collision("Meteo", "Meteo");
+
+	// Enemy同士 ---------------------------------------------------
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->SetNextCollision(ObjectType::Enemy_Type);
+	}
+	collisionManager_->collision("Enemy", "Enemy");
+
+	// Enemyと隕石 ---------------------------------------------------
+	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		meteo->SetNextCollision(ObjectType::Enemy_Type);
+	}
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->SetNextCollision(ObjectType::Meteorite_Type);
+	}
+	collisionManager_->collision("Enemy", "Meteo");
 }
 
 void GameScene::draw() const {
@@ -240,12 +229,13 @@ void GameScene::CheckMeteoAttraction() {
 
 void GameScene::AddMeteorite(const Vector3& position) {
 	auto& newMeteo = meteoriteList_.emplace_back(std::make_unique<Meteorite>(position));
-	collisionManager_->register_collider(newMeteo->GetMeteoId(), newMeteo->GetCollider());
+	collisionManager_->register_collider("Meteo", newMeteo->GetCollider());
 }
 
 void GameScene::AddEnemy(const Vector3& position, const EnemyType& enemyType) {
 	auto& newEnemy = enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType));
-	collisionManager_->register_collider(newEnemy->GetMeteoId(), newEnemy->GetCollider());
+	collisionManager_->register_collider("Enemy", newEnemy->GetCollider());
+	newEnemy->SetIsPlayerFlragPtr(player_->GetIsAttackofEnmey());
 }
 
 void GameScene::CheckBossCollision() {
@@ -256,21 +246,6 @@ void GameScene::CheckBossCollision() {
 			if (length < meteo->GetRadius()) {
 				meteo->SetIsDead(true);
 				boss_->OnCollision();
-			}
-		}
-	}
-}
-
-void GameScene::CheckEnemyCollison() {
-	// -------------------------------------------------
-	// ↓ playerと敵
-	// -------------------------------------------------
-	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		if (!enemy->GetIsAttack()) {
-			float length = Vector3::Length(player_->get_transform().get_translate() - enemy->get_transform().get_translate());
-
-			if (length < player_->GetRadius() + enemy->GetRadius()) {
-				enemy->OnCollision(player_->get_transform().get_translate(), 0);
 			}
 		}
 	}
