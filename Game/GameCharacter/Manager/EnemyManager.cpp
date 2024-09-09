@@ -8,7 +8,7 @@ void EnemyManager::Init(GameScene* gameScene) {
 	gameScene_ = gameScene;
 	LoadFileName();
 
-	SelectArrange();
+	//SelectArrange();
 	//AddEnemy(Vector3{ 2.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
 }
 
@@ -17,14 +17,14 @@ void EnemyManager::Update(const Vector3& playerPosition) {
 		enemy->Update(playerPosition);
 	}*/
 
-	if (!isPop_) {
-		firstPopCount_++;
+	//if (!isPop_) {
+	//	firstPopCount_++;
 
-		if (firstPopCount_ > popTime_) {
-			SelectArrange();
-			isPop_ = true;
-		}
-	}
+	//	if (firstPopCount_ > popTime_) {
+	//		SelectArrange();
+	//		isPop_ = true;
+	//	}
+	//}
 
 	for (auto& times : timedCalls_) {
 		times.Update();

@@ -30,7 +30,7 @@ public:
 	void Draw() const;
 
 	void On_Collision(const BaseCollider* const other);
-	void On_Collision_Enter(const BaseCollider* const);
+	void On_Collision_Enter(const BaseCollider* const other);
 	void On_Collision_Exit(const BaseCollider* const);
 
 public:	// メンバ関数
@@ -38,34 +38,54 @@ public:	// メンバ関数
 	/// <summary>
 	/// 移動をする関数
 	/// </summary>
-	void Move(const float& fieldRadius);
+	void Move();
 
 	/// <summary>
 	/// 攻撃を行う
 	/// </summary>
 	void Attack();
 
+	/// <summary>
+	/// 攻撃を受けた時の移動
+	/// </summary>
+	/// <param name="dire"></param>
+	void KnockBack(const Vector3& dire);
+
+	/// <summary>
+	/// 範囲内で抑える
+	/// </summary>
+	void ConstrainToField(Vector3& translate);
+
 public:
 
+	// ----------- コライダー ----------- //
 	std::weak_ptr<BaseCollider> GetCollider() { return sphereCollider_; }
 
+	// ----------- 重力棒 ----------- //
 	const GravityRod* GetGravityRod() { return gravityRod_.get(); }
 
+	// ----------- 動く方向の回転 ----------- //
 	const Quaternion& GetMoveQuaternion() const;
 
+	// ----------- 重力の球体 ----------- //
 	const Vector3 GetGravityRodVector() const { return gravityRod_->GetRodVector(); }
 	const Vector3 GetGravityRodOrigine() const { return gravityRod_->GetRodOrigine(); }
 	const Vector3 GetGravityRodEnd() const { return gravityRod_->GetRodEnd(); }
 
+	// ----------- 攻撃中か ----------- //
 	const bool& GetIsAttack() const { return isAttack_; }
 
+	// ----------- 半径 ----------- //
 	const float GetRadius() const { return radius_; }
 
+	// ----------- 敵が攻撃中か ----------- //
 	void SetIsAttackofEnmey(const bool& isAttack) { isAttackofEnmey_ = isAttack; }
 
 private:
 
 	const float speed = 2.0f;
+
+	float fieldRadius_ = 0.0f;
 
 	std::shared_ptr<SphereCollider> sphereCollider_ = nullptr;
 
@@ -76,11 +96,14 @@ private:
 	std::unique_ptr<GravityRod> gravityRod_ = nullptr;
 	bool isAttack_ = false;
 
+	// 敵が攻撃中か
 	bool isAttackofEnmey_;
+
+	Vector3 preFrameVelocity_;
 
 	bool isStan_ = false;
 	uint32_t stanFrame_ = 0;
-	uint32_t stanTime_ = 360;
+	uint32_t stanTime_ = 20;
 
 	float radius_ = 1.0f;
 };
