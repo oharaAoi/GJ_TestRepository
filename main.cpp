@@ -5,6 +5,7 @@
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 #include "TestCode/SceneDemo.h"
 #include "Game/Scene/GameScene.h"
+#include "Game/Scene/TitleScene.h"
 #include "Engine/Game/Managers/SceneManager/SceneManager.h"
 #include "Engine/Utility/Utility.h"
 #include "TestCode/SceneDemo.h"
@@ -19,10 +20,8 @@ const std::int32_t kClientHight = 720;
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp::Initialize("DirectXGame", kClientWidth, kClientHight);
 
-	auto&& scene = CreateUnique<GameScene>();
+	auto&& scene = CreateUnique<TitleScene>();
 	SceneManager::Initialize(std::move(scene));
-
-
 
 	while (!WinApp::IsEndApp()) {
 		WinApp::BeginFrame();
