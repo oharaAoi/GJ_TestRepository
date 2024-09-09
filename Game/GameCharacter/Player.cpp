@@ -114,11 +114,11 @@ void Player::Move(const float& fieldRadius) {
 		// ↓ playerが円柱の面から出ない処理を行う
 		// -------------------------------------------------
 		// 中心からのベクトル
-		Vector3 distance = translate - Vector3(0, translate.y, 0);
+		Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
 		// 中心からの長さ
 		float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
 		if (lenght > fieldRadius) {
-			distance = Vector3::Normalize(distance) * fieldRadius;
+			distance = distance * fieldRadius;
 			translate = {distance.x, translate.y, distance.z};
 		}
 

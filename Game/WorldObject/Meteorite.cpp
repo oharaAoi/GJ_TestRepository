@@ -65,7 +65,7 @@ void Meteorite::Move(const Vector3& playerPosition) {;
 	Vector3 translate = transform->get_translate();
 	// 引き寄せられている間の処理
 	if (isAttraction_) {
-		acceleration_ += Vector3::Normalize(targetPosition_ - world_position()) * kDeltaTime;
+		acceleration_ += (targetPosition_ - world_position()).normalize_safe() * kDeltaTime;
 		velocity_ = (acceleration_ * attractionedStrength_) * kDeltaTime;
 	}
 
@@ -88,7 +88,7 @@ void Meteorite::Falling() {
 
 void Meteorite::OnCollision(const Vector3& other) {
 	if (!isFalling_) {
-		velocity_ += Vector3::Normalize(other - transform->get_translate()) * -2.0f;
+		velocity_ += (other - transform->get_translate()).normalize_safe() * -2.0f;
 	}
 	isFalling_ = true;
 }
@@ -96,7 +96,7 @@ void Meteorite::OnCollision(const Vector3& other) {
 void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
 	if (nextCollisionType_ == 0) {	// 隕石
 		if (!isFalling_) {
-			velocity_ += Vector3::Normalize(other->get_transform().get_translate() - transform->get_translate()) * -2.0f;
+			velocity_ += (other->get_transform().get_translate() - transform->get_translate()).normalize_safe() * -2.0f;
 		}
 		isFalling_ = true;
 	} else if (nextCollisionType_ == 1) { // Enemy

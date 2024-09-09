@@ -62,11 +62,11 @@ void Enemy::Update(const Vector3& playerPosition) {
 void Enemy::Attack() {
 	if (++frameCount_ < 30) {
 		Vector3 translate = transform->get_translate();
-		translate += -Vector3::Normalize(playerPosition_ - translate) * kDeltaTime;
+		translate += -(playerPosition_ - translate).normalize_safe() * kDeltaTime;
 		transform->set_translate(translate);
 	} else if(++frameCount_ < 50) {
 		Vector3 translate = transform->get_translate();
-		translate += Vector3::Normalize(playerPosition_ - translate) * 8.0f * kDeltaTime;
+		translate += (playerPosition_ - translate).normalize_safe() * 8.0f * kDeltaTime;
 		transform->set_translate(translate);
 	} else {
 		isAttack_ = false;
@@ -80,19 +80,19 @@ void Enemy::OnCollision(const Vector3& other, const uint32_t& typeId) {
 	if (typeId == 0) {
 		if (!isFalling_) {
 			velocity_ = { 0,0,0 };
-			velocity_ = Vector3::Normalize(other - transform->get_translate()) * -7.0f;
-			acceleration_ = Vector3::Normalize(other - transform->get_translate()) * -10.0f;
+			velocity_ = (other - transform->get_translate()).normalize_safe() * -7.0f;
+			acceleration_ = (other - transform->get_translate()).normalize_safe() * -10.0f;
 			behaviorRequest_ = EnemyState::Blown_State;
 		}
 	} else if (typeId == 1) {
 		isFalling_ = true;
-		velocity_ += Vector3::Normalize(other - transform->get_translate()) * -2.0f;
+		velocity_ += (other - transform->get_translate()).normalize_safe() * -2.0f;
 		behaviorRequest_ = EnemyState::Blown_State;
 
 	} else if (typeId == 2) {
 		velocity_ = { 0,0,0 };
-		velocity_ = Vector3::Normalize(other - transform->get_translate()) * -1.0f;
-		acceleration_ = Vector3::Normalize(other - transform->get_translate()) * -3.0f;
+		velocity_ = (other - transform->get_translate()).normalize_safe() * -1.0f;
+		acceleration_ = (other - transform->get_translate()).normalize_safe() * -3.0f;
 		behaviorRequest_ = EnemyState::Blown_State;
 	} 
 }
@@ -132,16 +132,16 @@ void Enemy::On_Collision(const BaseCollider* const other) {
 		
 		if (!isFalling_) {
 			velocity_ = { 0,0,0 };
-			velocity_ = Vector3::Normalize(other->world_position() - world_position()) * -7.0f;
-			acceleration_ = Vector3::Normalize(other->world_position() - world_position()) * -10.0f;
+			velocity_ = (other->world_position() - world_position()).normalize_safe() * -7.0f;
+			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -10.0f;
 			behaviorRequest_ = EnemyState::Blown_State;
 		}
 	} else if(nextCollisionType_ == 1){ // 隕石
 		isDead_ = true;
 	} else if (nextCollisionType_ == 2) {// 敵同士
 		velocity_ = { 0,0,0 };
-		velocity_ = Vector3::Normalize(other->world_position() - world_position()) * -1.0f;
-		acceleration_ = Vector3::Normalize(other->world_position() - world_position()) * -3.0f;
+		velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
+		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;
 		behaviorRequest_ = EnemyState::Blown_State;
 	}
 }
