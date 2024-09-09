@@ -95,6 +95,8 @@ void Player::On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAt
 	}
 }
 
+}
+
 void Player::On_Collision_Exit(const BaseCollider* const) {
 
 }
