@@ -56,6 +56,9 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "Field.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariEnemy.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariSpEnemy.obj");
+
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/LowerJaw", "lowerJaw.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/UpperJaw", "upperJaw.obj");
 }
 
 void GameScene::begin() {

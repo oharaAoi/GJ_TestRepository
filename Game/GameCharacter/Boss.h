@@ -1,13 +1,29 @@
 #pragma once
 #include <memory>
 #include <algorithm>
+#include <cmath>
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Math/Vector2.h"
 #include "Engine/Math/Vector3.h"
 #include "Engine/Math/Quaternion.h"
+#include "Engine/Math/Definition.h"
+
+
+enum BossFaceParts {
+	LowerJaw_Parts,
+	UpperJaw_Parts
+};
 
 class Boss
 	: public GameObject {
+public:
+
+	struct Moving {
+		float parameter;
+		float amplitude;
+		uint32_t period;
+	};
+
 public:
 
 	Boss();
@@ -24,6 +40,8 @@ public:
 public:	// メンバ変数
 
 	void Move();
+
+	void FaceMove();
 
 	void OnCollision();
 
@@ -42,14 +60,17 @@ public:	// accesser
 
 private:
 
-	std::unique_ptr<GameObject> debugObject_;
-
 	Vector3 velocity_;
 	float pushBackValue_;
 	float pushBackStrength_ = 0.2f;
 
 	int satietyLevel_ = 0;
 	int satietyLevelLimit_ = 200;
+
+	Moving movingMouth_;
+
+	// 顔の表示用のゲームオブジェクト配列
+	std::vector<GameObject> faceParts_;
 
 };
 

@@ -41,6 +41,10 @@ void Meteorite::Init(const Vector3& pos) {
 	isAttraction_ = false;
 	isFalling_ = false;
 	isEnemyHit_ = false;
+
+	meteoHit_SE_ = std::make_unique<AudioPlayer>();
+	//meteoHit_SE_->initialize("SE_meteoEachOther.wav", 0.5f, false);
+
 }
 
 void Meteorite::Update(const Vector3& playerPosition) {
@@ -93,6 +97,7 @@ void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
 			velocity_ += (other->world_position() - world_position()).normalize_safe() * -2.0f;
 		}
 		isFalling_ = true;
+		meteoHit_SE_->play();
 
 	} else if (other->group() == "Enemy") { // Enemy
 		isEnemyHit_ = true;

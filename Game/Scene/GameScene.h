@@ -21,7 +21,8 @@
 #include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
 #include "Game/FollowCamera.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
-
+#include "Engine/Game/Managers/AudioManager/AudioManager.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
 #include "Engine/Render/RenderPath/RenderPath.h"
 #include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
 #include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
@@ -103,9 +104,12 @@ private:
 
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
-
+	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;
 	std::shared_ptr<SpriteNode> spriteNode;
 	RenderPath path;
+
+	// ------------------- AudioList ------------------- //
+	
 };
 

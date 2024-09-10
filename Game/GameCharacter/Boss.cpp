@@ -11,6 +11,12 @@ Boss::~Boss() {
 
 void Boss::Init() {
 	reset_object("mouth.obj");
+
+	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
+		faceParts_[oi].set_parent(get_hierarchy());
+	}
+
+
 	Vector3 translate = transform->get_translate();
 	translate.y = -2.0f;
 	transform->set_translate(translate);
@@ -20,23 +26,36 @@ void Boss::Init() {
 	pushBackValue_ = 0.0f;
 	pushBackStrength_ = 0.2f;
 
-	debugObject_ = std::make_unique<GameObject>();
+	movingMouth_.parameter = 0;
+	movingMouth_.period = 90;
+	movingMouth_.amplitude = 0.4f;
+
+	faceParts_.emplace_back("lowerJaw.obj");
+	faceParts_.emplace_back("upperJaw.obj");
+
+	/*debugObject_ = std::make_unique<GameObject>();
 	debugObject_->reset_object("GravityRod.obj");
-	debugObject_->set_parent(*hierarchy);
+	debugObject_->set_parent(*hierarchy);*/
 }
 
 void Boss::Update() {
 	Move();
+
+	FaceMove();
 }
 
 void Boss::Begin_Rendering(Camera3D* camera3d) {
-	begin_rendering(*camera3d);
-	debugObject_->begin_rendering(*camera3d);
+	//begin_rendering(*camera3d);
+	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
+		faceParts_[oi].begin_rendering(*camera3d);
+	}
 }
 
 void Boss::Draw() const {
-	draw();
-	debugObject_->draw();
+	//draw();
+	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
+		faceParts_[oi].draw();
+	}
 }
 
 void Boss::Move() {
@@ -48,6 +67,21 @@ void Boss::Move() {
 	pushBackValue_ = std::max(0.0f, pushBackValue_);
 
 	transform->set_translate(translate);
+}
+
+void Boss::FaceMove() {
+	float upTranslate = faceParts_[UpperJaw_Parts].get_transform().get_translate().z;
+	float lowerTranslate = faceParts_[LowerJaw_Parts].get_transform().get_translate().z;
+	// 口を動かすアニメーションを行う
+	const float step = (2.0f * PI) / static_cast<float>(movingMouth_.period);
+	movingMouth_.parameter += step;
+	movingMouth_.parameter = std::fmod(movingMouth_.parameter, 2.0f * PI);
+	// 移動させる量を動かす
+	upTranslate += std::sin(movingMouth_.parameter) * movingMouth_.amplitude;
+	lowerTranslate -= std::sin(movingMouth_.parameter) * movingMouth_.amplitude;
+	
+	faceParts_[LowerJaw_Parts].get_transform().set_translate_z(upTranslate);
+	faceParts_[UpperJaw_Parts].get_transform().set_translate_z(lowerTranslate);
 }
 
 void Boss::OnCollision() {
@@ -78,6 +112,11 @@ void Boss::EditImGui() {
 	ImGui::SliderInt("satietyLevel", &satietyLevel_, 0, satietyLevelLimit_);
 	ImGui::DragInt("satietyLevelLimit", &satietyLevelLimit_);
 	ImGui::DragFloat("pushBackStrength", &pushBackStrength_, 0.1f, 0.0f, 1.0f);
+	ImGui::DragScalar("period", ImGuiDataType_U32, &movingMouth_.period);
+	ImGui::DragFloat("amplitude", &movingMouth_.amplitude, 0.1f, 0.0f, 1.0f);
+	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
+		faceParts_[oi].debug_gui();
+	}
 	ImGui::Separator();
 	debug_gui();
 	ImGui::End();
