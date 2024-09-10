@@ -8,6 +8,7 @@
 #include "Game/GameCharacter/State/EnemyBlownState.h"
 
 #include "Engine/Game/Collision/Collider/SphereCollider.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
 
 enum class EnemyType {
 	Normal_Type,
@@ -112,5 +113,7 @@ private:
 
 	uint32_t frameCount_;
 	const uint32_t attackTime_ = 50;
+
+	std::unique_ptr<AudioPlayer> enemyAttack_SE_ = nullptr;
 };
 

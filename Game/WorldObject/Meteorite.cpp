@@ -17,6 +17,7 @@ Meteorite::Meteorite(const Vector3& pos) {
 
 Meteorite::~Meteorite() {
 	meteoHit_SE_->stop();
+	
 	meteoHit_SE_->finalize();
 }
 
@@ -46,7 +47,6 @@ void Meteorite::Init(const Vector3& pos) {
 
 	meteoHit_SE_ = std::make_unique<AudioPlayer>();
 	meteoHit_SE_->initialize("SE_meteoEachOther.wav", 0.5f, false);
-	//meteoHit_SE_->initialize("SE_meteoEachOther.wav", 0.5f, false);
 
 }
 

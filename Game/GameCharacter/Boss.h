@@ -8,6 +8,7 @@
 #include "Engine/Math/Quaternion.h"
 #include "Engine/Math/Definition.h"
 #include "Game/GameCharacter/Manager/AdjustmentItem.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
 
 
 enum BossFaceParts {
@@ -36,6 +37,8 @@ public:
 
 	Boss();
 	~Boss();
+
+	void Finalize();
 
 	void Init();
 
@@ -83,5 +86,8 @@ private:
 	std::vector<std::unique_ptr<GameObject>> faceParts_;
 
 	std::unique_ptr<GameObject> overLine_ = nullptr;
+
+	std::unique_ptr<AudioPlayer> bossHit_SE_ = nullptr;
+	std::list<AudioPlayer> bossHit_SE_List_;
 };
 

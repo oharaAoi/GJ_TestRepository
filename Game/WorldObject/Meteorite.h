@@ -71,14 +71,14 @@ public:	// accessor
 	// ----------- 落下フラグ ----------- //
 	const bool GetIsFalling() const { return isFalling_; }
 
-	// -----------  ----------- //
+	// ----------- 敵と当たっているか ----------- //
 	void SetIsEnemyHit(const bool& ishit) { isEnemyHit_ = ishit; }
 
+	// ----------- playerの座標 ----------- //
 	void SetTargetPosition(const Vector3& targetPosition) { targetPosition_ = targetPosition; }
 
+	// ----------- 引き寄せられる範囲 ----------- //
 	const float GetAttractRange() const { return attractionRange_; }
-
-	void SetNextCollision(const uint32_t& num) { nextCollisionType_ = num; }
 
 private:
 
@@ -101,8 +101,6 @@ private:
 	bool isDead_;
 
 	bool isEnemyHit_;
-
-	uint32_t nextCollisionType_;
 
 	std::unique_ptr<AudioPlayer> meteoHit_SE_ = nullptr;
 };

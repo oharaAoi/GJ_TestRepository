@@ -27,6 +27,9 @@ void Player::Init() {
 	input_ = Input::GetInstance();
 	Vector3 translate = transform->get_translate();
 	transform->set_translate_y(12.5f);
+
+	enemyKick_SE_ = std::make_unique<AudioPlayer>();
+	enemyKick_SE_->initialize("SE_enemyAttack.wav", 0.5f, false);
 }
 
 void Player::Update(const float& fieldRadius) {
@@ -92,6 +95,8 @@ void Player::On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAt
 
 		Vector3 direction = (other->world_position() - world_position()).normalize_safe();
 		KnockBack(direction);
+	} else {
+		enemyKick_SE_->play();
 	}
 }
 
