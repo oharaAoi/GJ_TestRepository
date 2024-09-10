@@ -13,7 +13,7 @@ Field::~Field() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Field::Init() {
-	reset_object("Field.obj");
+	reset_object("nattomaki.obj");
 	velocityY_ = 0.0f;
 	accelerationY_ = 0.4f;
 
