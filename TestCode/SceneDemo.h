@@ -14,6 +14,9 @@ class SphereCollider;
 class CollisionManager;
 class Color;
 
+#include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
+#include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
+
 class SceneDemo : public BaseScene {
 public:
 	SceneDemo();
@@ -53,4 +56,8 @@ private:
 	std::unique_ptr<Camera3D> camera3D;
 
 	std::shared_ptr<AudioPlayer> audioPlayer;
+
+	std::shared_ptr<Object3DNode> object3dNode;
+
+	std::shared_ptr<SpriteNode> spriteNode;
 };
