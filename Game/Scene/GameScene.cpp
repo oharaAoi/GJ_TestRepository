@@ -4,6 +4,7 @@
 #include "Engine/Utility/Utility.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 #include "Engine/DirectX/DirectXCore.h"
+#include "Engine/Game/Managers/TextureManager/TextureManager.h"
 
 void GameScene::initialize() {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
@@ -65,6 +66,8 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/InMouth", "InMouth.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyes", "bossEyes.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyesbrows", "bossEyebrows.obj");
+
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl.png");
 }
 
 void GameScene::begin() {
