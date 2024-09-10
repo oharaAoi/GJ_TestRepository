@@ -10,8 +10,8 @@ Boss::~Boss() {
 }
 
 void Boss::Finalize() {
-	bossHit_SE_->stop();
 	bossHit_SE_->finalize();
+	fieldPush_SE_->finalize();
 }
 
 void Boss::Init() {
@@ -62,6 +62,8 @@ void Boss::Init() {
 
 	bossHit_SE_ = std::make_unique<AudioPlayer>();
 	bossHit_SE_->initialize("SE_bossHited.wav", 0.5f, false);
+	fieldPush_SE_ = std::make_unique<AudioPlayer>();
+	fieldPush_SE_->initialize("SE_fieldPush.wav", 0.3f, false);
 }
 
 void Boss::Update() {
@@ -134,6 +136,10 @@ bool Boss::GetIsGameOver(const float& cylinderHight) {
 		return true;
 	}
 	return false;
+}
+
+void Boss::PlayFieldPushSE() {
+	fieldPush_SE_->restart();
 }
 
 

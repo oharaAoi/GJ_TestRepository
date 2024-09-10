@@ -60,6 +60,8 @@ public:	// メンバ変数
 
 	bool GetIsGameOver(const float& cylinderHight);
 
+	void PlayFieldPushSE();
+
 #ifdef _DEBUG
 	void EditImGui();
 #endif
@@ -88,6 +90,7 @@ private:
 	std::unique_ptr<GameObject> overLine_ = nullptr;
 
 	std::unique_ptr<AudioPlayer> bossHit_SE_ = nullptr;
-	std::list<AudioPlayer> bossHit_SE_List_;
+	std::unique_ptr<AudioPlayer> fieldPush_SE_ = nullptr;
+
 };
 

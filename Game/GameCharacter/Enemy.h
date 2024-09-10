@@ -10,6 +10,8 @@
 #include "Engine/Game/Collision/Collider/SphereCollider.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
 
+class GameScene;
+
 enum class EnemyType {
 	Normal_Type,
 	SpecialPop_Type
@@ -24,16 +26,16 @@ enum class EnemyState {
 class Enemy
 	:public GameObject {
 
-public:	
+public:
 
-	Enemy(const Vector3& position = Vector3{0,0,0}, const EnemyType& enemyType = EnemyType::Normal_Type);
+	Enemy(const Vector3& position = Vector3{ 0,0,0 }, const EnemyType& enemyType = EnemyType::Normal_Type, GameScene* gameScene = nullptr);
 	~Enemy();
 
 public:	// メンバ関数
 
 	void Finalize();
 
-	void Init(const Vector3& position, const EnemyType& enemyType);
+	void Init(const Vector3& position, const EnemyType& enemyType, GameScene* gameScene);
 	void Update(const Vector3& playerPosition);
 
 	void Attack();
@@ -82,6 +84,8 @@ public:
 	void SetIsPlayerFlragPtr(bool* isBool) { isPlayerFlragPtr_ = isBool; }
 
 private:
+
+	GameScene* gameScene_ = nullptr;
 
 	std::unique_ptr<BaseEnemyState> state_ = nullptr;
 	std::shared_ptr<SphereCollider> sphereCollider_ = nullptr;

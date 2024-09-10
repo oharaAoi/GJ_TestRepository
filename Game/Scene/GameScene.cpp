@@ -73,7 +73,7 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/TriangleRiceBall", "triangleRiceBall.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/CircleRiceBall", "circleRiceBall.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Field", "nattomaki.obj");
-
+	
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 
@@ -82,6 +82,7 @@ void GameScene::load() {
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_bossHited.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyAttack.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyHitToMeteo.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_fieldPush.wav");
 }
 
 void GameScene::begin() {
@@ -248,11 +249,12 @@ void GameScene::CheckMeteoToField() {
 				continue;
 			}
 
-			// 隕石が面と同じ高さにある
-			if (meteo->get_transform().get_translate().y < 12.5f) {
+			// 隕石が面と同じ高さにある(面に当たったら円柱を貫通では押し込まれない対策)
+			if (meteo->get_transform().get_translate().y < 12.5f && meteo->get_transform().get_translate().y > 10.0f) {
 				meteo->SetIsDead(true);
 				field_->SetVelocityY(-3.0f);
 				boss_->OnCollision();
+				boss_->PlayFieldPushSE();
 			}
 		}
 	}
@@ -297,7 +299,7 @@ void GameScene::AddMeteorite(const Vector3& position) {
 }
 
 void GameScene::AddEnemy(const Vector3& position, const EnemyType& enemyType) {
-	auto& newEnemy = enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType));
+	auto& newEnemy = enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType, this));
 	collisionManager_->register_collider("Enemy", newEnemy->GetCollider());
 	newEnemy->SetIsPlayerFlragPtr(player_->GetIsAttackofEnmey());
 }

@@ -1,8 +1,9 @@
 #include "Enemy.h"
 #include "Game/Enviroment.h"
+#include "Game/Scene/GameScene.h"
 
-Enemy::Enemy(const Vector3& position, const EnemyType& enemyType) {
-	Init(position, enemyType); 
+Enemy::Enemy(const Vector3& position, const EnemyType& enemyType, GameScene* gameScene) {
+	Init(position, enemyType, gameScene); 
 }
 Enemy::~Enemy() {
 	Finalize();
@@ -13,7 +14,10 @@ void Enemy::Finalize() {
 	enemyEachOther_SE_->finalize();
 }
 
-void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
+void Enemy::Init(const Vector3& position, const EnemyType& enemyType, GameScene* gameScene) {
+	assert(gameScene);
+	gameScene_ = gameScene;
+	
 	if (enemyType == EnemyType::Normal_Type) {
 		reset_object("triangleRiceBall.obj");
 	} else if (enemyType == EnemyType::SpecialPop_Type) {
@@ -145,6 +149,21 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 		behaviorRequest_ = EnemyState::Blown_State;
 
 		enemyEachOther_SE_->restart();
+
+		//// ボーナスの敵を追加する
+		//Vector3 translate = transform->get_translate();
+		//translate += RandomVector3(-3.0f, 3.0f);
+
+		//// 範囲外に出ないようにする処理
+		//Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
+		//// 中心からの長さ
+		//float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
+		//if (lenght > 5.7f) {
+		//	distance = distance * 5.7f;
+		//	translate = { distance.x, translate.y, distance.z };
+		//}
+
+		//gameScene_->AddEnemy(translate, EnemyType::SpecialPop_Type);
 	}
 }
 
