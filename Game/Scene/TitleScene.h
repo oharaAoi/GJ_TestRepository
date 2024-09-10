@@ -37,5 +37,7 @@ private:
 
 	std::unique_ptr<Camera3D> camera3D_ = nullptr;
 
+	std::unique_ptr<GameObject> titleObject_ = nullptr;
+
 };
 
