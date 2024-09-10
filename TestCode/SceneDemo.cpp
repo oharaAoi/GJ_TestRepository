@@ -14,12 +14,19 @@
 
 #include "Engine/Game/Color/Color.h"
 
+#include "Engine/Game/Managers/AudioManager/AudioManager.h"
+#include "Engine/Game/Managers/TextureManager/TextureManager.h"
+
 SceneDemo::SceneDemo() = default;
 
 SceneDemo::~SceneDemo() = default;
 
 void SceneDemo::load() {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/", "Sphere.obj");
+	// 存在しないファイルをロードしようとするとエラー出力が出る
+	AudioManager::RegisterLoadQue("./Engine/Resources/", "SE_meteoEachOther.wav");
+	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/", "SE_meteoEachOther.wav");
+	TextureManager::RegisterLoadQue("./Engine/Resources/", "SE_meteoEachOther.wav");
 }
 
 void SceneDemo::initialize() {
@@ -110,9 +117,14 @@ void SceneDemo::initialize() {
 	collisionManager->register_collider("Single", single2Collider);
 	collisionManager->register_collider("Single", single3Collider);
 	collisionManager->register_collider("Child", childCollider);
+
+	audioPlayer = std::make_unique<AudioPlayer>();
+	audioPlayer->initialize("");
+	audioPlayer->initialize("SE_meteoEachOther.wav");
 }
 
 void SceneDemo::finalize() {
+	audioPlayer->finalize();
 }
 
 void SceneDemo::begin() {
@@ -189,5 +201,10 @@ void SceneDemo::debug_update() {
 	singleCollider->get_transform().debug_gui();
 	ImGui::End();
 
+	ImGui::Begin("Audio");
+	if (ImGui::Button("Play")) {
+		audioPlayer->restart();
+	}
+	ImGui::End();
 }
 #endif // _DEBUG

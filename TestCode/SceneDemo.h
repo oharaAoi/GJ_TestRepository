@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#include "Engine/Game/Audio/AudioPlayer.h"
+
 class GameObject;
 class Camera3D;
 class BaseCollider;
@@ -49,4 +51,6 @@ private:
 
 	std::unique_ptr<CollisionManager> collisionManager;
 	std::unique_ptr<Camera3D> camera3D;
+
+	std::shared_ptr<AudioPlayer> audioPlayer;
 };

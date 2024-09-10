@@ -57,7 +57,7 @@ void BackgroundLoader::RegisterLoadQue(LoadEvent eventID, const std::string& fil
 	case LoadEvent::LoadAudio:
 		GetInstance().loadEvents.emplace_back(
 			eventID,
-			std::make_unique<LoadingQue>(filePath, fileName, LoadingQue::LoadAudioData{ std::make_shared<AudioResource>() }));
+			std::make_unique<LoadingQue>(filePath, fileName, LoadingQue::LoadAudioData{ std::make_unique<AudioResource>() }));
 		break;
 	default:
 		Log("[BackgroundLoader] EventID is wrong.\n");
@@ -101,34 +101,35 @@ void BackgroundLoader::load_manager() {
 		auto&& nowEvent = loadEvents.begin();
 		// ここからはunlock
 		lock.unlock();
-
+		bool result = false;
+		uint64_t address = 0;
 		switch (nowEvent->eventId) {
 		case LoadEvent::LoadTexture:
 		{
 			// テクスチャロードイベント
-			auto& tex = std::get<0>(nowEvent->data->loadData);
+			auto& tex = std::get<LoadingQue::LoadTextureData>(nowEvent->data->loadData);
 			// テクスチャロード(intermediateResourceはコマンド実行に必要なので保存)
 			tex.intermediateResource = tex.textureData->load_texture(nowEvent->data->filePath + "/" + nowEvent->data->fileName);
-			// 先頭要素を転送キューに追加(内部要素のmoveなので、listそのものはmutex必要なし)
-			waitLoadingQue.push_back(std::move(*nowEvent));
+			if (tex.intermediateResource) {
+				result = true;
+			}
+			address = reinterpret_cast<uint64_t>(tex.textureData.get());
 			break;
 		}
 		case LoadEvent::LoadPolygonMesh:
 		{
 			// メッシュロードイベント
-			auto& mesh = std::get<1>(nowEvent->data->loadData);
-			mesh.meshData->load(nowEvent->data->filePath, nowEvent->data->fileName);
-			// 先頭要素を転送キューに追加(内部要素のmoveなので、listそのものはmutex必要なし)
-			waitLoadingQue.emplace_back(std::move(*nowEvent));
+			auto& mesh = std::get<LoadingQue::LoadPolygonMeshData>(nowEvent->data->loadData);
+			result = mesh.meshData->load(nowEvent->data->filePath, nowEvent->data->fileName);
+			address = reinterpret_cast<uint64_t>(mesh.meshData.get());
 		}
 		break;
 		case LoadEvent::LoadAudio:
 		{
 			// オーディオロードイベント
-			auto& audio = std::get<2>(nowEvent->data->loadData);
-			audio.audioData->load(nowEvent->data->filePath, nowEvent->data->fileName);
-			// 先頭要素を転送キューに追加(内部要素のmoveなので、listそのものはmutex必要なし)
-			waitLoadingQue.emplace_back(std::move(*nowEvent));
+			auto& audio = std::get<LoadingQue::LoadAudioData>(nowEvent->data->loadData);
+			result = audio.audioData->load(nowEvent->data->filePath, nowEvent->data->fileName);
+			address = reinterpret_cast<uint64_t>(audio.audioData.get());
 		}
 		break;
 		default:
@@ -142,6 +143,16 @@ void BackgroundLoader::load_manager() {
 			));
 			std::range_error("[BackgroundLoader] EventID is wrong.");
 			break;
+		}
+		if (result) {
+			// 先頭要素を転送キューに追加(内部要素のmoveなので、listそのものはmutex必要なし)
+			waitLoadingQue.emplace_back(std::move(*nowEvent));
+		}
+		else {
+			Log(std::format("[BackgroundLoader] Faild loading. File-\'{}/{}\' Address-\'{:#x}\'\n",
+				nowEvent->data->filePath, nowEvent->data->fileName,
+				address)
+			);
 		}
 
 		// mutexの再ロック
@@ -187,23 +198,23 @@ void BackgroundLoader::transfer_data() {
 		switch (waitLoadingQueItr->eventId) {
 		case LoadEvent::LoadTexture:
 		{
-			LoadingQue::LoadTextureData& tex = std::get<0>(waitLoadingQueItr->data->loadData);
+			LoadingQue::LoadTextureData& tex = std::get<LoadingQue::LoadTextureData>(waitLoadingQueItr->data->loadData);
 			// TextureManagerに転送
 			TextureManager::Transfer(waitLoadingQueItr->data->fileName, tex.textureData);
 			break;
 		}
 		case LoadEvent::LoadPolygonMesh:
 		{
-			LoadingQue::LoadPolygonMeshData& mesh = std::get<1>(waitLoadingQueItr->data->loadData);
+			LoadingQue::LoadPolygonMeshData& mesh = std::get<LoadingQue::LoadPolygonMeshData>(waitLoadingQueItr->data->loadData);
 			// PolygomMeshManagerに転送
 			PolygonMeshManager::Transfer(waitLoadingQueItr->data->fileName, mesh.meshData);
 			break;
 		}
 		case LoadEvent::LoadAudio:
 		{
-			LoadingQue::LoadAudioData& audio = std::get<2>(waitLoadingQueItr->data->loadData);
+			LoadingQue::LoadAudioData& audio = std::get<LoadingQue::LoadAudioData>(waitLoadingQueItr->data->loadData);
 			// AudioManagerに転送
-			AudioManager::Transfer(waitLoadingQueItr->data->fileName, audio.audioData);
+			AudioManager::Transfer(waitLoadingQueItr->data->fileName, std::move(audio.audioData));
 			break;
 		}
 		default:
