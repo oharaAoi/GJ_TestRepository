@@ -16,6 +16,8 @@
 
 #include "Engine/Game/Managers/AudioManager/AudioManager.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
+#include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
+#include "Engine/Render/RenderPath/RenderPath.h"
 
 SceneDemo::SceneDemo() = default;
 
@@ -61,9 +63,6 @@ void SceneDemo::initialize() {
 	childCollider->set_on_collision(
 		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &child->get_materials()[0].color)
 	);
-	childCollider->set_on_collision_enter(
-		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &child->get_materials()[0].color)
-	);
 	childCollider->set_on_collision_exit(
 		std::bind(&SceneDemo::on_collision_exit, this, std::placeholders::_1, &child->get_materials()[0].color)
 	);
@@ -72,9 +71,6 @@ void SceneDemo::initialize() {
 	singleCollider = CreateShared<SphereCollider>();
 	singleCollider->initialize();
 #ifdef _DEBUG
-	singleCollider->set_on_collision(
-		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &singleCollider->get_collider_drawer().get_materials()[0].color)
-	);
 	singleCollider->set_on_collision_enter(
 		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &singleCollider->get_collider_drawer().get_materials()[0].color)
 	);
@@ -85,29 +81,19 @@ void SceneDemo::initialize() {
 
 	single2Collider = CreateShared<SphereCollider>();
 	single2Collider->initialize();
+	single2Collider->get_transform().set_translate_x(-3.0f);
 #ifdef _DEBUG
 	single2Collider->set_on_collision(
 		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &single2Collider->get_collider_drawer().get_materials()[0].color)
-	);
-	single2Collider->set_on_collision_enter(
-		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &single2Collider->get_collider_drawer().get_materials()[0].color)
-	);
-	single2Collider->set_on_collision_exit(
-		std::bind(&SceneDemo::on_collision_exit, this, std::placeholders::_1, &single2Collider->get_collider_drawer().get_materials()[0].color)
 	);
 #endif // _DEBUG
 
 	single3Collider = CreateShared<SphereCollider>();
 	single3Collider->initialize();
+	single3Collider->get_transform().set_translate_x(3.0f);
 #ifdef _DEBUG
-	single3Collider->set_on_collision(
-		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &single3Collider->get_collider_drawer().get_materials()[0].color)
-	);
 	single3Collider->set_on_collision_enter(
 		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &single3Collider->get_collider_drawer().get_materials()[0].color)
-	);
-	single3Collider->set_on_collision_exit(
-		std::bind(&SceneDemo::on_collision_exit, this, std::placeholders::_1, &single3Collider->get_collider_drawer().get_materials()[0].color)
 	);
 #endif // _DEBUG
 
@@ -121,10 +107,28 @@ void SceneDemo::initialize() {
 	audioPlayer = std::make_unique<AudioPlayer>();
 	audioPlayer->initialize("");
 	audioPlayer->initialize("SE_meteoEachOther.wav");
+
+	object3dNode = std::make_unique<Object3DNode>();
+	object3dNode->initialize();
+	object3dNode->set_render_target();
+
+	spriteNode = std::make_unique<SpriteNode>();
+	spriteNode->initialize();
+	spriteNode->set_background_texture(object3dNode->result_stv_handle());
+	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+
+	RenderPath path{};
+	path.initialize({ object3dNode, spriteNode });
+
+	RenderPathManager::RegisterPath("SceneDemo", std::move(path));
+	RenderPathManager::SetPath("SceneDemo");
+
+	DirectXSwapChain::SetClearColor(Color{ 0.0f,0.0f,0.0f,0.0f });
 }
 
 void SceneDemo::finalize() {
 	audioPlayer->finalize();
+	RenderPathManager::UnregisterPath("SceneDemo");
 }
 
 void SceneDemo::begin() {
@@ -156,9 +160,10 @@ void SceneDemo::draw() const {
 	collisionManager->debug_draw3d(*camera3D);
 #endif // _DEBUG
 	RenderPathManager::Next();
+	RenderPathManager::Next();
 }
 
-void SceneDemo::on_collision([[maybe_unused]]const BaseCollider* const other, Color* object) {
+void SceneDemo::on_collision([[maybe_unused]] const BaseCollider* const other, Color* object) {
 	*object = { 1.0f,0,0,1.0f };
 }
 
