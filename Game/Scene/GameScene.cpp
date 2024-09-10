@@ -31,6 +31,19 @@ void GameScene::initialize() {
 	enemyManager_ = std::make_unique<EnemyManager>(this);
 
 	collisionManager_->register_collider("Player", player_->GetCollider());
+
+	object3DNode = std::make_unique<Object3DNode>();
+	object3DNode->initialize();
+	object3DNode->set_render_target();
+
+	spriteNode = std::make_unique<SpriteNode>();
+	spriteNode->initialize();
+	spriteNode->set_background_texture(object3DNode->result_stv_handle());
+	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+
+	path.initialize({ object3DNode,spriteNode });
+	RenderPathManager::RegisterPath("GameScene", std::move(path));
+	RenderPathManager::SetPath("GameScene");
 }
 
 void GameScene::load() {
@@ -179,6 +192,8 @@ void GameScene::draw() const {
 	enemyManager_->Draw();
 	collisionManager_->debug_draw3d(*camera3D_);
 #endif
+	RenderPathManager::Next();
+
 	RenderPathManager::Next();
 }
 

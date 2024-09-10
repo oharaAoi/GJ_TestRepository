@@ -7,6 +7,11 @@
 #include "Game/Scene/GameScene.h"
 #include "Game/UI/GameOverUI.h"
 #include "Engine/Game/Camera/Camera2D.h"
+#include "Engine/Render/RenderPath/RenderPath.h"
+#include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
+#include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
+#include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
+#include "Engine/Render/RenderNode/ChromaticAberration/ChromaticAberrationNode.h"
 
 class GameOverScene :
     public BaseScene {
@@ -36,8 +41,14 @@ private:
 
 	std::unique_ptr<Camera3D> camera3D_ = nullptr;
 
+	bool nextGame_ = 0;
+
 	// ------------------- UI ------------------- //
 	std::unique_ptr<GameOverUI> gameOverUI_ = nullptr;
+
+	std::shared_ptr<Object3DNode> object3DNode;
+	std::shared_ptr<SpriteNode> spriteNode;
+	RenderPath path;
 
 };
 
