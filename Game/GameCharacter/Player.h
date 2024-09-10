@@ -7,8 +7,8 @@
 #include "Engine/Math/Quaternion.h"
 #include "Game/GameObject/GravityRod.h"
 #include "Engine/Game/Camera/Camera3D.h"
-
 #include "Engine/Game/Collision/Collider/SphereCollider.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
 
 class Transform3D;
 class Color;
@@ -108,6 +108,6 @@ private:
 
 	float radius_ = 1.0f;
 
-
+	std::unique_ptr<AudioPlayer> enemyKick_SE_ = nullptr;
 };
 

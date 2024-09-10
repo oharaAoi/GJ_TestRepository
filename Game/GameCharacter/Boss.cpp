@@ -9,6 +9,11 @@ Boss::Boss() {
 Boss::~Boss() {
 }
 
+void Boss::Finalize() {
+	bossHit_SE_->stop();
+	bossHit_SE_->finalize();
+}
+
 void Boss::Init() {
 	reset_object("mouth.obj");
 
@@ -55,9 +60,8 @@ void Boss::Init() {
 	faceParts_[LeftEyebrows_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "LeftEyebrows"));
 	faceParts_[RightEyebrows_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "RightEyebrows"));
 
-	/*debugObject_ = std::make_unique<GameObject>();
-	debugObject_->reset_object("GravityRod.obj");
-	debugObject_->set_parent(*hierarchy);*/
+	bossHit_SE_ = std::make_unique<AudioPlayer>();
+	bossHit_SE_->initialize("SE_bossHited.wav", 0.5f, false);
 }
 
 void Boss::Update() {
@@ -89,8 +93,10 @@ void Boss::Move() {
 
 	translate.y -= pushBackValue_;
 	pushBackValue_ -= 0.1f;
-	pushBackValue_ = std::max(0.0f, pushBackValue_);
-
+	if (pushBackValue_ <= 0.0f) {
+		pushBackValue_ = 0.0f;
+	}
+	
 	transform->set_translate(translate);
 }
 

@@ -33,6 +33,9 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 	isFalling_ = false;
 
 	behaviorRequest_ = EnemyState::Root_State;
+
+	enemyAttack_SE_ = std::make_unique<AudioPlayer>();
+	enemyAttack_SE_->initialize("SE_enemyAttack.wav", 0.5f, false);
 }
 
 void Enemy::Update(const Vector3& playerPosition) {
@@ -119,6 +122,7 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 	if (other->group() == "Player") { // player
 		if (isAttack_) {
 			velocity_ *= -0.1f;
+			enemyAttack_SE_->play();
 			return;
 		}
 
