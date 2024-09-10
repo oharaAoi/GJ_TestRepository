@@ -8,6 +8,8 @@
 void GameScene::initialize() {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 	EffectManager::GetInstance()->Init();
+	AdjustmentItem::GetInstance()->Init("GameScene");
+
 	effectManager_ = EffectManager::GetInstance();
 	collisionManager_ = std::make_unique<CollisionManager>();
 
@@ -57,8 +59,12 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariEnemy.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariSpEnemy.obj");
 
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossFace", "bossFace.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/LowerJaw", "lowerJaw.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/UpperJaw", "upperJaw.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/InMouth", "InMouth.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyes", "bossEyes.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyesbrows", "bossEyebrows.obj");
 }
 
 void GameScene::begin() {
@@ -70,6 +76,8 @@ void GameScene::update() {
 	// ↓ Inputの更新
 	// -------------------------------------------------
 	Input::GetInstance()->Update();
+
+	AdjustmentItem::GetInstance()->Update();
 
 	// -------------------------------------------------
 	// ↓ カメラを更新

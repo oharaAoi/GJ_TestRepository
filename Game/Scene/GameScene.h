@@ -1,18 +1,14 @@
 #pragma once
-// Scene
 #include "Engine/Game/Scene/BaseScene.h"
-// WorldObject
 #include "Game/WorldObject/Field.h"
-// GameObject
 #include "Game/GameCharacter/Player.h"
 #include "Game/WorldObject/Meteorite.h"
 #include "Game/GameCharacter/Boss.h"
 #include "Game/GameCharacter/Enemy.h"
-// Input
 #include "Game/Input/Input.h"
-// Scene
 #include "Game/Scene/ClearScene.h"
 #include "Game/Scene/GameOverScene.h"
+#include "Game/GameCharacter/Manager/AdjustmentItem.h"
 
 // Manager
 #include "Game/Effect/EffectManager.h"
@@ -109,7 +105,7 @@ private:
 	std::shared_ptr<SpriteNode> spriteNode;
 	RenderPath path;
 
-	// ------------------- AudioList ------------------- //
+
 	
 };
 

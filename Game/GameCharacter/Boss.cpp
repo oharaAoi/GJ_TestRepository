@@ -12,10 +12,18 @@ Boss::~Boss() {
 void Boss::Init() {
 	reset_object("mouth.obj");
 
-	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
-		faceParts_[oi].set_parent(get_hierarchy());
-	}
+	faceParts_.emplace_back(std::make_unique<GameObject>("bossFace.obj"));
+	faceParts_.emplace_back(std::make_unique<GameObject>("lowerJaw.obj"));
+	faceParts_.emplace_back(std::make_unique<GameObject>("upperJaw.obj"));
+	faceParts_.emplace_back(std::make_unique<GameObject>("InMouth.obj"));
+	faceParts_.emplace_back(std::make_unique<GameObject>("bossEyes.obj"));
+	faceParts_.emplace_back(std::make_unique<GameObject>("bossEyes.obj"));
+	faceParts_.emplace_back(std::make_unique<GameObject>("bossEyebrows.obj"));
+	faceParts_.emplace_back(std::make_unique<GameObject>("bossEyebrows.obj"));
 
+	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
+		faceParts_[oi]->set_parent(*hierarchy);
+	}
 
 	Vector3 translate = transform->get_translate();
 	translate.y = -2.0f;
@@ -30,8 +38,17 @@ void Boss::Init() {
 	movingMouth_.period = 90;
 	movingMouth_.amplitude = 0.4f;
 
-	faceParts_.emplace_back("lowerJaw.obj");
-	faceParts_.emplace_back("upperJaw.obj");
+	adjustmentItem_ = AdjustmentItem::GetInstance();
+	const char* groupName = "Boss";
+	adjustmentItem_->AddItem(groupName, "LeftEye", faceParts_[LeftEye_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "RightEye", faceParts_[RightEye_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "LeftEyebrows", faceParts_[LeftEyebrows_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "RightEyebrows", faceParts_[RightEyebrows_Parts]->get_transform().get_translate());
+
+	faceParts_[LeftEye_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "LeftEye"));
+	faceParts_[RightEye_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "RightEye"));
+	faceParts_[LeftEyebrows_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "LeftEyebrows"));
+	faceParts_[RightEyebrows_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "RightEyebrows"));
 
 	/*debugObject_ = std::make_unique<GameObject>();
 	debugObject_->reset_object("GravityRod.obj");
@@ -39,22 +56,22 @@ void Boss::Init() {
 }
 
 void Boss::Update() {
-	Move();
+	//Move();
 
 	FaceMove();
 }
 
 void Boss::Begin_Rendering(Camera3D* camera3d) {
-	//begin_rendering(*camera3d);
+	begin_rendering(*camera3d);
 	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
-		faceParts_[oi].begin_rendering(*camera3d);
+		faceParts_[oi]->begin_rendering(*camera3d);
 	}
 }
 
 void Boss::Draw() const {
 	//draw();
 	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
-		faceParts_[oi].draw();
+		faceParts_[oi]->draw();
 	}
 }
 
@@ -70,8 +87,8 @@ void Boss::Move() {
 }
 
 void Boss::FaceMove() {
-	float upTranslate = faceParts_[UpperJaw_Parts].get_transform().get_translate().z;
-	float lowerTranslate = faceParts_[LowerJaw_Parts].get_transform().get_translate().z;
+	float upTranslate = faceParts_[UpperJaw_Parts]->get_transform().get_translate().z;
+	float lowerTranslate = faceParts_[LowerJaw_Parts]->get_transform().get_translate().z;
 	// 口を動かすアニメーションを行う
 	const float step = (2.0f * PI) / static_cast<float>(movingMouth_.period);
 	movingMouth_.parameter += step;
@@ -80,8 +97,8 @@ void Boss::FaceMove() {
 	upTranslate += std::sin(movingMouth_.parameter) * movingMouth_.amplitude;
 	lowerTranslate -= std::sin(movingMouth_.parameter) * movingMouth_.amplitude;
 	
-	faceParts_[LowerJaw_Parts].get_transform().set_translate_z(upTranslate);
-	faceParts_[UpperJaw_Parts].get_transform().set_translate_z(lowerTranslate);
+	faceParts_[LowerJaw_Parts]->get_transform().set_translate_z(upTranslate);
+	faceParts_[UpperJaw_Parts]->get_transform().set_translate_z(lowerTranslate);
 }
 
 void Boss::OnCollision() {
@@ -115,7 +132,7 @@ void Boss::EditImGui() {
 	ImGui::DragScalar("period", ImGuiDataType_U32, &movingMouth_.period);
 	ImGui::DragFloat("amplitude", &movingMouth_.amplitude, 0.1f, 0.0f, 1.0f);
 	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
-		faceParts_[oi].debug_gui();
+		faceParts_[oi]->debug_gui();
 	}
 	ImGui::Separator();
 	debug_gui();

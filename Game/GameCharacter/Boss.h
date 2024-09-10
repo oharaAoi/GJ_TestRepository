@@ -7,17 +7,25 @@
 #include "Engine/Math/Vector3.h"
 #include "Engine/Math/Quaternion.h"
 #include "Engine/Math/Definition.h"
+#include "Game/GameCharacter/Manager/AdjustmentItem.h"
 
 
 enum BossFaceParts {
+	Face_Parts,
 	LowerJaw_Parts,
-	UpperJaw_Parts
+	UpperJaw_Parts,
+	InMouth_Parts,
+	LeftEye_Parts,
+	RightEye_Parts,
+	LeftEyebrows_Parts,
+	RightEyebrows_Parts,
 };
 
 class Boss
 	: public GameObject {
 public:
 
+	
 	struct Moving {
 		float parameter;
 		float amplitude;
@@ -60,6 +68,8 @@ public:	// accesser
 
 private:
 
+	AdjustmentItem* adjustmentItem_ = nullptr;
+
 	Vector3 velocity_;
 	float pushBackValue_;
 	float pushBackStrength_ = 0.2f;
@@ -70,7 +80,7 @@ private:
 	Moving movingMouth_;
 
 	// 顔の表示用のゲームオブジェクト配列
-	std::vector<GameObject> faceParts_;
+	std::vector<std::unique_ptr<GameObject>> faceParts_;
 
 };
 
