@@ -60,8 +60,9 @@ void GameOverScene::update() {
 }
 
 void GameOverScene::begin_rendering() {
+	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
-
+	
 	gameOverUI_->Begin_Rendering();
 }
 

@@ -9,7 +9,7 @@
 #include "Game/Scene/ClearScene.h"
 #include "Game/Scene/GameOverScene.h"
 #include "Game/GameCharacter/Manager/AdjustmentItem.h"
-
+#include "Engine/Game/Camera/Camera2D.h"
 // Manager
 #include "Game/Effect/EffectManager.h"
 #include "Game/WorldObject/MeteoriteManager.h"
@@ -23,6 +23,7 @@
 #include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
 #include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
+#include "Game/UI/PlayerUI.h"
 
 class GameScene :
 	public BaseScene {
@@ -99,6 +100,9 @@ private:
 	std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
 
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
+
+	// ------------------- UI ------------------- //
+	std::unique_ptr<PlayerUI> playerUI_ = nullptr;
 
 	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;
