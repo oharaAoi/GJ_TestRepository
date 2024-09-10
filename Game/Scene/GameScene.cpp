@@ -86,7 +86,7 @@ void GameScene::update() {
 	// ↓ カメラを更新
 	// -------------------------------------------------
 	camera3D_->update();
-	camera3D_->update_matrix();
+	
 
 	// -------------------------------------------------
 	// ↓ ゲームクリア/オーバー確認
@@ -152,6 +152,8 @@ void GameScene::update() {
 }
 
 void GameScene::begin_rendering() {
+	camera3D_->begin_rendering(*camera3D_);
+	camera3D_->update_matrix();
 	field_->begin_rendering(*camera3D_);
 
 	player_->Begin_Rendering(camera3D_.get());
