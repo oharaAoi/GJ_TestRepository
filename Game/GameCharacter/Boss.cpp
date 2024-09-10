@@ -12,6 +12,9 @@ Boss::~Boss() {
 void Boss::Init() {
 	reset_object("mouth.obj");
 
+	overLine_ = std::make_unique<GameObject>();
+	overLine_->reset_object("OverLine.obj");
+
 	faceParts_.emplace_back(std::make_unique<GameObject>("bossFace.obj"));
 	faceParts_.emplace_back(std::make_unique<GameObject>("lowerJaw.obj"));
 	faceParts_.emplace_back(std::make_unique<GameObject>("upperJaw.obj"));
@@ -24,6 +27,8 @@ void Boss::Init() {
 	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
 		faceParts_[oi]->set_parent(*hierarchy);
 	}
+
+	overLine_->set_parent(*hierarchy);
 
 	Vector3 translate = transform->get_translate();
 	translate.y = -2.0f;
@@ -66,6 +71,7 @@ void Boss::Begin_Rendering(Camera3D* camera3d) {
 	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
 		faceParts_[oi]->begin_rendering(*camera3d);
 	}
+	overLine_->begin_rendering(*camera3d);
 }
 
 void Boss::Draw() const {
@@ -73,6 +79,8 @@ void Boss::Draw() const {
 	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
 		faceParts_[oi]->draw();
 	}
+	overLine_->draw();
+	overLine_->draw();
 }
 
 void Boss::Move() {

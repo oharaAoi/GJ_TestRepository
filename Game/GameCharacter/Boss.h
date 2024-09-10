@@ -82,5 +82,6 @@ private:
 	// 顔の表示用のゲームオブジェクト配列
 	std::vector<std::unique_ptr<GameObject>> faceParts_;
 
+	std::unique_ptr<GameObject> overLine_ = nullptr;
 };
 
