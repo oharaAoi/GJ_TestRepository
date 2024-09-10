@@ -1,0 +1,28 @@
+{
+    "": {
+        "enemy0": {
+            "enemyType": 0,
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "enemy1": {
+            "enemyType": 0,
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "enemy2": {
+            "enemyType": 0,
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    }
+}
