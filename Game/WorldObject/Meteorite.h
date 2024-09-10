@@ -104,8 +104,6 @@ private:
 
 	uint32_t nextCollisionType_;
 
-	std::shared_ptr<AudioPlayer> meteoHit_SE_ = nullptr;
-
-	std::unordered_map<std::string, AudioPlayer*> audioPlayMap_;
+	std::unique_ptr<AudioPlayer> meteoHit_SE_ = nullptr;
 };
 

@@ -68,6 +68,8 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyesbrows", "bossEyebrows.obj");
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl.png");
+
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
 }
 
 void GameScene::begin() {

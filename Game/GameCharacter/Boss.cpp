@@ -56,7 +56,7 @@ void Boss::Init() {
 }
 
 void Boss::Update() {
-	//Move();
+	Move();
 
 	FaceMove();
 }
