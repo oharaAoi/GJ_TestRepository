@@ -21,7 +21,7 @@ Meteorite::~Meteorite() {
 }
 
 void Meteorite::Init(const Vector3& pos) {
-	reset_object("particle.obj");
+	reset_object("circleRiceBall.obj");
 	Vector3 position = pos;
 	transform->set_translate(pos);
 	transform->set_translate_y(14.0f);
