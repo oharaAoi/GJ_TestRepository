@@ -8,6 +8,8 @@
 void GameScene::initialize() {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 	EffectManager::GetInstance()->Init();
+	AdjustmentItem::GetInstance()->Init("GameScene");
+
 	effectManager_ = EffectManager::GetInstance();
 	collisionManager_ = std::make_unique<CollisionManager>();
 
@@ -31,6 +33,19 @@ void GameScene::initialize() {
 	enemyManager_ = std::make_unique<EnemyManager>(this);
 
 	collisionManager_->register_collider("Player", player_->GetCollider());
+
+	object3DNode = std::make_unique<Object3DNode>();
+	object3DNode->initialize();
+	object3DNode->set_render_target();
+
+	spriteNode = std::make_unique<SpriteNode>();
+	spriteNode->initialize();
+	spriteNode->set_background_texture(object3DNode->result_stv_handle());
+	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+
+	path.initialize({ object3DNode,spriteNode });
+	RenderPathManager::RegisterPath("GameScene", std::move(path));
+	RenderPathManager::SetPath("GameScene");
 }
 
 void GameScene::load() {
@@ -43,6 +58,13 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "Field.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariEnemy.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariSpEnemy.obj");
+
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossFace", "bossFace.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/LowerJaw", "lowerJaw.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/UpperJaw", "upperJaw.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/InMouth", "InMouth.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyes", "bossEyes.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyesbrows", "bossEyebrows.obj");
 }
 
 void GameScene::begin() {
@@ -55,11 +77,24 @@ void GameScene::update() {
 	// -------------------------------------------------
 	Input::GetInstance()->Update();
 
+	AdjustmentItem::GetInstance()->Update();
+
 	// -------------------------------------------------
 	// ↓ カメラを更新
 	// -------------------------------------------------
 	camera3D_->update();
 	camera3D_->update_matrix();
+
+	// -------------------------------------------------
+	// ↓ ゲームクリア/オーバー確認
+	// -------------------------------------------------
+	if (boss_->GetIsClear()) {
+		SceneManager::SetSceneChange(CreateUnique<ClearScene>(), false);
+	}
+
+	if (boss_->GetIsGameOver(field_->GetCylinderHight())) {
+		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(), false);
+	}
 
 	// -------------------------------------------------
 	// ↓ GameObjectの更新
@@ -168,6 +203,8 @@ void GameScene::draw() const {
 	enemyManager_->Draw();
 	collisionManager_->debug_draw3d(*camera3D_);
 #endif
+	RenderPathManager::Next();
+
 	RenderPathManager::Next();
 }
 

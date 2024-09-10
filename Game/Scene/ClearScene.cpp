@@ -41,7 +41,9 @@ void ClearScene::draw() const {
 #include <externals/imgui/imgui.h>
 void ClearScene::debug_update() {
 	ImGui::Begin("Clear");
-
+	ImGui::Text("nowScene: Clear");
+	ImGui::Text("nextScene: Title");
+	ImGui::Text("push: A or Space");
 	ImGui::End();
 }
 #endif

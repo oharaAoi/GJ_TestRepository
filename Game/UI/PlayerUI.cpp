@@ -9,6 +9,7 @@ PlayerUI::~PlayerUI() {
 }
 
 void PlayerUI::Init() {
+	
 }
 
 void PlayerUI::Update() {

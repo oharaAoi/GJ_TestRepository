@@ -2,6 +2,10 @@
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Game/Collision/Collider/SphereCollider.h"
 #include "Engine/Math/Vector3.h"
+#include "Engine/Game/Managers/AudioManager/AudioManager.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
+#include "Engine/Game/Audio/AudioResource.h"
+
 class Color;
 
 class Meteorite
@@ -99,5 +103,9 @@ private:
 	bool isEnemyHit_;
 
 	uint32_t nextCollisionType_;
+
+	std::shared_ptr<AudioPlayer> meteoHit_SE_ = nullptr;
+
+	std::unordered_map<std::string, AudioPlayer*> audioPlayMap_;
 };
 

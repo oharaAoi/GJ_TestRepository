@@ -594,6 +594,15 @@
     <ClCompile Include="Game\Scene\TutorialScene.cpp">
       <Filter>MainGame\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Game\UI\UIObject.cpp">
+      <Filter>MainGame\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\GameOverUI.cpp">
+      <Filter>MainGame\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameCharacter\Manager\AdjustmentItem.cpp">
+      <Filter>MainGame\GameCharacter\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WinApp.h">
@@ -925,6 +934,15 @@
     </ClInclude>
     <ClInclude Include="Game\Scene\TutorialScene.h">
       <Filter>MainGame\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\UIObject.h">
+      <Filter>MainGame\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\GameOverUI.h">
+      <Filter>MainGame\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\Manager\AdjustmentItem.h">
+      <Filter>MainGame\GameCharacter\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -177,6 +177,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Function\TimedCall.cpp" />
     <ClCompile Include="Game\GameCharacter\Boss.cpp" />
     <ClCompile Include="Game\GameCharacter\Enemy.cpp" />
+    <ClCompile Include="Game\GameCharacter\Manager\AdjustmentItem.cpp" />
     <ClCompile Include="Game\GameCharacter\Manager\EnemyManager.cpp" />
     <ClCompile Include="Game\GameCharacter\Player.cpp" />
     <ClCompile Include="Game\GameCharacter\State\BaseEnemyState.cpp" />
@@ -192,7 +193,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\Scene\TutorialScene.cpp" />
+    <ClCompile Include="Game\UI\GameOverUI.cpp" />
     <ClCompile Include="Game\UI\PlayerUI.cpp" />
+    <ClCompile Include="Game\UI\UIObject.cpp" />
     <ClCompile Include="Game\WorldObject\Field.cpp" />
     <ClCompile Include="Game\WorldObject\Meteorite.cpp" />
     <ClCompile Include="Game\WorldObject\MeteoriteManager.cpp" />
@@ -290,6 +293,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Function\TimedCall.h" />
     <ClInclude Include="Game\GameCharacter\Boss.h" />
     <ClInclude Include="Game\GameCharacter\Enemy.h" />
+    <ClInclude Include="Game\GameCharacter\Manager\AdjustmentItem.h" />
     <ClInclude Include="Game\GameCharacter\Manager\EnemyManager.h" />
     <ClInclude Include="Game\GameCharacter\Player.h" />
     <ClInclude Include="Game\GameCharacter\State\BaseEnemyState.h" />
@@ -305,7 +309,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Scene\TutorialScene.h" />
+    <ClInclude Include="Game\UI\GameOverUI.h" />
     <ClInclude Include="Game\UI\PlayerUI.h" />
+    <ClInclude Include="Game\UI\UIObject.h" />
     <ClInclude Include="Game\WorldObject\Field.h" />
     <ClInclude Include="Game\WorldObject\Meteorite.h" />
     <ClInclude Include="Game\WorldObject\MeteoriteManager.h" />

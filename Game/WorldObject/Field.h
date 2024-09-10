@@ -44,6 +44,8 @@ public:	// accessor
 
 	void SetVelocityY(const float& VelocityY) { velocityY_ = VelocityY; }
 
+	const float GetCylinderHight() const { return cylinderHight_; }
+
 private:
 
 	float radius_ = 5.7f;

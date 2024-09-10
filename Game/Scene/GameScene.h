@@ -1,15 +1,14 @@
 #pragma once
-// Scene
 #include "Engine/Game/Scene/BaseScene.h"
-// WorldObject
 #include "Game/WorldObject/Field.h"
-// GameObject
 #include "Game/GameCharacter/Player.h"
 #include "Game/WorldObject/Meteorite.h"
 #include "Game/GameCharacter/Boss.h"
 #include "Game/GameCharacter/Enemy.h"
-// Input
 #include "Game/Input/Input.h"
+#include "Game/Scene/ClearScene.h"
+#include "Game/Scene/GameOverScene.h"
+#include "Game/GameCharacter/Manager/AdjustmentItem.h"
 
 // Manager
 #include "Game/Effect/EffectManager.h"
@@ -18,6 +17,12 @@
 #include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
 #include "Game/FollowCamera.h"
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
+#include "Engine/Game/Managers/AudioManager/AudioManager.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
+#include "Engine/Render/RenderPath/RenderPath.h"
+#include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
+#include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
+#include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 
 class GameScene :
 	public BaseScene {
@@ -95,5 +100,12 @@ private:
 
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
+	// ------------------- RenderNode ------------------- //
+	std::shared_ptr<Object3DNode> object3DNode;
+	std::shared_ptr<SpriteNode> spriteNode;
+	RenderPath path;
+
+
+	
 };
 
