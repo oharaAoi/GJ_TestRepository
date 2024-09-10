@@ -19,6 +19,7 @@ void GameScene::initialize() {
 	player_->set_parent(field_->get_hierarchy());
 	boss_ = std::make_unique<Boss>();
 
+	Camera2D::Initialize();
 	camera3D_ = std::make_unique<FollowCamera>();
 	camera3D_->initialize();
 	camera3D_->set_transform({
@@ -34,6 +35,8 @@ void GameScene::initialize() {
 	enemyManager_ = std::make_unique<EnemyManager>(this);
 
 	collisionManager_->register_collider("Player", player_->GetCollider());
+
+	playerUI_ = std::make_unique<PlayerUI>();
 
 	object3DNode = std::make_unique<Object3DNode>();
 	object3DNode->initialize();
@@ -67,7 +70,8 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyes", "bossEyes.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyesbrows", "bossEyebrows.obj");
 
-	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
 }
@@ -88,7 +92,7 @@ void GameScene::update() {
 	// ↓ カメラを更新
 	// -------------------------------------------------
 	camera3D_->update();
-	
+	Camera2D::CameraUpdate();
 
 	// -------------------------------------------------
 	// ↓ ゲームクリア/オーバー確認
@@ -151,11 +155,17 @@ void GameScene::update() {
 	CheckBossCollision();
 
 	CheckMeteoToField();
+
+	
 }
 
 void GameScene::begin_rendering() {
+
 	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
+
+	playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
+
 	field_->begin_rendering(*camera3D_);
 
 	player_->Begin_Rendering(camera3D_.get());
@@ -174,6 +184,8 @@ void GameScene::begin_rendering() {
 #ifdef _DEBUG
 	enemyManager_->Begin_Rendering(*camera3D_);
 #endif
+
+	playerUI_->BeginRendering();
 }
 
 void GameScene::late_update() {
@@ -211,7 +223,7 @@ void GameScene::draw() const {
 	collisionManager_->debug_draw3d(*camera3D_);
 #endif
 	RenderPathManager::Next();
-
+	playerUI_->Draw();
 	RenderPathManager::Next();
 }
 
@@ -321,6 +333,12 @@ void GameScene::debug_update() {
 	ImGui::Begin("Meteorite");
 	ImGui::DragFloat("attractionedStrength", &Meteorite::kAttractionedStrength_, 0.1f, 0.0f, 200.0f);
 	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f, 0.0f, 5.0f);
+	ImGui::End();
+
+	ImGui::Begin("UI");
+	ImGui::Text("player");
+	ImGui::Separator();
+	playerUI_->EditGui();
 	ImGui::End();
 
 	meteoriteManager_->EditImGui();
