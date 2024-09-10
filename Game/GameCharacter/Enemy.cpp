@@ -14,7 +14,7 @@ Enemy::~Enemy() {
 
 void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 	if (enemyType == EnemyType::Normal_Type) {
-		reset_object("kariEnemy.obj");
+		reset_object("triangleRiceBall.obj");
 	} else if (enemyType == EnemyType::SpecialPop_Type) {
 		reset_object("kariSpEnemy.obj");
 	}
@@ -27,11 +27,12 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 	transform->set_translate(position);
 	transform->set_translate_y(13.0f);
+
 	enemyType_ = enemyType;
 
 	isFalling_ = false;
 
-	behaviorRequest_ = EnemyState::Approach_State;
+	behaviorRequest_ = EnemyState::Root_State;
 }
 
 void Enemy::Update(const Vector3& playerPosition) {
