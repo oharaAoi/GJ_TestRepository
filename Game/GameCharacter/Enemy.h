@@ -31,6 +31,8 @@ public:
 
 public:	// メンバ関数
 
+	void Finalize();
+
 	void Init(const Vector3& position, const EnemyType& enemyType);
 	void Update(const Vector3& playerPosition);
 
@@ -49,8 +51,6 @@ public:	// メンバ関数
 	void On_Collision_Exit(const BaseCollider* const);
 
 public:
-
-	const std::string GetMeteoId() const { return "Enemy" + std::to_string(serialNumber_); }
 
 	std::weak_ptr<BaseCollider> GetCollider() { return sphereCollider_; }
 
@@ -79,23 +79,15 @@ public:
 	const bool GetIsDead() const { return isDead_;}
 	void SetIsDead(const bool& isDead) { isDead_ = isDead; }
 
-	// ----------- 次に当たり判定を取る対象 ----------- //
-	void SetNextCollision(const uint32_t& num) { nextCollisionType_ = num; }
-
 	void SetIsPlayerFlragPtr(bool* isBool) { isPlayerFlragPtr_ = isBool; }
 
 private:
-
-	uint32_t serialNumber_ = 0;
-	static uint32_t nextSerialNumber;
 
 	std::unique_ptr<BaseEnemyState> state_ = nullptr;
 	std::shared_ptr<SphereCollider> sphereCollider_ = nullptr;
 
 	EnemyState behavior_ = EnemyState::Root_State;
 	std::optional<EnemyState> behaviorRequest_ = std::nullopt;
-
-	uint32_t nextCollisionType_;
 
 	EnemyType enemyType_;
 	float radius_ = 1.0f;
@@ -115,5 +107,6 @@ private:
 	const uint32_t attackTime_ = 50;
 
 	std::unique_ptr<AudioPlayer> enemyAttack_SE_ = nullptr;
+	std::unique_ptr<AudioPlayer> enemyEachOther_SE_ = nullptr;
 };
 

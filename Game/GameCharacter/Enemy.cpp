@@ -1,15 +1,16 @@
 #include "Enemy.h"
 #include "Game/Enviroment.h"
 
-uint32_t Enemy::nextSerialNumber = 0;
-
 Enemy::Enemy(const Vector3& position, const EnemyType& enemyType) {
-	serialNumber_ = nextSerialNumber;
-	// 次の番号を加算
-	++nextSerialNumber;
 	Init(position, enemyType); 
 }
 Enemy::~Enemy() {
+	Finalize();
+}
+
+void Enemy::Finalize() {
+	enemyAttack_SE_->finalize();
+	enemyEachOther_SE_->finalize();
 }
 
 void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
@@ -36,6 +37,8 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 	enemyAttack_SE_ = std::make_unique<AudioPlayer>();
 	enemyAttack_SE_->initialize("SE_enemyAttack.wav", 0.5f, false);
+	enemyEachOther_SE_ = std::make_unique<AudioPlayer>();
+	enemyEachOther_SE_->initialize("SE_enemyEachOther.wav", 0.5f, false);
 }
 
 void Enemy::Update(const Vector3& playerPosition) {
@@ -122,7 +125,7 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 	if (other->group() == "Player") { // player
 		if (isAttack_) {
 			velocity_ *= -0.1f;
-			enemyAttack_SE_->play();
+			enemyAttack_SE_->restart();
 			return;
 		}
 
@@ -140,6 +143,8 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 		velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
 		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;
 		behaviorRequest_ = EnemyState::Blown_State;
+
+		enemyEachOther_SE_->restart();
 	}
 }
 

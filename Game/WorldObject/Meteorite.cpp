@@ -2,23 +2,17 @@
 #include "Engine/Game/Color/Color.h"
 #include "Game/Enviroment.h"
 
-uint32_t Meteorite::nextSerialNumber = 0;
-
 float Meteorite::kAttractionedStrength_ = 100;
 float Meteorite::kSpeed_ = -2.0f;
 float Meteorite::radius_ = 1.0f;
 
 Meteorite::Meteorite(const Vector3& pos) {
-	serialNumber_ = nextSerialNumber;
-	// 次の番号を加算
-	++nextSerialNumber;
 	Init(pos);
 }
 
 Meteorite::~Meteorite() {
-	meteoHit_SE_->stop();
-	
 	meteoHit_SE_->finalize();
+	meteoHitToEnemy_SE_->finalize();
 }
 
 void Meteorite::Init(const Vector3& pos) {
@@ -47,7 +41,8 @@ void Meteorite::Init(const Vector3& pos) {
 
 	meteoHit_SE_ = std::make_unique<AudioPlayer>();
 	meteoHit_SE_->initialize("SE_meteoEachOther.wav", 0.5f, false);
-
+	meteoHitToEnemy_SE_ = std::make_unique<AudioPlayer>();
+	meteoHitToEnemy_SE_->initialize("SE_enemyHitToMeteo.wav", 0.5f, false);
 }
 
 void Meteorite::Update(const Vector3& playerPosition) {
@@ -105,6 +100,7 @@ void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
 	} else if (other->group() == "Enemy") { // Enemy
 		isEnemyHit_ = true;
 		*object = { 1.0f,0,0,1.0f };
+		meteoHitToEnemy_SE_->restart();
 	}
 }
 

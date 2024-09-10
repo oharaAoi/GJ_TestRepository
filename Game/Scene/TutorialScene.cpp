@@ -23,9 +23,12 @@ void TutorialScene::update() {
 	if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A) || input_->GetKey(DIK_SPACE)) {
 		SceneManager::SetSceneChange(CreateUnique<GameScene>(), false);
 	}
+
+	camera3D_->update();
 }
 
 void TutorialScene::begin_rendering() {
+	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
 }
 

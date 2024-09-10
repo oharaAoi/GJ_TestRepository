@@ -118,6 +118,7 @@ void Boss::FaceMove() {
 void Boss::OnCollision() {
 	satietyLevel_++;
 	pushBackValue_ += pushBackStrength_;
+	bossHit_SE_->restart();
 }
 
 bool Boss::GetIsClear() {

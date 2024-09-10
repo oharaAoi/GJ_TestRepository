@@ -50,8 +50,6 @@ public:	// accessor
 
 	std::weak_ptr<BaseCollider> GetCollider() { return sphereCollider_; }
 
-	const std::string GetMeteoId() const { return "Meteo" + std::to_string(serialNumber_); }
-
 	// ----------- 引き寄せられているか ----------- //
 	void SetIsAttraction(const bool& isAttraction) { isAttraction_ = isAttraction; }
 
@@ -82,9 +80,6 @@ public:	// accessor
 
 private:
 
-	uint32_t serialNumber_ = 0;
-	static uint32_t nextSerialNumber;
-
 	std::shared_ptr<SphereCollider> sphereCollider_ = nullptr;
 
 	Vector3 targetPosition_;
@@ -103,5 +98,6 @@ private:
 	bool isEnemyHit_;
 
 	std::unique_ptr<AudioPlayer> meteoHit_SE_ = nullptr;
+	std::unique_ptr<AudioPlayer> meteoHitToEnemy_SE_ = nullptr;
 };
 

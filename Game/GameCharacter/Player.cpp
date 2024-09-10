@@ -96,7 +96,7 @@ void Player::On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAt
 		Vector3 direction = (other->world_position() - world_position()).normalize_safe();
 		KnockBack(direction);
 	} else {
-		enemyKick_SE_->play();
+		enemyKick_SE_->restart();
 	}
 }
 
