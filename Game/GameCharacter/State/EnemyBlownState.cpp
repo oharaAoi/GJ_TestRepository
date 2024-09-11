@@ -10,11 +10,7 @@ EnemyBlownState::~EnemyBlownState() {
 }
 
 void EnemyBlownState::Update() {
-	//if (enemy_->GetIsFalling()) {
-	//	IsFalling(); 
-	//} else {
-	//	IsBlown();
-	//}
+	IsBlown();
 }
 
 void EnemyBlownState::Draw() {

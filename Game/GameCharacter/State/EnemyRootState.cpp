@@ -8,12 +8,21 @@ EnemyRootState::EnemyRootState(Enemy* enemy) :
 
 EnemyRootState::~EnemyRootState() {}
 void EnemyRootState::Update() {
-	++frameCount_;
+	RandomMove();
 
-	if (frameCount_ > attackTime_) {
+	if (frameCount_ >= attackTime_) {
 		enemy_->SetBehaviorRequest(EnemyState::Approach_State);
 	}
+
+	++frameCount_;
 }
 
 void EnemyRootState::Draw() {
+}
+
+void EnemyRootState::RandomMove() {
+	if (frameCount_ % 200 == 0) {
+		Vector3 velocity = RandomVector3(-1, 1);
+		enemy_->SetVelocity(velocity.normalize_safe());
+	}
 }

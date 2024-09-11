@@ -40,6 +40,8 @@ public:	// メンバ関数
 
 	void Attack();
 
+	void ConstrainToField(Vector3& translate);
+
 	void ChangeState(std::unique_ptr<BaseEnemyState> state);
 
 	void CheckBehaviorRequest();
@@ -91,6 +93,7 @@ private:
 	EnemyType enemyType_;
 	float radius_ = 1.0f;
 
+
 	Vector3 velocity_;
 	Vector3 acceleration_;
 
@@ -98,9 +101,8 @@ private:
 
 	bool isAttack_ = false;
 	bool isDead_ = false;
-	bool isAppearance_ = false;
-
 	bool* isPlayerFlragPtr_ = nullptr;
+	bool isKickToPlayer_ = false;
 
 	uint32_t frameCount_;
 	const uint32_t attackTime_ = 50;

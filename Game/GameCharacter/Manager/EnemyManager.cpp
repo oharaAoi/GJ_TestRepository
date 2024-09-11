@@ -18,16 +18,16 @@ void EnemyManager::Update(const Vector3& playerPosition) {
 	/*for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->Update(playerPosition);
 	}*/
+	// -------------------------------------------------
+	// ↓ 敵の上限設定
+	// -------------------------------------------------
+	if (sceneEnemyList_.size() >= 5) {
+		return;
+	}
 
-	//if (!isPop_) {
-	//	firstPopCount_++;
-
-	//	if (firstPopCount_ > popTime_) {
-	//		SelectArrange();
-	//		isPop_ = true;
-	//	}
-	//}
-
+	// -------------------------------------------------
+	// ↓ TImedCallの設定
+	// -------------------------------------------------
 	for (auto& times : timedCalls_) {
 		times.Update();
 	}
@@ -37,7 +37,14 @@ void EnemyManager::Update(const Vector3& playerPosition) {
 			return true;
 		}
 		return false;
-	});
+						  });
+}
+
+void EnemyManager::StartPop() {
+	if (!isPop_) {
+		SelectArrange();
+		isPop_ = true;
+	}
 }
 
 #ifdef _DEBUG
