@@ -17,6 +17,7 @@
 #include "Engine/Game/Managers/AudioManager/AudioManager.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
+#include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
 #include "Engine/Render/RenderPath/RenderPath.h"
 
 SceneDemo::SceneDemo() = default;
@@ -113,6 +114,7 @@ void SceneDemo::initialize() {
 	object3dNode->set_render_target();
 	//object3dNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
 	object3dNode->set_depth_stencil();
+	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
 
 	outlineNode = std::make_unique<OutlineNode>();
 	outlineNode->initialize();
