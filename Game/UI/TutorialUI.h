@@ -26,7 +26,7 @@ public:
 
 private:
 
-    std::unique_ptr<UIObject> contentUI_ = nullptr;
+    std::unique_ptr<UIObject> content_UI = nullptr;
 
 };
 

@@ -122,6 +122,9 @@ private:
 	std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
+	// ----------- Sprite ----------- //
+	std::unique_ptr<TutorialUI> tutorialUI_ = nullptr;
+
 	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;
 	std::shared_ptr<SpriteNode> spriteNode;

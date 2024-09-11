@@ -37,6 +37,9 @@ void TutorialScene::initialize() {
 	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey());
 
 	// ---------------------------------------------
+	tutorialUI_ = std::make_unique<TutorialUI>();
+
+	// ---------------------------------------------
 	isTutorialFinish_ = false;
 	content_ = TutorialContent::FirstMove_Content;
 	frameCount_ = 0;
@@ -75,7 +78,6 @@ void TutorialScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariEnemy.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariSpEnemy.obj");
 
-
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossFace", "bossFace.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/LowerJaw", "lowerJaw.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/UpperJaw", "upperJaw.obj");
@@ -89,6 +91,7 @@ void TutorialScene::load() {
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_kari.png");
 
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyEachOther.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
@@ -176,6 +179,12 @@ void TutorialScene::update() {
 	}
 	CheckBossCollision();
 	CheckMeteoToField();
+
+	// -------------------------------------------------
+	// ↓ UI
+	// -------------------------------------------------
+
+	tutorialUI_->Update();
 }
 
 void TutorialScene::begin_rendering() {
@@ -193,6 +202,8 @@ void TutorialScene::begin_rendering() {
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->begin_rendering(*camera3D_);
 	}
+
+	tutorialUI_->BeginRendering();
 }
 
 void TutorialScene::late_update() {
@@ -227,7 +238,7 @@ void TutorialScene::draw() const {
 	RenderPathManager::Next();
 	outlineNode->draw();
 	RenderPathManager::Next();
-
+	tutorialUI_->Draw();
 	RenderPathManager::Next();
 
 
@@ -276,6 +287,10 @@ void TutorialScene::debug_update() {
 
 	ImGui::Begin("Field");
 	field_->EditImGui();
+	ImGui::End();
+
+	ImGui::Begin("UI");
+	tutorialUI_->EditGui();
 	ImGui::End();
 
 	boss_->EditImGui();
