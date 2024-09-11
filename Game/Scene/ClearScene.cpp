@@ -35,6 +35,7 @@ void ClearScene::draw() const {
 	RenderPathManager::BeginFrame();
 
 	RenderPathManager::Next();
+	RenderPathManager::Next();
 }
 
 #ifdef _DEBUG

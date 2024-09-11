@@ -5,6 +5,7 @@
 #include "Engine/Render/RenderPathManager/RenderPathManager.h"
 #include "Engine/DirectX/DirectXCore.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
+#include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
 
 #ifdef _DEBUG
 #include "Game/Editor/EditorController.h"
@@ -34,7 +35,7 @@ void GameScene::initialize() {
 		CVector3::BASIS,
 		Quaternion::EulerDegree(55, 0, 0),
 		{ 0, 50, -28.0 }
-							 });
+		});
 
 	collisionManager_->register_collider("Player", player_->GetCollider());
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
@@ -45,11 +46,13 @@ void GameScene::initialize() {
 	object3DNode = std::make_unique<Object3DNode>();
 	object3DNode->initialize();
 	object3DNode->set_render_target();
+	object3DNode->set_depth_stencil();
 
 	spriteNode = std::make_unique<SpriteNode>();
 	spriteNode->initialize();
 	spriteNode->set_background_texture(object3DNode->result_stv_handle());
 	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
 
 	path.initialize({ object3DNode,spriteNode });
 	RenderPathManager::RegisterPath("GameScene", std::move(path));
@@ -84,7 +87,7 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/TriangleRiceBall", "triangleRiceBall.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/CircleRiceBall", "circleRiceBall.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Field", "nattomaki.obj");
-	
+
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 
@@ -129,7 +132,7 @@ void GameScene::update() {
 	// ↓ GameObjectの更新
 	// -------------------------------------------------
 	field_->Update();
-	
+
 	player_->Update(field_->GetRadius());
 
 #ifdef _DEBUG
@@ -150,7 +153,7 @@ void GameScene::update() {
 			return true;
 		}
 		return false;
-							 });
+	});
 
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->Update(player_->get_transform().get_translate());
@@ -161,7 +164,7 @@ void GameScene::update() {
 			return true;
 		}
 		return false;
-	 });
+	});
 
 	// -------------------------------------------------
 	// ↓ Manager系の更新
@@ -182,7 +185,7 @@ void GameScene::update() {
 
 	CheckMeteoToField();
 
-	
+
 }
 
 void GameScene::begin_rendering() {
@@ -259,7 +262,7 @@ void GameScene::CheckMeteoToField() {
 			// 円柱に面の上にあるか
 			Vector3 meteoPos = meteo->get_transform().get_translate();
 			meteoPos.y = 0;
-			float length = Vector3::Length(meteoPos - Vector3{0, 0,0});
+			float length = Vector3::Length(meteoPos - Vector3{ 0, 0,0 });
 
 			// 円の範囲内に隕石がある
 			if (length > field_->GetRadius() + meteo->GetRadius()) {
@@ -341,6 +344,7 @@ void GameScene::debug_update() {
 	ImGui::End();
 
 	field_->EditImGui();
+
 	ImGui::Begin("GameObject");
 	player_->debug_gui();
 	ImGui::End();
@@ -352,9 +356,8 @@ void GameScene::debug_update() {
 	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f, 0.0f, 5.0f);
 	ImGui::End();
 
-	
-	ImGui::End();
-
 	editor->draw_gui();
+
+	meteoriteManager_->DebugGui();
 }
 #endif // _DEBUG

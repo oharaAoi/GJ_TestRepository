@@ -93,6 +93,7 @@ public:	// メンバ関数
 
 	std::string GetRandomKey();
 
+	void DebugGui();
 
 public:
 

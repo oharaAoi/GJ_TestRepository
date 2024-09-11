@@ -27,6 +27,10 @@ namespace Test {
 		/// <returns></returns>
 		const bool IsFinished() const { return isFinish_; }
 
+#ifdef _DEBUG
+		void DebugGui();
+#endif //_DEBUG
+
 	private:
 
 		std::function<void(void)> callback_;

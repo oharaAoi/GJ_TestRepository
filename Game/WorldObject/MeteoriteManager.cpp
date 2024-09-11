@@ -131,6 +131,12 @@ std::string MeteoriteManager::GetRandomKey() {
 	}
 }
 
+void MeteoriteManager::DebugGui() {
+	for (auto& times : timedCalls_) {
+		times.DebugGui();
+	}
+}
+
 #ifdef _DEBUG
 
 void MeteoriteManager::SetEditor(const EditorController* editController_) {

@@ -20,15 +20,18 @@ void Test::TimedCall::Update() {
 
 	time_--;
 
-#ifdef _DEBUG
-	ImGui::Begin("TimedCall");
-	ImGui::Text("time %d", time_);
-	ImGui::End();
-#endif
-
 	if (time_ <= 0) {
 		isFinish_ = true;
 		// コールバック関数の呼び出し
 		callback_();
 	}
 }
+
+#ifdef _DEBUG
+void Test::TimedCall::DebugGui() {
+
+	ImGui::Begin("TimedCall");
+	ImGui::Text("time %d", time_);
+	ImGui::End();
+}
+#endif
