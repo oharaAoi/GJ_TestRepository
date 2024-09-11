@@ -224,6 +224,16 @@ bool Input::GetIsPadTrigger(int triggerNum) {
 	return false;
 }
 
+bool Input::GetIsPadPress(int triggerNum) {
+	if ((gamepadState_.Gamepad.wButtons & triggerNum) &&
+		(preGamepadState_.Gamepad.wButtons & triggerNum)) {
+
+		return true;
+	}
+
+	return false;
+}
+
 Vector2 Input::GetLeftJoyStick() {
 	Vector2 result;
 	result.x = (float)gamepadState_.Gamepad.sThumbLX / std::numeric_limits<SHORT>::max();

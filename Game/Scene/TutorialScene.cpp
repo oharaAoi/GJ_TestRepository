@@ -110,8 +110,10 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	// ↓ 次のシーンに行くかの判定
 	// -------------------------------------------------
-	if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A) || input_->GetKey(DIK_SPACE)) {
-		SceneManager::SetSceneChange(CreateUnique<GameScene>(), false);
+	if (input_->GetIsPadPress(XINPUT_GAMEPAD_A)) {
+		if (++skipCount_ >= 120) {
+			SceneManager::SetSceneChange(CreateUnique<GameScene>(), false);
+		}
 	}
 
 	// -------------------------------------------------
@@ -238,7 +240,8 @@ void TutorialScene::debug_update() {
 	ImGui::Begin("Tutorial");
 	ImGui::Text("nowScene: Tutorial");
 	ImGui::Text("nextScene: Game");
-	ImGui::Text("push: A or Space");
+	ImGui::Text("Press: A");
+	ImGui::Text("nextOfFrame: %d / 120", frameCount_);
 	ImGui::Separator();
 	ImGui::Text("now content :");
 	ImGui::SameLine();
@@ -521,6 +524,7 @@ void TutorialScene::MeteoAttractContent() {
 			isTutorialFinish_ = true;
 			enemyManager_->StartPop();
 			meteoriteManager_->StartPop();
+			frameCount_ = 0;
 		}
 	}
 

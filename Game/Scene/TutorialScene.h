@@ -133,5 +133,6 @@ private:
 	TutorialContent content_;
 	uint32_t frameCount_ = 0;
 	uint32_t attackCount_ = 0;
+	uint32_t skipCount_ = 0;
 };
 

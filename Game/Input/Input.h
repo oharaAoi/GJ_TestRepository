@@ -101,6 +101,8 @@ public: // 入力
 	// ---------------------------------------------------------------
 	// ゲームパッドのボタンを取得
 	static bool GetIsPadTrigger(int triggerNum);
+	// ゲームパッドのプレスを取得
+	static bool GetIsPadPress(int triggerNum);
 	// 左ジョイスティックの値の取得
 	static Vector2 GetLeftJoyStick();
 	// 右ジョイスティックの値の取得
