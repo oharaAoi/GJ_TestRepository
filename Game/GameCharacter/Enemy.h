@@ -6,12 +6,11 @@
 #include "Game/GameCharacter/State/EnemyRootState.h"
 #include "Game/GameCharacter/State/EnemyApproachState.h"
 #include "Game/GameCharacter/State/EnemyBlownState.h"
-
 #include "Engine/Game/Collision/Collider/SphereCollider.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
 
-class GameScene;
+class EnemyManager;
 
 enum class EnemyType {
 	Normal_Type,
@@ -71,9 +70,6 @@ public:
 	const Vector3 GetAcceleration() const { return acceleration_; }
 	void SetAcceleration(const Vector3& acceleration) { acceleration_ = acceleration; }
 
-	// ----------- 落下しているか ----------- //
-	const bool GetIsFalling() const { return isFalling_; }
-
 	// ----------- 攻撃中か ----------- //
 	const bool GetIsAttack() const { return isAttack_; }
 	void SetIsAttack(const bool& isAttack) { isAttack_ = isAttack; }
@@ -100,14 +96,16 @@ private:
 
 	Vector3 playerPosition_;
 
-	bool isFalling_ = false;
 	bool isAttack_ = false;
 	bool isDead_ = false;
+	bool isAppearance_ = false;
 
 	bool* isPlayerFlragPtr_ = nullptr;
 
 	uint32_t frameCount_;
 	const uint32_t attackTime_ = 50;
+
+	uint32_t apperanceCount_ = 0;
 
 	std::unique_ptr<AudioPlayer> enemyAttack_SE_ = nullptr;
 	std::unique_ptr<AudioPlayer> enemyEachOther_SE_ = nullptr;

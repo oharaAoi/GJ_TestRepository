@@ -1,9 +1,9 @@
 #include "Enemy.h"
 #include "Game/Enviroment.h"
-#include "Game/Scene/GameScene.h"
+#include "Game/GameCharacter/Manager/EnemyManager.h"
 
 Enemy::Enemy(const Vector3& position, const EnemyType& enemyType) {
-	Init(position, enemyType); 
+	Init(position, enemyType);
 }
 Enemy::~Enemy() {
 	Finalize();
@@ -15,11 +15,13 @@ void Enemy::Finalize() {
 }
 
 void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
-	
+
 	if (enemyType == EnemyType::Normal_Type) {
 		reset_object("triangleRiceBall.obj");
+		isAppearance_ = false;
 	} else if (enemyType == EnemyType::SpecialPop_Type) {
 		reset_object("kariSpEnemy.obj");
+		isAppearance_ = true;
 	}
 
 	sphereCollider_ = std::make_unique<SphereCollider>();
@@ -33,7 +35,8 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 	enemyType_ = enemyType;
 
-	isFalling_ = false;
+	isAttack_ = false;
+	isDead_ = false;
 
 	behaviorRequest_ = EnemyState::Root_State;
 
@@ -45,6 +48,11 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 void Enemy::Update(const Vector3& playerPosition) {
 	playerPosition_ = playerPosition;
+
+	if (isAppearance_) {
+		++apperanceCount_;
+
+	}
 
 	if (isAttack_) {
 		Attack();
@@ -61,11 +69,9 @@ void Enemy::Update(const Vector3& playerPosition) {
 	transform->set_translate(translate);
 
 	// 敵の向きを移動方向にする
-	if (!isFalling_) {
-		float targetAngle = std::atan2f(velocity_.x, velocity_.z);
-		Quaternion moveRotate = Quaternion::EulerRadian({ 0,targetAngle,0 });
-		transform->set_rotate(moveRotate);
-	}
+	float targetAngle = std::atan2f(velocity_.x, velocity_.z);
+	Quaternion moveRotate = Quaternion::EulerRadian({ 0,targetAngle,0 });
+	transform->set_rotate(moveRotate);
 
 	transform->set_translate_y(13.0f);
 }
@@ -75,7 +81,7 @@ void Enemy::Attack() {
 		Vector3 translate = transform->get_translate();
 		translate += -(playerPosition_ - translate).normalize_safe() * GameTimer::DeltaTime();
 		transform->set_translate(translate);
-	} else if(++frameCount_ < 50) {
+	} else if (++frameCount_ < 50) {
 		Vector3 translate = transform->get_translate();
 		translate += (playerPosition_ - translate).normalize_safe() * 8.0f * GameTimer::DeltaTime();
 		transform->set_translate(translate);
@@ -114,10 +120,11 @@ void Enemy::CheckBehaviorRequest() {
 }
 
 void Enemy::On_Collision(const BaseCollider* const other) {
-	
+
 }
 
 void Enemy::On_Collision_Enter(const BaseCollider* const other) {
+	// playerの攻撃されている状態かのフラグを変更する
 	if (isAttack_) {
 		*isPlayerFlragPtr_ = true;
 	} else {
@@ -130,38 +137,36 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			enemyAttack_SE_->restart();
 			return;
 		}
-
-		if (!isFalling_) {
-			velocity_ = { 0,0,0 };
-			velocity_ = (other->world_position() - world_position()).normalize_safe() * -7.0f;
-			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -10.0f;
-			behaviorRequest_ = EnemyState::Blown_State;
-		}
 	} else if (other->group() == "Meteo") { // 隕石
 		isDead_ = true;
 
 	} else if (other->group() == "Enemy") { // 敵同士
-		velocity_ = { 0,0,0 };
-		velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
-		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;
-		behaviorRequest_ = EnemyState::Blown_State;
+		if (!isAppearance_) {	// 敵が出現した直後でなければ当たり判定をとる
+			velocity_ = { 0,0,0 };
+			velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
+			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;
+			behaviorRequest_ = EnemyState::Blown_State;
 
-		enemyEachOther_SE_->restart();
+			enemyEachOther_SE_->restart();
 
-		//// ボーナスの敵を追加する
-		//Vector3 translate = transform->get_translate();
-		//translate += RandomVector3(-3.0f, 3.0f);
+			// ボーナスの敵を追加する
+			Vector3 translate = transform->get_translate();
+			translate += RandomVector3(-3.0f, 3.0f);
 
-		//// 範囲外に出ないようにする処理
-		//Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
-		//// 中心からの長さ
-		//float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
-		//if (lenght > 5.7f) {
-		//	distance = distance * 5.7f;
-		//	translate = { distance.x, translate.y, distance.z };
-		//}
+			// 範囲外に出ないようにする処理
+			Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
+			// 中心からの長さ
+			float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
+			if (lenght > 5.7f) {
+				distance = distance * 5.7f;
+				translate = { distance.x, translate.y, distance.z };
+			}
 
-		//gameScene_->AddEnemy(translate, EnemyType::SpecialPop_Type);
+		} else {
+			velocity_ = { 0,0,0 };
+			velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
+			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
+		}
 	}
 }
 
