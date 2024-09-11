@@ -64,19 +64,6 @@ public:
 	/// </summary>
 	void CheckBossCollision();
 
-	/// <summary>
-	/// 隕石をリストに追加する
-	/// </summary>
-	/// <param name="position"></param>
-	void AddMeteorite(const Vector3& position);
-
-	/// <summary>
-	/// 敵をリストに追加する
-	/// </summary>
-	/// <param name="position"></param>
-	/// <param name="enemyType"></param>
-	void AddEnemy(const Vector3& position, const EnemyType& enemyType);
-
 private:
 
 	uint32_t frameCount_ = 0;

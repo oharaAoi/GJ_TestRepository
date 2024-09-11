@@ -8,9 +8,12 @@
 #include "Game/Scene/GameScene.h"
 #include "Game/WorldObject/Field.h"
 #include "Game/WorldObject/Meteorite.h"
+#include "Game/GameCharacter/Enemy.h"
 #include "Game/WorldObject/MeteoriteManager.h"
 #include "Game/GameCharacter/Player.h"
 #include "Game/GameCharacter/Boss.h"
+#include "Game/GameCharacter/Manager/EnemyManager.h"
+#include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
 
 /// <summary>
 /// チュートリアルを行うクラス
@@ -39,6 +42,21 @@ public:
 	void debug_update() override;
 #endif // _DEBUG
 
+	/// <summary>
+	/// 隕石とフィールドの当たり判定を取る
+	/// </summary>
+	void CheckMeteoToField();
+
+	/// <summary>
+	/// 隕石が吸い寄せられるかを判定する
+	/// </summary>
+	void CheckMeteoAttraction();
+
+	/// <summary>
+	/// Bossとの当たり判定を取る
+	/// </summary>
+	void CheckBossCollision();
+
 private:
 
 	Input* input_ = nullptr;
@@ -47,13 +65,19 @@ private:
 
 	// ----------- WorldObject ----------- //
 	std::unique_ptr<Field> field_ = nullptr;
-	std::list<std::unique_ptr<Meteorite>> meteoriteList_;
-
+	
 	// ----------- GameCharacter ----------- //
 	std::unique_ptr<Player> player_ = nullptr;
 	std::unique_ptr<Boss> boss_ = nullptr;
 
+	// ----------- List ----------- //
+	std::list<std::unique_ptr<Enemy>> enemyList_;
+	std::list<std::unique_ptr<Meteorite>> meteoriteList_;
+
 	// ----------- Manager ----------- //
 	std::unique_ptr<MeteoriteManager> meteoriteManager_ = nullptr;
+	std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
+	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
+
 };
 

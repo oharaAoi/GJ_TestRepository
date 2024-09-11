@@ -288,17 +288,6 @@ void GameScene::CheckMeteoAttraction() {
 
 }
 
-void GameScene::AddMeteorite(const Vector3& position) {
-	auto& newMeteo = meteoriteList_.emplace_back(std::make_unique<Meteorite>(position));
-	collisionManager_->register_collider("Meteo", newMeteo->GetCollider());
-}
-
-void GameScene::AddEnemy(const Vector3& position, const EnemyType& enemyType) {
-	auto& newEnemy = enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType));
-	collisionManager_->register_collider("Enemy", newEnemy->GetCollider());
-	newEnemy->SetIsPlayerFlragPtr(player_->GetIsAttackofEnmey());
-}
-
 void GameScene::CheckBossCollision() {
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		if (meteo->GetIsFalling()) {
