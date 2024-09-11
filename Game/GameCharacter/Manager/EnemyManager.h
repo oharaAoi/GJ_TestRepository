@@ -55,6 +55,8 @@ public:	// メンバ関数
 	void Init();
 	void Update(const Vector3& playerPosition);
 
+	uint32_t CheckConstrainToField(); 
+
 #ifdef _DEBUG
 
 	void Begin_Rendering(const Camera3D& camera3D);
@@ -103,6 +105,8 @@ private:
 	uint32_t popTime_ = 500;
 	uint32_t firstPopCount_ = 0;
 	bool isPop_ = false;
+
+	uint32_t fieldOnEnemyNum_ = 0;
 
 #ifdef _DEBUG
 

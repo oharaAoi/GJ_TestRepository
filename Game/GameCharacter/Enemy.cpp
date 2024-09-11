@@ -35,7 +35,9 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 	isAttack_ = false;
 	isDead_ = false;
 	isKickToPlayer_ = false;
-	
+
+	fieldOutCount_ = 0;
+
 	behaviorRequest_ = EnemyState::Root_State;
 
 	enemyAttack_SE_ = std::make_unique<AudioPlayer>();
@@ -46,6 +48,96 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 void Enemy::Update(const Vector3& playerPosition) {
 	playerPosition_ = playerPosition;
+	Vector3 translate = transform->get_translate();
+
+	// -------------------------------------------------
+	// ↓ フィールド外に出ていたら
+	// -------------------------------------------------
+	if (isFieldOut_) {
+		switch (fieldOutMove_) {
+		case FieldOutMove::Rotate_Move:	// 回転
+			translate += velocity_ * GameTimer::DeltaTime();
+			if (++fieldOutCount_ < fieldOutTime_) {
+				// 回転して飛ばされる処理
+				Quaternion rotation = transform->get_quaternion();
+				float t = float(fieldOutCount_) / float(fieldOutTime_);
+				Quaternion rotateValue = Quaternion::AngleAxis(rotateAxis_, (1.0f - t) * (8.0f * ToRadian));
+				transform->set_rotate(rotateValue * rotation);
+				transform->set_translate(translate);
+			} else {
+				fieldOutCount_ = 0;
+				fieldOutTime_ = 120;
+				fieldOutMove_ = FieldOutMove::Stop_Move;
+			}
+			break;
+		case FieldOutMove::Stop_Move: // 空中でとどまる
+			if (++fieldOutCount_ < fieldOutTime_) {
+				// ついでに回転を正しい方向に戻す処理
+				Quaternion rotation = transform->get_quaternion();
+				float t = float(fieldOutCount_) / float(fieldOutTime_);
+				Vector3 velocity = (Vector3{ 0.0f, translate.y, 0.0f } - translate).normalize_safe();
+				float targetAngle = std::atan2f(velocity.x, velocity.z);
+				Quaternion rotateValue = Quaternion::EulerRadian({ 0,targetAngle,0 });
+				transform->set_rotate(Quaternion::Slerp(rotation, rotateValue, EaseIn::Expo(t)));
+
+				if (fieldOutTime_ - fieldOutCount_ < 10) {
+					transform->set_scale({ 1.05f, 1.05f, 1.05f });
+				}
+
+			} else {
+				fieldOutCount_ = 0;
+				fieldOutTime_ = 180;
+				fieldOutMove_ = FieldOutMove::Struggle_Move;
+				transform->set_scale({ 1.0f, 1.0f, 1.0f });
+				Vector3 velocity = (Vector3{ 0.0f, translate.y, 0.0f } - translate).normalize_safe();
+				velocity_ = velocity;
+			}
+			break;
+		case FieldOutMove::Struggle_Move: // ワタワタ
+			if (++fieldOutCount_ < fieldOutTime_) {
+				// sin波を使ってY軸中心で左右に向かせる
+				float angle = std::sinf(static_cast<float>(fieldOutCount_ * 4.0f) * ToRadian) * ((PI) / 6.0f);
+				Quaternion rotateValue = Quaternion::AngleAxis({ 0,1.0f,0.0f }, angle);
+				velocity_ = (Vector3{ 0.0f, translate.y, 0.0f } - translate).normalize_safe();
+				float targetAngle = std::atan2f(velocity_.x, velocity_.z);
+				Quaternion targetRotateValue = Quaternion::EulerRadian({ 0,targetAngle,0 });
+				transform->set_rotate(rotateValue * targetRotateValue);
+
+			} else {
+				isKickToPlayer_ = false;
+				fieldOutCount_ = 0;
+				fieldOutTime_ = 140;
+				fieldOutMove_ = FieldOutMove::GoField_Move;
+				velocity_ = (Vector3{ 0.0f, translate.y, 0.0f } - translate).normalize_safe();
+			}
+			break;
+		case FieldOutMove::GoField_Move:
+			++fieldOutCount_;
+			// sin波を使ってY軸中心で左右に向かせる
+			float angle = std::sinf(static_cast<float>(fieldOutCount_ * 8) * ToRadian) * ((PI) / 12.0f);
+			Quaternion rotateValue = Quaternion::AngleAxis({ 0,1.0f,0.0f }, angle);
+			float targetAngle = std::atan2f(velocity_.x, velocity_.z);
+			Quaternion targetRotateValue = Quaternion::EulerRadian({ 0,targetAngle,0 });
+			transform->set_rotate(rotateValue * targetRotateValue);
+			// 敵を進める
+			translate += velocity_ * GameTimer::DeltaTime();
+			// 少し小さめの円周に行くまで進む
+			Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
+			// 中心からの長さ
+			float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
+			if (lenght < 4.0f) {
+				fieldOutCount_ = 0;
+				isFieldOut_ = false;
+				behaviorRequest_ = EnemyState::Approach_State;
+
+			}
+			transform->set_translate(translate);
+
+			break;
+		}
+
+		return;
+	}
 
 	// -------------------------------------------------
 	// ↓ 攻撃中には
@@ -67,29 +159,25 @@ void Enemy::Update(const Vector3& playerPosition) {
 	state_->Update();
 
 	// -------------------------------------------------
-	// ↓ 移動処理
-	// -------------------------------------------------
-	Vector3 translate = transform->get_translate();
-	translate += velocity_ * GameTimer::DeltaTime();
-
-	// 上限処理
-	if (!isKickToPlayer_) {
-		ConstrainToField(translate);
-	}
-
-	// -------------------------------------------------
 	// ↓ 回転処理
 	// -------------------------------------------------
 	// 敵の向きを移動方向にする
 	float targetAngle = std::atan2f(velocity_.x, velocity_.z);
 	Quaternion moveRotate = Quaternion::EulerRadian({ 0,targetAngle,0 });
-	
+	transform->set_rotate(moveRotate);
+
+	// -------------------------------------------------
+	// ↓ 移動処理
+	// -------------------------------------------------
+	translate += velocity_ * GameTimer::DeltaTime();
+	// 上限処理
+	ConstrainToField(translate);
+
 	// -------------------------------------------------
 	// ↓ transformに送る
 	// -------------------------------------------------
 	translate.y = 13.0f;
 	transform->set_translate(translate);
-	transform->set_rotate(moveRotate);
 }
 
 void Enemy::Attack() {
@@ -116,6 +204,11 @@ void Enemy::ConstrainToField(Vector3& translate) {
 	if (lenght > 5.7f) {
 		distance = distance * 5.7f;
 		translate = { distance.x, translate.y, distance.z };
+
+		if (isKickToPlayer_) {
+			isFieldOut_ = true;
+			rotateAxis_ = RandomVector3(-1, 1);
+		}
 	}
 }
 
@@ -152,7 +245,6 @@ void Enemy::On_Collision(const BaseCollider* const other) {
 		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;
 	}
 }
-
 void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 	// playerの攻撃されている状態かのフラグを変更する
 	if (isAttack_) {
@@ -168,6 +260,7 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			return;
 		} else {
 			isKickToPlayer_ = true;
+			fieldOutMove_ = FieldOutMove::Rotate_Move;
 			velocity_ = (other->world_position() - world_position()).normalize_safe() * -5.0f;
 			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -8.0f;
 			behaviorRequest_ = EnemyState::Blown_State;

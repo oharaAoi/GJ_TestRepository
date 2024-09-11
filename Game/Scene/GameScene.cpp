@@ -378,5 +378,7 @@ void GameScene::debug_update() {
 	ImGui::End();
 
 	meteoriteManager_->DebugGui();
+
+	enemyManager_->EditImGui();
 }
 #endif // _DEBUG

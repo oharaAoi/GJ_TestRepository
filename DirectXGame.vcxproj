@@ -170,6 +170,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Game\Easing.cpp" />
     <ClCompile Include="Game\Editor\EditorController.cpp" />
     <ClCompile Include="Game\Editor\EnemyPopEditor\EnemyPopEditor.cpp" />
     <ClCompile Include="Game\Editor\MeteoritePopEditor\MeteoritePopEditor.cpp" />
@@ -289,6 +290,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
+    <ClInclude Include="Game\Easing.h" />
     <ClInclude Include="Game\Editor\EditorController.h" />
     <ClInclude Include="Game\Editor\EnemyPopEditor\EnemyPopEditor.h" />
     <ClInclude Include="Game\Editor\MeteoritePopEditor\MeteoritePopEditor.h" />

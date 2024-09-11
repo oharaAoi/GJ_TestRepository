@@ -12,16 +12,19 @@ void EnemyManager::Init() {
 
 	//SelectArrange();
 	AddEnemy(Vector3{ 2.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
+
+	fieldOnEnemyNum_ = 0;
 }
 
 void EnemyManager::Update(const Vector3& playerPosition) {
 	/*for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->Update(playerPosition);
 	}*/
+
 	// -------------------------------------------------
 	// ↓ 敵の上限設定
 	// -------------------------------------------------
-	if (sceneEnemyList_.size() >= 5) {
+	if (CheckConstrainToField() >= 5) {
 		return;
 	}
 
@@ -38,6 +41,21 @@ void EnemyManager::Update(const Vector3& playerPosition) {
 		}
 		return false;
 						  });
+}
+
+uint32_t EnemyManager::CheckConstrainToField(){
+	uint32_t fieldOnEnemyNum = 0;
+	for (std::unique_ptr<Enemy>& enemy : sceneEnemyList_) {
+		Vector3 translate = enemy->get_transform().get_translate();
+		Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
+		// 中心からの長さ
+		float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
+		if (lenght < 5.7f) {
+			fieldOnEnemyNum_++;
+		}
+	}
+
+	return fieldOnEnemyNum;
 }
 
 void EnemyManager::StartPop() {
@@ -80,8 +98,13 @@ void EnemyManager::SelectArrange() {
 void EnemyManager::EditImGui() {
 	ImGui::Begin("EnemyManager");
 	ImGui::Text("popTime:%d", popTime_);
-	CreateConfigGui();
-	EditConfigGui();
+
+	if (ImGui::Button("popCenter")) {
+		AddEnemy(Vector3{ 0.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
+	}
+
+	/*CreateConfigGui();
+	EditConfigGui();*/
 	ImGui::End();
 }
 

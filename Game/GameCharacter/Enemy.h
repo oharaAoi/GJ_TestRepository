@@ -1,7 +1,10 @@
 #pragma once
 #include <optional>
+#include <cmath>
+#include "Game/Easing.h"
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Math/Vector3.h"
+#include "Engine/Math/Definition.h"
 #include "Game/GameCharacter/State/BaseEnemyState.h"
 #include "Game/GameCharacter/State/EnemyRootState.h"
 #include "Game/GameCharacter/State/EnemyApproachState.h"
@@ -21,6 +24,13 @@ enum class EnemyState {
 	Root_State,
 	Approach_State,
 	Blown_State,
+};
+
+enum class FieldOutMove {
+	Rotate_Move,
+	Stop_Move,
+	Struggle_Move,
+	GoField_Move
 };
 
 class Enemy
@@ -103,11 +113,17 @@ private:
 	bool isDead_ = false;
 	bool* isPlayerFlragPtr_ = nullptr;
 	bool isKickToPlayer_ = false;
+	bool isFieldOut_ = false;
 
 	uint32_t frameCount_;
 	const uint32_t attackTime_ = 50;
 
-	uint32_t apperanceCount_ = 0;
+	uint32_t fieldOutCount_ = 0;
+	uint32_t fieldOutTime_ = 140;
+
+	Vector3 rotateAxis_;
+
+	FieldOutMove fieldOutMove_;
 
 	std::unique_ptr<AudioPlayer> enemyAttack_SE_ = nullptr;
 	std::unique_ptr<AudioPlayer> enemyEachOther_SE_ = nullptr;

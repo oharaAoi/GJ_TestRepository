@@ -24,7 +24,7 @@ public:
 
 private:
 
-	float dampingFactor_ = 0.3f;	// 減衰係数
+	float dampingFactor_ = 0.2f;	// 減衰係数
 	float threshold_ = 0.01f; // 閾値
 	uint32_t frameCount_ = 0;
 };

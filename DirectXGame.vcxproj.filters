@@ -627,6 +627,9 @@
     <ClCompile Include="Game\Editor\EnemyPopEditor\EnemyPopEditor.cpp">
       <Filter>MainGame\Editor\EnemyPopEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Easing.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WinApp.h">
@@ -979,6 +982,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Render\RenderNode\Outline\OutlineNode.h">
       <Filter>Engine\Core\Render\RenderNode\Outline</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Easing.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
