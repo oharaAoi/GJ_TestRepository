@@ -15,13 +15,10 @@ void Enemy::Finalize() {
 }
 
 void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
-
 	if (enemyType == EnemyType::Normal_Type) {
 		reset_object("triangleRiceBall.obj");
-		isAppearance_ = false;
 	} else if (enemyType == EnemyType::SpecialPop_Type) {
 		reset_object("kariSpEnemy.obj");
-		isAppearance_ = true;
 	}
 
 	sphereCollider_ = std::make_unique<SphereCollider>();
@@ -37,7 +34,8 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 	isAttack_ = false;
 	isDead_ = false;
-
+	isKickToPlayer_ = false;
+	
 	behaviorRequest_ = EnemyState::Root_State;
 
 	enemyAttack_SE_ = std::make_unique<AudioPlayer>();
@@ -49,31 +47,49 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 void Enemy::Update(const Vector3& playerPosition) {
 	playerPosition_ = playerPosition;
 
-	if (isAppearance_) {
-		++apperanceCount_;
-
-	}
-
+	// -------------------------------------------------
+	// ↓ 攻撃中には
+	// -------------------------------------------------
 	if (isAttack_) {
 		Attack();
 		*isPlayerFlragPtr_ = true;
 		return;
 	}
 
+	// -------------------------------------------------
+	// ↓ 状態の確認
+	// -------------------------------------------------
 	CheckBehaviorRequest();
 
+	// -------------------------------------------------
+	// ↓ 状態の更新
+	// -------------------------------------------------
 	state_->Update();
 
+	// -------------------------------------------------
+	// ↓ 移動処理
+	// -------------------------------------------------
 	Vector3 translate = transform->get_translate();
 	translate += velocity_ * GameTimer::DeltaTime();
-	transform->set_translate(translate);
 
+	// 上限処理
+	if (!isKickToPlayer_) {
+		ConstrainToField(translate);
+	}
+
+	// -------------------------------------------------
+	// ↓ 回転処理
+	// -------------------------------------------------
 	// 敵の向きを移動方向にする
 	float targetAngle = std::atan2f(velocity_.x, velocity_.z);
 	Quaternion moveRotate = Quaternion::EulerRadian({ 0,targetAngle,0 });
+	
+	// -------------------------------------------------
+	// ↓ transformに送る
+	// -------------------------------------------------
+	translate.y = 13.0f;
+	transform->set_translate(translate);
 	transform->set_rotate(moveRotate);
-
-	transform->set_translate_y(13.0f);
 }
 
 void Enemy::Attack() {
@@ -90,6 +106,16 @@ void Enemy::Attack() {
 		velocity_ = { 0,0,0 };
 		frameCount_ = 0;
 		behaviorRequest_ = EnemyState::Root_State;
+	}
+}
+
+void Enemy::ConstrainToField(Vector3& translate) {
+	Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
+	// 中心からの長さ
+	float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
+	if (lenght > 5.7f) {
+		distance = distance * 5.7f;
+		translate = { distance.x, translate.y, distance.z };
 	}
 }
 
@@ -120,7 +146,11 @@ void Enemy::CheckBehaviorRequest() {
 }
 
 void Enemy::On_Collision(const BaseCollider* const other) {
-
+	if (other->group() == "Enemy") {
+		velocity_ = { 0,0,0 };
+		velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
+		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;
+	}
 }
 
 void Enemy::On_Collision_Enter(const BaseCollider* const other) {
@@ -136,37 +166,21 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			velocity_ *= -0.1f;
 			enemyAttack_SE_->restart();
 			return;
+		} else {
+			isKickToPlayer_ = true;
+			velocity_ = (other->world_position() - world_position()).normalize_safe() * -5.0f;
+			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -8.0f;
+			behaviorRequest_ = EnemyState::Blown_State;
 		}
+
 	} else if (other->group() == "Meteo") { // 隕石
 		isDead_ = true;
 
 	} else if (other->group() == "Enemy") { // 敵同士
-		if (!isAppearance_) {	// 敵が出現した直後でなければ当たり判定をとる
-			velocity_ = { 0,0,0 };
-			velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
-			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;
-			behaviorRequest_ = EnemyState::Blown_State;
-
-			enemyEachOther_SE_->restart();
-
-			// ボーナスの敵を追加する
-			Vector3 translate = transform->get_translate();
-			translate += RandomVector3(-3.0f, 3.0f);
-
-			// 範囲外に出ないようにする処理
-			Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
-			// 中心からの長さ
-			float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
-			if (lenght > 5.7f) {
-				distance = distance * 5.7f;
-				translate = { distance.x, translate.y, distance.z };
-			}
-
-		} else {
-			velocity_ = { 0,0,0 };
-			velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
-			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
-		}
+		velocity_ = (other->world_position() - world_position()).normalize_safe() * -0.5f;
+		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -0.7f;
+		behaviorRequest_ = EnemyState::Blown_State;
+		enemyEachOther_SE_->restart();
 	}
 }
 

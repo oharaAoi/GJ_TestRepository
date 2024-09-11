@@ -22,6 +22,7 @@ class EnemyManager {
 #ifdef _DEBUG
 	friend class EnemyPopEditor;
 #endif // _DEBUG
+
 public:	// データ構造体
 
 	struct SettingData {
@@ -36,6 +37,11 @@ public:	// データ構造体
 
 	struct Group {
 		std::map<std::string, SettingData> items;
+	};
+
+	struct AddEnemyData {
+		Vector3 pos;
+		EnemyType type;
 	};
 
 public:
@@ -72,6 +78,8 @@ public:	// メンバ関数
 	void LoadFileName();
 
 	std::optional<EnemyManager::Group> LoadFile(const std::string& fileName);
+
+	void StartPop();
 
 private:
 	void PopFromGroup(const Group& group);
