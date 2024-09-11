@@ -193,7 +193,6 @@ void TutorialScene::debug_update() {
 
 	boss_->EditImGui();
 
-	meteoriteManager_->EditImGui();
 	enemyManager_->EditImGui();
 }
 void TutorialScene::CheckMeteoToField() {

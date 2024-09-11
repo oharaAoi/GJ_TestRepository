@@ -258,6 +258,6 @@ std::optional<EnemyManager::Group> EnemyManager::LoadFile(const std::string& fil
 
 void EnemyManager::PopFromGroup(const Group& group) {
 	for (auto& item : group.items | std::views::values) {
-		gameScene_->AddEnemy(item.position, item.enemyType);
+		AddEnemy(item.position, item.enemyType);
 	}
 }

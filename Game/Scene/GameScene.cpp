@@ -297,21 +297,18 @@ void GameScene::CheckMeteoAttraction() {
 				length = origineLength;
 				direction = Vector3::Normalize(meteoToAttractOrigine);
 				meteo->SetTargetPosition(player_->GetGravityRodOrigine());
-			} else {
+			}
+			else {
 				meteo->SetAcceleration(Vector3::Normalize(meteoToAttractEnd));
 				length = endLength;
 				direction = Vector3::Normalize(meteoToAttractEnd);
 				meteo->SetTargetPosition(player_->GetGravityRodEnd());
 			}
-		} else {
+		}
+		else {
 			meteo->SetIsAttraction(false);
 		}
 	}
-
-void GameScene::AddEnemy(const Vector3& position, const EnemyType& enemyType) {
-	auto& newEnemy = enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType));
-	collisionManager_->register_collider("Enemy", newEnemy->GetCollider());
-	newEnemy->SetIsPlayerFlragPtr(player_->GetIsAttackofEnmey());
 }
 
 void GameScene::CheckBossCollision() {

@@ -83,28 +83,24 @@ void MeteoriteManager::SelectionArrange() {
 }
 
 void MeteoriteManager::PopFromGroup(const MeteoriteManager::Group& group) {
-	std::vector<std::string> itemArray;
-	for (const auto& pair : group.items) {
-		const std::string& category = pair.first;
-		itemArray.push_back(category);
-	}
+	//std::vector<std::string> itemArray;
+	//for (const auto& pair : group.items) {
+	//	const std::string& category = pair.first;
+	//	itemArray.push_back(category);
+	//}
 
-	// 隕石の位置を取得する
-	for (uint32_t oi = 0; oi < itemArray.size(); ++oi) {
-		if (itemArray[oi] != "Adjustment") {
-			AddMeteo(GetValue<Vector3>(randomKey, itemArray[oi]));
-			//gameScene_->AddMeteorite(Vector3{RandomFloat(14, 18), 0, RandomFloat(-8, 8) });
+	//// 隕石の位置を取得する
+	//for (uint32_t oi = 0; oi < itemArray.size(); ++oi) {
+	//	if (itemArray[oi] != "Adjustment") {
+	//		AddMeteo(GetValue<Vector3>(group, itemArray[oi]));
+	//	}
+	//}
+
+	for (const auto& item : group.items) {
+		if (item.second.value.index() == 3) {
+			AddMeteo(GetValue<Vector3>(group, item.first));
 		}
 	}
-
-	// 一定時間選出出来ないようにする
-	groupMap_[randomKey].spawnedFrameCount = GetValue<Adjustment>(randomKey, "Adjustment").rePopTime;
-
-	// 選出出来ないグループを配列にまとめる
-	groupRefs_.push_back(&groupMap_[randomKey]);
-
-	// timedCallをリセットする
-	timedCalls_.push_back(Test::TimedCall(std::bind(&MeteoriteManager::SelectionArrange, this), kAppearanceTime_));
 }
 
 // ------------------- ランダムなファイルを選出する ------------------- //
