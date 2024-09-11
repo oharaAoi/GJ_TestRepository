@@ -25,9 +25,10 @@ public:
 	~SceneDemo();
 
 public:
-	void load();
-	void initialize();
-	void finalize();
+	void load() override;
+	void initialize() override;
+	void poped() override;
+	void finalize() override;
 
 	void begin() override;
 	void update() override;

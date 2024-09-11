@@ -48,55 +48,22 @@ void SceneDemo::initialize() {
 
 	parentCollider = CreateShared<SphereCollider>();
 	parentCollider->initialize();
-	parentCollider->set_on_collision(
-		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &parent->get_materials()[0].color)
-	);
-	parentCollider->set_on_collision_enter(
-		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &parent->get_materials()[0].color)
-	);
-	parentCollider->set_on_collision_exit(
-		std::bind(&SceneDemo::on_collision_exit, this, std::placeholders::_1, &parent->get_materials()[0].color)
-	);
 	parentCollider->get_hierarchy().set_parent(parent->get_hierarchy());
 
 	childCollider = CreateShared<SphereCollider>();
 	childCollider->initialize();
-	childCollider->set_on_collision(
-		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &child->get_materials()[0].color)
-	);
-	childCollider->set_on_collision_exit(
-		std::bind(&SceneDemo::on_collision_exit, this, std::placeholders::_1, &child->get_materials()[0].color)
-	);
 	childCollider->get_hierarchy().set_parent(child->get_hierarchy());
 
 	singleCollider = CreateShared<SphereCollider>();
 	singleCollider->initialize();
-#ifdef _DEBUG
-	singleCollider->set_on_collision_enter(
-		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &singleCollider->get_collider_drawer().get_materials()[0].color)
-	);
-	singleCollider->set_on_collision_exit(
-		std::bind(&SceneDemo::on_collision_exit, this, std::placeholders::_1, &singleCollider->get_collider_drawer().get_materials()[0].color)
-	);
-#endif // _DEBUG
 
 	single2Collider = CreateShared<SphereCollider>();
 	single2Collider->initialize();
 	single2Collider->get_transform().set_translate_x(-3.0f);
-#ifdef _DEBUG
-	single2Collider->set_on_collision(
-		std::bind(&SceneDemo::on_collision, this, std::placeholders::_1, &single2Collider->get_collider_drawer().get_materials()[0].color)
-	);
-#endif // _DEBUG
 
 	single3Collider = CreateShared<SphereCollider>();
 	single3Collider->initialize();
 	single3Collider->get_transform().set_translate_x(3.0f);
-#ifdef _DEBUG
-	single3Collider->set_on_collision_enter(
-		std::bind(&SceneDemo::on_collision_enter, this, std::placeholders::_1, &single3Collider->get_collider_drawer().get_materials()[0].color)
-	);
-#endif // _DEBUG
 
 	collisionManager = CreateUnique<CollisionManager>();
 	collisionManager->register_collider("Parent", parentCollider);
@@ -114,7 +81,6 @@ void SceneDemo::initialize() {
 	object3dNode->set_render_target();
 	//object3dNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
 	object3dNode->set_depth_stencil();
-	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
 
 	outlineNode = std::make_unique<OutlineNode>();
 	outlineNode->initialize();
@@ -131,15 +97,23 @@ void SceneDemo::initialize() {
 	RenderPath path{};
 	path.initialize({ object3dNode, outlineNode });
 
-	RenderPathManager::RegisterPath("SceneDemo", std::move(path));
-	RenderPathManager::SetPath("SceneDemo");
+	RenderPathManager::RegisterPath("SceneDemo" + std::to_string(reinterpret_cast<std::uint64_t>(this)), std::move(path));
+	RenderPathManager::SetPath("SceneDemo" + std::to_string(reinterpret_cast<std::uint64_t>(this)));
 
+	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
 	//DirectXSwapChain::SetClearColor(Color{ 0.0f,0.0f,0.0f,0.0f });
+}
+
+void SceneDemo::poped() {
+	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
+	RenderPathManager::SetPath("SceneDemo" + std::to_string(reinterpret_cast<std::uint64_t>(this)));
 }
 
 void SceneDemo::finalize() {
 	audioPlayer->finalize();
-	RenderPathManager::UnregisterPath("SceneDemo");
+	RenderPathManager::UnregisterPath("SceneDemo" + std::to_string(reinterpret_cast<std::uint64_t>(this)));
+	object3dNode->finalize();
+	outlineNode->finalize();
 }
 
 void SceneDemo::begin() {
@@ -193,13 +167,13 @@ void SceneDemo::on_collision_exit(const BaseCollider* const, Color* object) {
 void SceneDemo::debug_update() {
 	ImGui::Begin("DemoScene");
 	if (ImGui::Button("StackScene")) {
-		SceneManager::SetSceneChange(CreateUnique<SceneDemo>(), true);
+		SceneManager::SetSceneChange(CreateUnique<SceneDemo>(), 1, true);
 	}
 	if (ImGui::Button("ChangeScene")) {
-		SceneManager::SetSceneChange(CreateUnique<SceneDemo>(), false);
+		SceneManager::SetSceneChange(CreateUnique<SceneDemo>(), 1, false);
 	}
 	if (ImGui::Button("PopScene")) {
-		SceneManager::PopScene();
+		SceneManager::PopScene(1);
 	}
 	ImGui::End();
 
