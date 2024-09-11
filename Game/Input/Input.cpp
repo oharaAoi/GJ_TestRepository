@@ -48,7 +48,7 @@ void Input::Init(WNDCLASS wCalss, HWND hwnd) {
 void Input::Update() {
 	// keyboard情報の取得開始
 	keyboard_->Acquire();
-	//mouse_->Acquire();
+	mouse_->Acquire();
 
 	// keyの値をpreKeyにコピーする
 	memcpy(preKey_, key_, sizeof(key_));
@@ -56,10 +56,10 @@ void Input::Update() {
 
 	// 全キーの入力状況を取得
 	keyboard_->GetDeviceState(sizeof(key_), key_);
-	//mouse_->GetDeviceState(sizeof(DIMOUSESTATE), &currentMouse_);
+	mouse_->GetDeviceState(sizeof(DIMOUSESTATE), &currentMouse_);
 
 	GetCursorPos(&mousePoint_);
-	ScreenToClient(FindWindowA("CG2", nullptr), &mousePoint_);
+	ScreenToClient(FindWindowA(WinApp::GetWindowName().c_str(), nullptr), &mousePoint_);
 
 	GamePadInitialize();
 }

@@ -24,7 +24,7 @@ public:
 
 #ifdef _DEBUG
 	virtual void debug_gui();
-	//void debug_camera();
+	void debug_camera();
 #endif // _DEBUG
 
 private:
@@ -41,4 +41,14 @@ private:
 	float aspectRatio;
 	float nearClip;
 	float farClip;
+
+#ifdef _DEBUG
+	bool isVaildDebugCamera;
+	std::unique_ptr<Transform3D> debugCameraCenter;
+	std::unique_ptr<Hierarchy> debugCameraCenterHierarchy;
+	Matrix4x4 debugCameraCenterMatrix;
+	std::unique_ptr<Transform3D> notuseTransform;
+	Vector3 offset;
+	Vector2 preMousePos;
+#endif // _DEBUG
 };
