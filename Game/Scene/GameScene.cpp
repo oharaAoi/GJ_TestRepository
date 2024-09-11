@@ -15,6 +15,13 @@ GameScene::GameScene() = default;
 
 GameScene::~GameScene() = default;
 
+void GameScene::finalize() {
+	object3DNode->finalize();
+	outlineNode->finalize();
+	spriteNode->finalize();
+	RenderPathManager::UnregisterPath("GameScene");
+}
+
 void GameScene::initialize() {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 	EffectManager::GetInstance()->Init();
@@ -35,7 +42,7 @@ void GameScene::initialize() {
 		CVector3::BASIS,
 		Quaternion::EulerDegree(55, 0, 0),
 		{ 0, 50, -28.0 }
-		});
+							 });
 
 	collisionManager_->register_collider("Player", player_->GetCollider());
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
@@ -48,13 +55,19 @@ void GameScene::initialize() {
 	object3DNode->set_render_target();
 	object3DNode->set_depth_stencil();
 
+	outlineNode = std::make_unique<OutlineNode>();
+	outlineNode->initialize();
+	outlineNode->set_render_target();
+	outlineNode->set_depth_resource(DirectXSwapChain::GetDepthStencil()->texture_gpu_handle());
+	outlineNode->set_texture_resource(object3DNode->result_stv_handle());
+
 	spriteNode = std::make_unique<SpriteNode>();
 	spriteNode->initialize();
-	spriteNode->set_background_texture(object3DNode->result_stv_handle());
+	spriteNode->set_background_texture(outlineNode->result_stv_handle());
 	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
 	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
 
-	path.initialize({ object3DNode,spriteNode });
+	path.initialize({ object3DNode, outlineNode, spriteNode });
 	RenderPathManager::RegisterPath("GameScene", std::move(path));
 	RenderPathManager::SetPath("GameScene");
 
@@ -153,7 +166,7 @@ void GameScene::update() {
 			return true;
 		}
 		return false;
-	});
+							 });
 
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->Update(player_->get_transform().get_translate());
@@ -164,7 +177,7 @@ void GameScene::update() {
 			return true;
 		}
 		return false;
-	});
+						 });
 
 	// -------------------------------------------------
 	// ↓ Manager系の更新
@@ -248,9 +261,13 @@ void GameScene::draw() const {
 
 #ifdef _DEBUG
 	enemyManager_->Draw();
-	collisionManager_->debug_draw3d(*camera3D_);
 	editor->draw_debug3d();
+	if (isDrawCollider_) {
+		collisionManager_->debug_draw3d(*camera3D_);
+	}
 #endif
+	RenderPathManager::Next();
+	outlineNode->draw();
 	RenderPathManager::Next();
 	playerUI_->Draw();
 	RenderPathManager::Next();
@@ -300,15 +317,13 @@ void GameScene::CheckMeteoAttraction() {
 				length = origineLength;
 				direction = Vector3::Normalize(meteoToAttractOrigine);
 				meteo->SetTargetPosition(player_->GetGravityRodOrigine());
-			}
-			else {
+			} else {
 				meteo->SetAcceleration(Vector3::Normalize(meteoToAttractEnd));
 				length = endLength;
 				direction = Vector3::Normalize(meteoToAttractEnd);
 				meteo->SetTargetPosition(player_->GetGravityRodEnd());
 			}
-		}
-		else {
+		} else {
 			meteo->SetIsAttraction(false);
 		}
 	}
@@ -357,6 +372,10 @@ void GameScene::debug_update() {
 	ImGui::End();
 
 	editor->draw_gui();
+
+	ImGui::Begin("Collider");
+	ImGui::Checkbox("isDraw", &isDrawCollider_);
+	ImGui::End();
 
 	meteoriteManager_->DebugGui();
 }

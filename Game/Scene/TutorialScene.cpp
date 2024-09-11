@@ -195,6 +195,8 @@ void TutorialScene::debug_update() {
 
 	enemyManager_->EditImGui();
 }
+#endif // _DEBUG
+
 void TutorialScene::CheckMeteoToField() {
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		if (meteo->GetIsFalling()) {
@@ -263,4 +265,3 @@ void TutorialScene::CheckBossCollision() {
 		}
 	}
 }
-#endif // _DEBUG

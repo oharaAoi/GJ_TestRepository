@@ -131,11 +131,13 @@ std::string MeteoriteManager::GetRandomKey() {
 	}
 }
 
+#ifdef _DEBUG
 void MeteoriteManager::DebugGui() {
 	for (auto& times : timedCalls_) {
 		times.DebugGui();
 	}
 }
+#endif // _DEBUG
 
 #ifdef _DEBUG
 

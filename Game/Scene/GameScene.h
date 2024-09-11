@@ -22,6 +22,7 @@
 #include "Engine/Render/RenderPath/RenderPath.h"
 #include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
 #include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
+#include "Engine/Render/RenderNode/Outline/OutlineNode.h"
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/PlayerUI.h"
 
@@ -32,6 +33,8 @@ class GameScene :
 public:
 	GameScene();
 	~GameScene();
+
+	void finalize()override;
 
 	void initialize() override;
 
@@ -95,10 +98,13 @@ private:
 	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;
 	std::shared_ptr<SpriteNode> spriteNode;
+	std::shared_ptr<OutlineNode> outlineNode;
 	RenderPath path;
 
 #ifdef _DEBUG
 	std::unique_ptr<EditorController> editor;
+
+	bool isDrawCollider_ = false;
 #endif // _DEBUG
 };
 
