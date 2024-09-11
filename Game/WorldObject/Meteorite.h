@@ -5,6 +5,7 @@
 #include "Engine/Game/Managers/AudioManager/AudioManager.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
 #include "Engine/Game/Audio/AudioResource.h"
+#include "Engine/Game/GameTimer/GameTimer.h"
 
 class Color;
 

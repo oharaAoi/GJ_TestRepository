@@ -1,11 +1,13 @@
 #include "EnemyManager.h"
-#include "Game/Scene/GameScene.h"
 
-EnemyManager::EnemyManager(GameScene* gameScene) { Init(gameScene); }
+EnemyManager::EnemyManager(std::list<std::unique_ptr<Enemy>>& sceneEnemyList,
+						   CollisionManager* collisionManager, bool* isPlayerFlagPtr)
+	: sceneEnemyList_(sceneEnemyList), collisionManager_(collisionManager), isPlayerFlagPtr_(isPlayerFlagPtr) {
+	Init();
+}
 EnemyManager::~EnemyManager() {}
 
-void EnemyManager::Init(GameScene* gameScene) {
-	gameScene_ = gameScene;
+void EnemyManager::Init() {
 	LoadFileName();
 
 	//SelectArrange();
@@ -70,7 +72,7 @@ void EnemyManager::SelectArrange() {
 		data.position = loadData_[keyArray[randomNum]].items[enemyArray[oi]].position;
 		data.enemyType = loadData_[keyArray[randomNum]].items[enemyArray[oi]].enemyType;
 
-		gameScene_->AddEnemy(data.position, data.enemyType);
+		AddEnemy(data.position, data.enemyType);
 	}
 
 	// timedCallをリセットする
@@ -200,7 +202,9 @@ void EnemyManager::SaveFile() {
 #endif // _DEBUG
 
 void EnemyManager::AddEnemy(const Vector3& positoin, const EnemyType& type) {
-	gameScene_->AddEnemy(positoin, type);
+	auto& newEnemy = sceneEnemyList_.emplace_back(std::make_unique<Enemy>(positoin, type));
+	collisionManager_->register_collider("Enemy", newEnemy->GetCollider());
+	newEnemy->SetIsPlayerFlragPtr(isPlayerFlagPtr_);
 }
 
 void EnemyManager::LoadFileName() {

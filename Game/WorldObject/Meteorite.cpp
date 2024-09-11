@@ -68,8 +68,8 @@ void Meteorite::Move(const Vector3& playerPosition) {
 	Vector3 translate = transform->get_translate();
 	// 引き寄せられている間の処理
 	if (isAttraction_) {
-		acceleration_ += (targetPosition_ - world_position()).normalize_safe() * kDeltaTime;
-		velocity_ = (acceleration_ * attractionedStrength_) * kDeltaTime;
+		acceleration_ += (targetPosition_ - world_position()).normalize_safe() * GameTimer::DeltaTime();
+		velocity_ = (acceleration_ * attractionedStrength_) * GameTimer::DeltaTime();
 	}
 
 	// 範囲外に出たら削除する処理
@@ -77,15 +77,15 @@ void Meteorite::Move(const Vector3& playerPosition) {
 		isDead_ = true;
 	}
 
-	translate += velocity_ * kDeltaTime;
+	translate += velocity_ * GameTimer::DeltaTime();
 	transform->set_translate(translate);
 }
 
 void Meteorite::Falling() {
 	acceleration_ = { 0,kGravity_,0 };
 	Vector3 translate = transform->get_translate();
-	velocity_ += acceleration_ * kDeltaTime;
-	translate += velocity_ * kDeltaTime;
+	velocity_ += acceleration_ * GameTimer::DeltaTime();
+	translate += velocity_ * GameTimer::DeltaTime();
 	transform->set_translate(translate);
 }
 

@@ -36,7 +36,7 @@ void Field::Update() {
 
 void Field::Move() {
 	Vector3 translate = transform->get_translate();
-	translate.y += velocityY_ * kDeltaTime;
+	translate.y += velocityY_ * GameTimer::DeltaTime();
 
 	if (translate.y > 0) {
 		translate.y = 0;

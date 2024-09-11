@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 #include "Game/GameCharacter/State/BaseEnemyState.h"
+#include "Engine/Game/GameTimer/GameTimer.h"
 
 class Enemy;
 

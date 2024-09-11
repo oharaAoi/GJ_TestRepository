@@ -16,6 +16,7 @@
 #include "Engine/Math/Vector2.h"
 #include "Engine/Math/Vector3.h"
 #include "Game/MyRandom.h"
+#include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
 
 using json = nlohmann::json;
 
@@ -43,7 +44,7 @@ public: // データ構造体
 
 public:
 
-	MeteoriteManager();
+	MeteoriteManager(std::list<std::unique_ptr<Meteorite>>& sceneMeteoList, CollisionManager* collisionManager);
 	~MeteoriteManager();
 
 	/// <summary>
@@ -75,6 +76,11 @@ public:
 #endif
 
 public:	// メンバ関数
+
+	/// <summary>
+	/// 隕石を追加
+	/// </summary>
+	void AddMeteo(const Vector3& position);
 
 	void LoadAllFile();
 
@@ -127,13 +133,9 @@ public:
 	template<typename T>
 	T GetValue(const std::string& groupName, const std::string& key, const T& defaultValue = T()) const;
 
-	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
-
 private:
 
 	const std::string kDirectoryPath_ = "./Engine/Resources/Meteorite/";
-
-	GameScene* gameScene_ = nullptr;
 
 	// 隕石の情報が格納されたデータ
 	std::map<std::string, Group> groupMap_;
@@ -142,6 +144,11 @@ private:
 	std::list<Test::TimedCall> timedCalls_;
 
 	std::list<Meteorite> meteoriteList_;
+
+	// 他のクラスが持つポインタ(参照) ----------------------------------------------------
+	std::list<std::unique_ptr<Meteorite>>& sceneMeteoList_; // シーンが持っている敵のリスト
+	CollisionManager* collisionManager_ = nullptr;
+	// ------------------------------------------------------------------------------
 
 	// ----------- debug用 ----------- //
 	uint32_t rePopTime_ = 0;

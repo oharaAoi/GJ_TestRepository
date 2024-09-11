@@ -10,10 +10,10 @@
 #include "Engine/Game/Camera/Camera3D.h"
 #include "externals/nlohmann/json.hpp"
 #include "Game/Function/TimedCall.h"
+#include "Game/MyRandom.h"
+#include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
 
 using json = nlohmann::json;
-
-class GameScene;
 
 /// <summary>
 /// Enemyの生成を管理するクラス
@@ -37,12 +37,13 @@ public:	// データ構造体
 
 public:
 
-	EnemyManager(GameScene* gameScene);
+	EnemyManager(std::list<std::unique_ptr<Enemy>>& sceneEnemyList,
+				 CollisionManager* collisionManager, bool* isPlayerFlagPtr);
 	~EnemyManager();
 
 public:	// メンバ関数
 
-	void Init(GameScene* gameScene);
+	void Init();
 	void Update(const Vector3& playerPosition);
 
 #ifdef _DEBUG
@@ -71,8 +72,6 @@ public:	// メンバ関数
 
 private:
 
-	GameScene* gameScene_ = nullptr;
-
 	const std::string kDirectoryPath_ = "./Engine/Resources/EnemyData/";
 
 	std::map<std::string, Group> loadData_;
@@ -80,6 +79,12 @@ private:
 	std::vector<std::string> fileNameArray_;
 
 	std::list<Test::TimedCall> timedCalls_;
+
+	// 他のクラスが持つポインタ(参照) ----------------------------------------------------
+	std::list<std::unique_ptr<Enemy>>& sceneEnemyList_; // シーンが持っている敵のリスト
+	CollisionManager* collisionManager_ = nullptr;
+	bool* isPlayerFlagPtr_ = nullptr;
+	// ------------------------------------------------------------------------------
 
 	uint32_t popTime_ = 500;
 	uint32_t firstPopCount_ = 0;

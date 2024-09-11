@@ -9,6 +9,7 @@
 #include "Engine/Math/Definition.h"
 #include "Game/GameCharacter/Manager/AdjustmentItem.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
+#include "Engine/Game/GameTimer/GameTimer.h"
 
 
 enum BossFaceParts {

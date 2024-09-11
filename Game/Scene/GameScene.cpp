@@ -28,13 +28,9 @@ void GameScene::initialize() {
 		{ 0, 50, -28.0 }
 							 });
 
-	meteoriteManager_ = std::make_unique<MeteoriteManager>();
-	meteoriteManager_->SetGameScene(this);
-	meteoriteManager_->Init();
-
-	enemyManager_ = std::make_unique<EnemyManager>(this);
-
 	collisionManager_->register_collider("Player", player_->GetCollider());
+	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
+	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey());
 
 	playerUI_ = std::make_unique<PlayerUI>();
 
@@ -56,12 +52,12 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "GravityRod.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "mouth.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "mob.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "Field.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariEnemy.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources/Models", "kariSpEnemy.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "GravityRod.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "mouth.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "mob.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "Field.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariEnemy.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariSpEnemy.obj");
 
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossFace", "bossFace.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/LowerJaw", "lowerJaw.obj");
@@ -176,7 +172,6 @@ void GameScene::begin_rendering() {
 	playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
 
 	field_->begin_rendering(*camera3D_);
-
 	player_->Begin_Rendering(camera3D_.get());
 	boss_->Begin_Rendering(camera3D_.get());
 
@@ -299,7 +294,7 @@ void GameScene::AddMeteorite(const Vector3& position) {
 }
 
 void GameScene::AddEnemy(const Vector3& position, const EnemyType& enemyType) {
-	auto& newEnemy = enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType, this));
+	auto& newEnemy = enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType));
 	collisionManager_->register_collider("Enemy", newEnemy->GetCollider());
 	newEnemy->SetIsPlayerFlragPtr(player_->GetIsAttackofEnmey());
 }

@@ -2,8 +2,8 @@
 #include "Game/Enviroment.h"
 #include "Game/Scene/GameScene.h"
 
-Enemy::Enemy(const Vector3& position, const EnemyType& enemyType, GameScene* gameScene) {
-	Init(position, enemyType, gameScene); 
+Enemy::Enemy(const Vector3& position, const EnemyType& enemyType) {
+	Init(position, enemyType); 
 }
 Enemy::~Enemy() {
 	Finalize();
@@ -14,9 +14,7 @@ void Enemy::Finalize() {
 	enemyEachOther_SE_->finalize();
 }
 
-void Enemy::Init(const Vector3& position, const EnemyType& enemyType, GameScene* gameScene) {
-	assert(gameScene);
-	gameScene_ = gameScene;
+void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 	
 	if (enemyType == EnemyType::Normal_Type) {
 		reset_object("triangleRiceBall.obj");
@@ -59,7 +57,7 @@ void Enemy::Update(const Vector3& playerPosition) {
 	state_->Update();
 
 	Vector3 translate = transform->get_translate();
-	translate += velocity_ * kDeltaTime;
+	translate += velocity_ * GameTimer::DeltaTime();
 	transform->set_translate(translate);
 
 	// 敵の向きを移動方向にする
@@ -75,11 +73,11 @@ void Enemy::Update(const Vector3& playerPosition) {
 void Enemy::Attack() {
 	if (++frameCount_ < 30) {
 		Vector3 translate = transform->get_translate();
-		translate += -(playerPosition_ - translate).normalize_safe() * kDeltaTime;
+		translate += -(playerPosition_ - translate).normalize_safe() * GameTimer::DeltaTime();
 		transform->set_translate(translate);
 	} else if(++frameCount_ < 50) {
 		Vector3 translate = transform->get_translate();
-		translate += (playerPosition_ - translate).normalize_safe() * 8.0f * kDeltaTime;
+		translate += (playerPosition_ - translate).normalize_safe() * 8.0f * GameTimer::DeltaTime();
 		transform->set_translate(translate);
 	} else {
 		isAttack_ = false;

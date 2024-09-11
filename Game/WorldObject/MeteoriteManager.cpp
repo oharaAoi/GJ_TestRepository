@@ -1,7 +1,10 @@
 #include "MeteoriteManager.h"
 #include "Game/Scene/GameScene.h"
 
-MeteoriteManager::MeteoriteManager() {}
+MeteoriteManager::MeteoriteManager(std::list<std::unique_ptr<Meteorite>>& sceneMeteoList, CollisionManager* collisionManager)
+	: sceneMeteoList_(sceneMeteoList), collisionManager_(collisionManager) {
+	Init();
+}
 MeteoriteManager::~MeteoriteManager() {}
 
 void MeteoriteManager::Init() {
@@ -65,7 +68,7 @@ void MeteoriteManager::SelectionArrange() {
 	// 隕石の位置を取得する
 	for (uint32_t oi = 0; oi < itemArray.size(); ++oi) {
 		if (itemArray[oi] != "Adjustment") {
-			gameScene_->AddMeteorite(GetValue<Vector3>(randomKey, itemArray[oi]));
+			AddMeteo(GetValue<Vector3>(randomKey, itemArray[oi]));
 			//gameScene_->AddMeteorite(Vector3{RandomFloat(14, 18), 0, RandomFloat(-8, 8) });
 		}
 	}
@@ -217,6 +220,11 @@ void MeteoriteManager::EditConfigGui() {
 	}
 }
 #endif 
+
+void MeteoriteManager::AddMeteo(const Vector3& position) {
+	auto& newMeteo = sceneMeteoList_.emplace_back(std::make_unique<Meteorite>(position));
+	collisionManager_->register_collider("Meteo", newMeteo->GetCollider());
+}
 
 // ------------------- directory内にあるパスを取得 ------------------- //
 void MeteoriteManager::LoadAllFile() {

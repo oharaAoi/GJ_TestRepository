@@ -38,7 +38,7 @@ void Player::Update(const float& fieldRadius) {
 	if (isStan_) {
 		if (++stanFrame_ < stanTime_) {
 			Vector3 translate = transform->get_translate();
-			translate += preFrameVelocity_ * kDeltaTime;
+			translate += preFrameVelocity_ * GameTimer::DeltaTime();
 			ConstrainToField(translate);
 			transform->set_translate(translate);
 			transform->set_translate_y(12.5f);
@@ -124,7 +124,7 @@ void Player::Move() {
 		}
 	
 		// playerを動かす
-		velocity = velocity * speed * (1.0f / 60);
+		velocity = velocity * speed * GameTimer::DeltaTime();
 		if (!isAttack_) {
 			translate.x += velocity.x;
 			translate.z += velocity.y;

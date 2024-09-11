@@ -91,7 +91,7 @@ void Boss::Draw() const {
 
 void Boss::Move() {
 	Vector3 translate = transform->get_translate();
-	translate += velocity_ * kDeltaTime;
+	translate += velocity_ * GameTimer::DeltaTime();
 
 	translate.y -= pushBackValue_;
 	pushBackValue_ -= 0.1f;
