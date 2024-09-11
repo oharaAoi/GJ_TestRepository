@@ -10,6 +10,7 @@
 #include "Game/GameCharacter/Manager/AdjustmentItem.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
+#include "Game/Easing.h"
 
 
 enum BossFaceParts {
@@ -63,6 +64,10 @@ public:	// メンバ変数
 
 	void PlayFieldPushSE();
 
+	void FaceSet();
+
+	void FaceShake();
+
 #ifdef _DEBUG
 	void EditImGui();
 #endif
@@ -72,9 +77,17 @@ public:	// accesser
 	// ------------------- 満腹度 ------------------- //
 	const int GetSatietyLevel() const { return satietyLevel_; }
 
+	void SetIsStart(const bool& isStart) { isStart_ = isStart; }
+	const bool GetIsStart() const { return isStart_; }
+
+	void SetIsFinish(const bool& isFinish) { isFinish_ = isFinish; }
+	const bool GetIsFinish() const { return isFinish_; }
+
 private:
 
 	AdjustmentItem* adjustmentItem_ = nullptr;
+
+	bool isStart_ = false;
 
 	Vector3 velocity_;
 	float pushBackValue_;
@@ -84,6 +97,9 @@ private:
 	int satietyLevelLimit_ = 200;
 
 	Moving movingMouth_;
+
+	uint32_t frameCount_ = 0;
+	bool isFinish_ = false;
 
 	// 顔の表示用のゲームオブジェクト配列
 	std::vector<std::unique_ptr<GameObject>> faceParts_;

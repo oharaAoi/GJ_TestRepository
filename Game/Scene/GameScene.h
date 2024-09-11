@@ -28,6 +28,11 @@
 
 class EditorController;
 
+enum class PerformanceType {
+	None_Type,
+	GameStart_Type
+};
+
 class GameScene :
 	public BaseScene {
 public:
@@ -68,12 +73,20 @@ public:
 	/// </summary>
 	void CheckBossCollision();
 
+	/// <summary>
+	/// ゲーム開始時の演出
+	/// </summary>
+	void GameStartPerformance();
+
 private:
 
 	uint32_t frameCount_ = 0;
 
+	PerformanceType performanceType_ = PerformanceType::None_Type;
+
 	// ------------------- WorldObject ------------------- //
 	std::unique_ptr<Field> field_ = nullptr;
+	std::unique_ptr<GameObject> skydome_ = nullptr;
 
 	// ------------------- GameObject ------------------- //
 	std::unique_ptr<Player> player_ = nullptr;

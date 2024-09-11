@@ -30,26 +30,53 @@ void GameScene::initialize() {
 	effectManager_ = EffectManager::GetInstance();
 	collisionManager_ = std::make_unique<CollisionManager>();
 
-	field_ = std::make_unique<Field>();
-	player_ = std::make_unique<Player>();
-	player_->set_parent(field_->get_hierarchy());
-	boss_ = std::make_unique<Boss>();
-
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
 	Camera2D::Initialize();
 	camera3D_ = std::make_unique<FollowCamera>();
 	camera3D_->initialize();
 	camera3D_->set_transform({
 		CVector3::BASIS,
-		Quaternion::EulerDegree(55, 0, 0),
+		Quaternion::EulerDegree(75, 0, 0),
 		{ 0, 50, -28.0 }
 							 });
 
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	performanceType_ = PerformanceType::GameStart_Type;
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	skydome_ = std::make_unique<GameObject>();
+	skydome_->reset_object("skydome.obj");
+
+	field_ = std::make_unique<Field>();
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	player_ = std::make_unique<Player>();
+	player_->set_parent(field_->get_hierarchy());
+	boss_ = std::make_unique<Boss>();
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
 	collisionManager_->register_collider("Player", player_->GetCollider());
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
 	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey());
 
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
 	playerUI_ = std::make_unique<PlayerUI>();
 
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
 	object3DNode = std::make_unique<Object3DNode>();
 	object3DNode->initialize();
 	object3DNode->set_render_target();
@@ -100,6 +127,7 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/TriangleRiceBall", "triangleRiceBall.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/CircleRiceBall", "circleRiceBall.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Field", "nattomaki.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
@@ -131,6 +159,28 @@ void GameScene::update() {
 	Camera2D::CameraUpdate();
 
 	// -------------------------------------------------
+	// ↓ 演出が始まるかどうか
+	// -------------------------------------------------
+	if (performanceType_ != PerformanceType::None_Type) {
+		switch (performanceType_) {
+		case PerformanceType::GameStart_Type:
+			GameStartPerformance();
+			// 一定以上カメラが動いたら
+			if (camera3D_->GetNowIndex() >= 3) {
+				boss_->FaceSet();
+				// 顔を上げるのが終わったら
+				if (boss_->GetIsFinish()) {
+					performanceType_ = PerformanceType::None_Type;
+				}
+			}
+
+			break;
+		}
+
+		return;
+	}
+
+	// -------------------------------------------------
 	// ↓ ゲームクリア/オーバー確認
 	// -------------------------------------------------
 	if (boss_->GetIsClear()) {
@@ -144,7 +194,10 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ GameObjectの更新
 	// -------------------------------------------------
+	skydome_->update();
 	field_->Update();
+
+	skydome_->update();
 
 	player_->Update(field_->GetRadius());
 
@@ -203,7 +256,10 @@ void GameScene::update() {
 
 	CheckMeteoToField();
 
-
+	// -------------------------------------------------
+	// ↓ UI
+	// -------------------------------------------------
+	//playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
 }
 
 void GameScene::begin_rendering() {
@@ -211,8 +267,7 @@ void GameScene::begin_rendering() {
 	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
 
-	playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
-
+	skydome_->begin_rendering(*camera3D_);
 	field_->begin_rendering(*camera3D_);
 	player_->Begin_Rendering(camera3D_.get());
 	boss_->Begin_Rendering(camera3D_.get());
@@ -250,6 +305,7 @@ void GameScene::late_update() {
 void GameScene::draw() const {
 	RenderPathManager::BeginFrame();
 	//DirectXCore::ShowGrid(*camera3D_);
+	skydome_->draw();
 	field_->draw();
 	player_->Draw();
 	boss_->Draw();
@@ -347,12 +403,29 @@ void GameScene::CheckBossCollision() {
 	}
 }
 
+void GameScene::GameStartPerformance() {
+	if (!camera3D_->GetIsPerformanceFinish()) {
+		camera3D_->GameStartPerformance();
+	}
+
+	if (camera3D_->GetIsStop()) {
+		boss_->FaceShake();
+
+		if (boss_->GetIsFinish()) {
+			camera3D_->SetIsStop(false);
+		}
+	}
+}
+
 #ifdef _DEBUG
 
 #include <externals/imgui/imgui.h>
 
 void GameScene::debug_update() {
 	ImGui::Begin("Camera3D");
+	if(ImGui::Button("restart")) {
+		camera3D_->Restart();
+	}
 	camera3D_->debug_gui();
 	ImGui::End();
 

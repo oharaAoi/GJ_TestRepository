@@ -36,7 +36,7 @@ void Boss::Init() {
 	overLine_->set_parent(*hierarchy);
 
 	Vector3 translate = transform->get_translate();
-	translate.y = -2.0f;
+	translate.y = -130.0f;
 	transform->set_translate(translate);
 
 	velocity_ = { 0,0.2f,0 };
@@ -67,7 +67,9 @@ void Boss::Init() {
 }
 
 void Boss::Update() {
-	Move();
+	if (isStart_) {
+		Move();
+	}
 
 	FaceMove();
 }
@@ -140,6 +142,33 @@ bool Boss::GetIsGameOver(const float& cylinderHight) {
 
 void Boss::PlayFieldPushSE() {
 	fieldPush_SE_->restart();
+}
+
+void Boss::FaceSet() {
+	if (++frameCount_ <= 100) {
+		isFinish_ = false;
+		float t = static_cast<float>(frameCount_) / 2.0f;
+
+		transform->set_translate_y(std::lerp(-130.0f, -2.0f, EaseOut::Expo(t)));
+
+	} else {
+		isFinish_ = true;
+		frameCount_ = 0;
+	}
+}
+
+void Boss::FaceShake() {
+	if (++frameCount_ <= 180) {
+		float angle = std::sinf(static_cast<float>(frameCount_ * 4.0f) * ToRadian) * ((PI) / 6.0f);
+		Quaternion rotateValue = Quaternion::AngleAxis({ 0,1.0f,0.0f }, angle);
+		Vector3 velocity = (Vector3{ 0.0f, 1.0f, 0.0f }).normalize_safe();
+		float targetAngle = std::atan2f(velocity.x, velocity.z);
+		Quaternion targetRotateValue = Quaternion::EulerRadian({ 0,targetAngle,0 });
+		transform->set_rotate(rotateValue * targetRotateValue);
+	} else {
+		isFinish_ = true;
+		frameCount_ = 0;
+	}
 }
 
 
