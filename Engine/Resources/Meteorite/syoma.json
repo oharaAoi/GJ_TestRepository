@@ -1,16 +1,16 @@
 {
     "syoma": {
         "Adjustment": {
-            "popNum": 3,
-            "rePopTime": 120,
-            "rePopWidth": 5.0
+            "NumMeteorites": 3,
+            "RepopTime": 120,
+            "PopWidth": 5.0
         },
-        "popPos0": [
+        "Position0": [
             17.0,
             6.0,
             -4.0
         ],
-        "popPos1": [
+        "Position1": [
             18.0,
             6.0,
             4.0

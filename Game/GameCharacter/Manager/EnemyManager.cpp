@@ -62,18 +62,7 @@ void EnemyManager::SelectArrange() {
 	}
 
 	int randomNum = RandomInt(0, static_cast<int>(keyArray.size() - 1));
-	std::vector<std::string> enemyArray;
-	for (auto item : loadData_[keyArray[randomNum]].items) {
-		enemyArray.push_back(item.first);
-	}
-
-	for (uint32_t oi = 0; oi < enemyArray.size(); ++oi) {
-		SettingData data{};
-		data.position = loadData_[keyArray[randomNum]].items[enemyArray[oi]].position;
-		data.enemyType = loadData_[keyArray[randomNum]].items[enemyArray[oi]].enemyType;
-
-		AddEnemy(data.position, data.enemyType);
-	}
+	PopFromGroup(loadData_[keyArray[randomNum]]);
 
 	// timedCallをリセットする
 	timedCalls_.push_back(Test::TimedCall(std::bind(&EnemyManager::SelectArrange, this), popTime_));
@@ -209,12 +198,16 @@ void EnemyManager::AddEnemy(const Vector3& positoin, const EnemyType& type) {
 
 void EnemyManager::LoadFileName() {
 	for (const auto& entry : std::filesystem::directory_iterator(kDirectoryPath_)) {
-		LoadFile(entry.path().stem().string());
-		fileNameArray_.push_back(entry.path().stem().string());
+		std::string fileName = entry.path().stem().string();
+		auto result = LoadFile(fileName);
+		if (result.has_value()) {
+			loadData_[fileName] = result.value();
+		}
+		//fileNameArray_.push_back(entry.path().stem().string());
 	}
 }
 
-void EnemyManager::LoadFile(const std::string& fileName) {
+std::optional<EnemyManager::Group> EnemyManager::LoadFile(const std::string& fileName) {
 	// 読み込むjsonファイルのフルパスを合成する
 	std::string filePath = kDirectoryPath_ + fileName + ".json";
 	// 読み込み用ファイルストリーム
@@ -224,7 +217,7 @@ void EnemyManager::LoadFile(const std::string& fileName) {
 
 	if (ifs.fail()) {
 		std::string message = "not Exist " + fileName + ".json";
-		return;
+		return std::nullopt;
 	}
 
 	json root;
@@ -232,6 +225,8 @@ void EnemyManager::LoadFile(const std::string& fileName) {
 	ifs >> root;
 	// ファイルを閉じる
 	ifs.close();
+
+	Group group;
 
 	json::iterator itGroup = root.find(fileName);
 	assert(itGroup != root.end());
@@ -256,9 +251,13 @@ void EnemyManager::LoadFile(const std::string& fileName) {
 		if (itemData.contains("enemyType")) {
 			enemyType = static_cast<EnemyType>(itemData["enemyType"].get<int>());  // int から enum への変換
 		}
+		group.items[Name] = SettingData(position, enemyType);
+	}
+	return group;
+}
 
-		// SettingData オブジェクトを生成して items に追加
-		Group group;
-		loadData_[fileName].items[Name] = SettingData(position, enemyType);
+void EnemyManager::PopFromGroup(const Group& group) {
+	for (auto& item : group.items | std::views::values) {
+		gameScene_->AddEnemy(item.position, item.enemyType);
 	}
 }

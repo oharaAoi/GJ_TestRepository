@@ -286,6 +286,15 @@
     <Filter Include="Engine\Core\Render\RenderNode\Outline">
       <UniqueIdentifier>{3cdd837f-3fa3-4826-b396-e9133edec5b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Editor">
+      <UniqueIdentifier>{4ffe9c46-9b26-4bdb-8ff2-94f7a424aed8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Editor\EnemyPopEditor">
+      <UniqueIdentifier>{a5b09aae-322f-4199-907e-2d9651f26955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Editor\MeteoritePopEditor">
+      <UniqueIdentifier>{5e82de1c-8cbe-4a43-8af0-708431eb0bcf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -609,6 +618,15 @@
     <ClCompile Include="Engine\Render\RenderNode\Outline\OutlineNode.cpp">
       <Filter>Engine\Core\Render\RenderNode\Outline</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Editor\EditorController.cpp">
+      <Filter>MainGame\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Editor\MeteoritePopEditor\MeteoritePopEditor.cpp">
+      <Filter>MainGame\Editor\MeteoritePopEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Editor\EnemyPopEditor\EnemyPopEditor.cpp">
+      <Filter>MainGame\Editor\EnemyPopEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WinApp.h">
@@ -928,6 +946,15 @@
     </ClInclude>
     <ClInclude Include="Engine\Game\GameTimer\GameTimer.h">
       <Filter>Engine\Core\Game\GameTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Editor\EditorController.h">
+      <Filter>MainGame\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Editor\MeteoritePopEditor\MeteoritePopEditor.h">
+      <Filter>MainGame\Editor\MeteoritePopEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Editor\EnemyPopEditor\EnemyPopEditor.h">
+      <Filter>MainGame\Editor\EnemyPopEditor</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\TitleScene.h">
       <Filter>MainGame\Scene</Filter>

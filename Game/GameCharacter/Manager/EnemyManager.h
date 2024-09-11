@@ -19,6 +19,9 @@ using json = nlohmann::json;
 /// Enemyの生成を管理するクラス
 /// </summary>
 class EnemyManager {
+#ifdef _DEBUG
+	friend class EnemyPopEditor;
+#endif // _DEBUG
 public:	// データ構造体
 
 	struct SettingData {
@@ -68,7 +71,10 @@ public:	// メンバ関数
 
 	void LoadFileName();
 
-	void LoadFile(const std::string& fileName);
+	std::optional<EnemyManager::Group> LoadFile(const std::string& fileName);
+
+private:
+	void PopFromGroup(const Group& group);
 
 private:
 

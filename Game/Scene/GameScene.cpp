@@ -6,6 +6,14 @@
 #include "Engine/DirectX/DirectXCore.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
 
+#ifdef _DEBUG
+#include "Game/Editor/EditorController.h"
+#endif // _DEBUG
+
+GameScene::GameScene() = default;
+
+GameScene::~GameScene() = default;
+
 void GameScene::initialize() {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 	EffectManager::GetInstance()->Init();
@@ -46,6 +54,13 @@ void GameScene::initialize() {
 	path.initialize({ object3DNode,spriteNode });
 	RenderPathManager::RegisterPath("GameScene", std::move(path));
 	RenderPathManager::SetPath("GameScene");
+
+#ifdef _DEBUG
+	editor = CreateUnique<EditorController>();
+	editor->initialize(camera3D_.get(), meteoriteManager_.get(), enemyManager_.get());
+	meteoriteManager_->SetEditor(editor.get());
+#endif // _DEBUG
+
 }
 
 void GameScene::load() {
@@ -117,7 +132,13 @@ void GameScene::update() {
 	
 	player_->Update(field_->GetRadius());
 
+#ifdef _DEBUG
+	if (!editor->is_edit()) {
+		boss_->Update();
+	}
+#else
 	boss_->Update();
+#endif // _DEBUG
 
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		meteo->Update(player_->get_transform().get_translate());
@@ -225,6 +246,7 @@ void GameScene::draw() const {
 #ifdef _DEBUG
 	enemyManager_->Draw();
 	collisionManager_->debug_draw3d(*camera3D_);
+	editor->draw_debug3d();
 #endif
 	RenderPathManager::Next();
 	playerUI_->Draw();
@@ -286,6 +308,10 @@ void GameScene::CheckMeteoAttraction() {
 		}
 	}
 
+void GameScene::AddEnemy(const Vector3& position, const EnemyType& enemyType) {
+	auto& newEnemy = enemyList_.emplace_back(std::make_unique<Enemy>(position, enemyType));
+	collisionManager_->register_collider("Enemy", newEnemy->GetCollider());
+	newEnemy->SetIsPlayerFlragPtr(player_->GetIsAttackofEnmey());
 }
 
 void GameScene::CheckBossCollision() {
@@ -329,13 +355,9 @@ void GameScene::debug_update() {
 	ImGui::DragFloat("kSpeed", &Meteorite::kSpeed_, 0.1f, 0.0f, 5.0f);
 	ImGui::End();
 
-	ImGui::Begin("UI");
-	ImGui::Text("player");
-	ImGui::Separator();
-	playerUI_->EditGui();
+	
 	ImGui::End();
 
-	meteoriteManager_->EditImGui();
-	enemyManager_->EditImGui();
+	editor->draw_gui();
 }
 #endif // _DEBUG

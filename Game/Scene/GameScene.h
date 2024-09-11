@@ -25,12 +25,13 @@
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/PlayerUI.h"
 
+class EditorController;
+
 class GameScene :
 	public BaseScene {
 public:
-
-	GameScene() = default;
-	~GameScene() = default;
+	GameScene();
+	~GameScene();
 
 	void initialize() override;
 
@@ -96,7 +97,8 @@ private:
 	std::shared_ptr<SpriteNode> spriteNode;
 	RenderPath path;
 
-
-	
+#ifdef _DEBUG
+	std::unique_ptr<EditorController> editor;
+#endif // _DEBUG
 };
 

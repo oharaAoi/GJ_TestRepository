@@ -1,26 +1,26 @@
 {
     "rio": {
         "Adjustment": {
-            "popNum": 4,
-            "rePopTime": 240,
-            "rePopWidth": 5.0
+            "NumMeteorites": 4,
+            "RepopTime": 240,
+            "PopWidth": 5.0
         },
-        "popPos0": [
+        "Position0": [
             18.149999618530273,
             0.0,
             6.860000133514404
         ],
-        "popPos1": [
+        "Position1": [
             19.389999389648438,
             0.0,
             9.930000305175781
         ],
-        "popPos2": [
+        "Position2": [
             19.389999389648438,
             0.0,
             -5.670000076293945
         ],
-        "popPos3": [
+        "Position3": [
             19.389999389648438,
             0.0,
             -9.130000114440918
