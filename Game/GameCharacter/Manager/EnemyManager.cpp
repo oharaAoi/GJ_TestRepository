@@ -11,7 +11,7 @@ void EnemyManager::Init() {
 	LoadFileName();
 
 	//SelectArrange();
-	AddEnemy(Vector3{ 2.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
+	//AddEnemy(Vector3{ 2.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
 
 	fieldOnEnemyNum_ = 0;
 }

@@ -53,6 +53,7 @@ public:	// accessor
 
 	// ----------- 引き寄せられているか ----------- //
 	void SetIsAttraction(const bool& isAttraction) { isAttraction_ = isAttraction; }
+	const bool& GetIsAttraction() const { return isAttraction_; }
 
 	// ----------- 加速度 ----------- //
 	void SetAcceleration(const Vector3& acceleration) { acceleration_ = acceleration; }

@@ -67,9 +67,7 @@ void Player::Update(const float& fieldRadius) {
 
 void Player::Begin_Rendering(Camera3D* camera3d) {
 	begin_rendering(*camera3d);
-	if (isAttack_) {
-		gravityRod_->Begin_Rendering(camera3d);
-	}
+	gravityRod_->Begin_Rendering(camera3d);
 }
 
 void Player::Draw() const {
@@ -115,6 +113,7 @@ void Player::Move() {
 
 	if (input_->GetIsGamePadConnected(0)) {
 		Vector2 velocity = input_->GetLeftJoyStick();
+		velocity_ = { velocity.x, 0.0f, velocity.y };
 		bool isMove = false;
 		// 入力がさせていたら
 		if (velocity.x != 0 || velocity.y) { isMove = true; }

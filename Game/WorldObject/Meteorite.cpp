@@ -55,7 +55,6 @@ void Meteorite::Update(const Vector3& playerPosition) {
 
 	if (!isFalling_) {
 		Move(playerPosition);
-		isAttraction_ = false;
 	} else {
 		Falling();
 	}
@@ -73,7 +72,7 @@ void Meteorite::Move(const Vector3& playerPosition) {
 	}
 
 	// 範囲外に出たら削除する処理
-	if (std::abs(translate.x) > 20 || std::abs(translate.y) > 20 || std::abs(translate.z) > 20) {
+	if (std::abs(translate.x) > 25 || std::abs(translate.y) > 25 || std::abs(translate.z) > 25) {
 		isDead_ = true;
 	}
 

@@ -193,7 +193,12 @@ void GameScene::update() {
 	// -------------------------------------------------
 	if (player_->GetIsAttack()) {
 		CheckMeteoAttraction();
+	} else {
+		for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+			meteo->SetIsAttraction(false);
+		}
 	}
+
 	CheckBossCollision();
 
 	CheckMeteoToField();

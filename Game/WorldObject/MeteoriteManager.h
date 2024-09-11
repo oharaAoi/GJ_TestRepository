@@ -61,6 +61,8 @@ public:
 	/// </summary>
 	void Update(const Vector3& playerPosition);
 
+	void StartPop();
+
 #ifdef _DEBUG
 	void SetEditor(const EditorController* editController_);
 #endif
@@ -146,6 +148,8 @@ private:
 	std::list<std::unique_ptr<Meteorite>>& sceneMeteoList_; // シーンが持っている敵のリスト
 	CollisionManager* collisionManager_ = nullptr;
 	// ------------------------------------------------------------------------------
+
+	bool isStart_ = false;
 
 #ifdef _DEBUG
 	// ----------- debug用 ----------- //

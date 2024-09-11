@@ -90,7 +90,14 @@ public:
 	const bool GetIsDead() const { return isDead_;}
 	void SetIsDead(const bool& isDead) { isDead_ = isDead; }
 
+	// -----------  ----------- //
 	void SetIsPlayerFlragPtr(bool* isBool) { isPlayerFlragPtr_ = isBool; }
+
+	// -----------  ----------- //
+	const bool GetIsKickToPlayer() const { return isKickToPlayer_; }
+
+	// -----------  ----------- //
+	const Vector3 GetRotateAxis() const { return rotateAxis_; }
 
 private:
 

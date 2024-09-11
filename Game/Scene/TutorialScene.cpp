@@ -1,6 +1,16 @@
 #include "TutorialScene.h"
 #include "Engine/Game/Managers/SceneManager/SceneManager.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
+#include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
+#include "Engine/Game/Managers/TextureManager/TextureManager.h"
+
+
+void TutorialScene::finalize() {
+	object3DNode->finalize();
+	outlineNode->finalize();
+	spriteNode->finalize();
+	RenderPathManager::UnregisterPath("TutorialScene");
+}
 
 void TutorialScene::initialize() {
 	input_ = Input::GetInstance();
@@ -26,9 +36,32 @@ void TutorialScene::initialize() {
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
 	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey());
 
-}
+	// ---------------------------------------------
+	isTutorialFinish_ = false;
+	content_ = TutorialContent::FirstMove_Content;
+	frameCount_ = 0;
+	// ---------------------------------------------
 
-void TutorialScene::finalize() {
+	object3DNode = std::make_unique<Object3DNode>();
+	object3DNode->initialize();
+	object3DNode->set_render_target();
+	object3DNode->set_depth_stencil();
+
+	outlineNode = std::make_unique<OutlineNode>();
+	outlineNode->initialize();
+	outlineNode->set_render_target();
+	outlineNode->set_depth_resource(DirectXSwapChain::GetDepthStencil()->texture_gpu_handle());
+	outlineNode->set_texture_resource(object3DNode->result_stv_handle());
+
+	spriteNode = std::make_unique<SpriteNode>();
+	spriteNode->initialize();
+	spriteNode->set_background_texture(outlineNode->result_stv_handle());
+	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
+
+	path.initialize({ object3DNode, outlineNode, spriteNode });
+	RenderPathManager::RegisterPath("TutorialScene", std::move(path));
+	RenderPathManager::SetPath("TutorialScene");
 }
 
 void TutorialScene::load() {
@@ -87,10 +120,16 @@ void TutorialScene::update() {
 	camera3D_->update();
 	Camera2D::CameraUpdate();
 
+	if (!isTutorialFinish_) {
+		ExecuteTutorialContent(content_);
+		return;
+	}
+
 	// -------------------------------------------------
 	// ↓ GameObjectの更新
 	// -------------------------------------------------
 	field_->Update();
+	field_->get_transform().set_translate({0,0,0});
 	player_->Update(field_->GetRadius());
 	boss_->Update();
 
@@ -126,7 +165,13 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	// ↓ 当たり判定系
 	// -------------------------------------------------
-	if (player_->GetIsAttack()) {CheckMeteoAttraction();}
+	if (player_->GetIsAttack()) {
+		CheckMeteoAttraction();
+	} else {
+		for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+			meteo->SetIsAttraction(false);
+		}
+	}
 	CheckBossCollision();
 	CheckMeteoToField();
 }
@@ -178,6 +223,12 @@ void TutorialScene::draw() const {
 
 #endif
 	RenderPathManager::Next();
+	outlineNode->draw();
+	RenderPathManager::Next();
+
+	RenderPathManager::Next();
+
+
 }
 
 
@@ -188,6 +239,32 @@ void TutorialScene::debug_update() {
 	ImGui::Text("nowScene: Tutorial");
 	ImGui::Text("nextScene: Game");
 	ImGui::Text("push: A or Space");
+	ImGui::Separator();
+	ImGui::Text("now content :");
+	ImGui::SameLine();
+	switch (content_) {
+	case TutorialContent::FirstMove_Content:
+		ImGui::Text("FirstMove_Content");
+		break;
+	case TutorialContent::RodPutOn_Content:
+		ImGui::Text("RodPutOn_Content:");
+		break;
+	case TutorialContent::MeteoCollision_Content:
+		ImGui::Text("MeteoCollision_Content");
+		break;
+	case TutorialContent::CantMoveCanRotate_Content:
+		ImGui::Text("CantMoveCanRotate_Content");
+		break;
+	case TutorialContent::FirstEnemy_Content:
+		ImGui::Text("FirstEnemy_Content");
+		break;
+	case TutorialContent::EnemyCollisionToMeteo_Content:
+		ImGui::Text("EnemyCollisionToMeteo_Content");
+		break;
+	case TutorialContent::MeteoAttract_Content:
+		ImGui::Text("MeteoAttract_Content");
+		break;
+	}
 	ImGui::End();
 
 	ImGui::Begin("Camera3D");
@@ -271,4 +348,202 @@ void TutorialScene::CheckBossCollision() {
 			}
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// ↓　
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TutorialScene::FirstMoveContent() {
+	// Playerの移動のみを教える
+	// 速度を取得してFrameを数える
+	player_->Update(field_->GetRadius());
+
+	player_->SetIsAttack(false);
+
+	Vector3 velocity = player_->GetVelocity();
+
+	if (std::abs(velocity.x) > 0.4f || std::abs(velocity.z) > 0.4f) {
+		++frameCount_;
+	}
+
+	if (frameCount_ > 100) {
+		content_ = TutorialContent::RodPutOn_Content;
+		frameCount_ = 0;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// ↓　
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TutorialScene::RodPutOnContent() {
+	// 棒を取り出したら終わり
+	player_->Update(field_->GetRadius());
+
+	if (player_->GetIsAttack()) {
+		content_ = TutorialContent::MeteoCollision_Content;
+		Vector3 playerTranslate = player_->GetGravityRodOrigine();
+		meteoriteManager_->AddMeteo(playerTranslate + Vector3{ 12, 0, 0 });
+		meteoriteManager_->AddMeteo(playerTranslate + Vector3{ 15, 0, 0 });
+	}
+	player_->Update(field_->GetRadius());
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// ↓　
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TutorialScene::MeteoCollisionContent() {
+	// 隕石同士がぶつかることを教える
+	player_->SetIsAttack(true);
+
+	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		meteo->Update(player_->get_transform().get_translate());
+	}
+
+	// 死亡フラグのチェックを行う
+	meteoriteList_.remove_if([](const std::unique_ptr<Meteorite>& meteo) {
+		if (meteo->GetIsDead()) {
+			return true;
+		}
+		return false;
+	});
+
+	if (player_->GetIsAttack()) { CheckMeteoAttraction(); }
+	CheckMeteoToField();
+	CheckBossCollision();
+
+	if (meteoriteList_.size() == 0) {
+		content_ = TutorialContent::CantMoveCanRotate_Content;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// ↓　
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TutorialScene::CantMoveCanRotateContent() {
+	// Playerがスティックを回していたら
+	player_->Update(field_->GetRadius());
+	player_->SetIsAttack(true);
+
+	Vector3 velocity = player_->GetVelocity();
+	if (std::abs(velocity.x) > 0.4f || std::abs(velocity.z) > 0.4f) {
+		++frameCount_;
+	}
+
+	if (frameCount_ > 80) {
+		content_ = TutorialContent::FirstEnemy_Content;
+		frameCount_ = 0;
+		enemyManager_->AddEnemy(player_->get_transform().get_translate() + Vector3{2.0f, 0.0f, 2.0f}, EnemyType::Normal_Type);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// ↓　
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TutorialScene::FirstEnemyContent() {
+	// 敵を蹴れることを教える
+	player_->Update(field_->GetRadius());
+
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->Update(player_->get_transform().get_translate());
+
+		if (enemy->GetIsKickToPlayer()) {
+			// 速度が0になったら
+			if (enemy->GetVelocity() == Vector3{ 0,0,0 }) {
+				content_ = TutorialContent::EnemyCollisionToMeteo_Content;
+				meteoriteManager_->AddMeteo(Vector3{20, 0, enemy->get_transform().get_translate().z});
+			}
+		}
+	}
+
+	enemyList_.remove_if([](const std::unique_ptr<Enemy>& enemy) {
+	if (enemy->GetIsDead()) {
+		return true;
+	}
+	return false;
+	 });
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// ↓　
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TutorialScene::EnemyCollisionToMeteoContent() {
+	player_->Update(field_->GetRadius());
+
+	// 隕石と敵をぶつける
+	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		meteo->Update(player_->get_transform().get_translate());
+	}
+
+	// 死亡フラグのチェックを行う
+	meteoriteList_.remove_if([](const std::unique_ptr<Meteorite>& meteo) {
+		if (meteo->GetIsDead()) {
+			return true;
+		}
+		return false;
+	 });
+
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		Quaternion rotation = enemy->get_transform().get_quaternion();
+		Quaternion rotateValue = Quaternion::AngleAxis(enemy->GetRotateAxis(),4.0f * ToRadian);
+		enemy->get_transform().set_rotate(rotateValue * rotation);
+	}
+
+	enemyList_.remove_if([](const std::unique_ptr<Enemy>& enemy) {
+		if (enemy->GetIsDead()) {
+			return true;
+		}
+		return false;
+						 });
+
+	if (enemyList_.size() == 0) {
+		content_ = TutorialContent::MeteoAttract_Content;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// ↓　
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TutorialScene::MeteoAttractContent() {
+	// 隕石を引き寄せられることを教える
+	player_->Update(field_->GetRadius());
+
+	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		meteo->Update(player_->get_transform().get_translate());
+		if (meteo->GetIsAttraction()) {
+			isTutorialFinish_ = true;
+			enemyManager_->StartPop();
+			meteoriteManager_->StartPop();
+		}
+	}
+
+	// 死亡フラグのチェックを行う
+	meteoriteList_.remove_if([](const std::unique_ptr<Meteorite>& meteo) {
+		if (meteo->GetIsDead()) {
+			return true;
+		}
+		return false;
+	 });
+
+	if (player_->GetIsAttack()) { CheckMeteoAttraction(); }
+	CheckMeteoToField();
+	CheckBossCollision();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// ↓　
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TutorialScene::ExecuteTutorialContent(const TutorialContent& content) {
+	const auto& it = functionMap_.find(content);
+	if (it != functionMap_.end()) {
+		(this->*(it->second))(); // メンバー関数ポインタを使って関数を呼び出す
+	} 
 }

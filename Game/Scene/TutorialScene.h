@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_map>
 #include <memory>
 #include "Engine/Game/Scene/BaseScene.h"
 #include "Engine/Game/Camera/Camera3D.h"
@@ -14,6 +15,25 @@
 #include "Game/GameCharacter/Boss.h"
 #include "Game/GameCharacter/Manager/EnemyManager.h"
 #include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
+#include "Engine/Render/RenderPath/RenderPath.h"
+#include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
+#include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
+#include "Engine/Render/RenderNode/Outline/OutlineNode.h"
+#include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
+#include "Game/UI/TutorialUI.h"
+
+/// <summary>
+/// 内容
+/// </summary>
+enum class TutorialContent {
+	FirstMove_Content = 0,
+	RodPutOn_Content,
+	MeteoCollision_Content,
+	CantMoveCanRotate_Content,
+	FirstEnemy_Content,
+	EnemyCollisionToMeteo_Content,
+	MeteoAttract_Content
+};
 
 /// <summary>
 /// チュートリアルを行うクラス
@@ -57,6 +77,29 @@ public:
 	/// </summary>
 	void CheckBossCollision();
 
+public:	// チュートリアルの内容
+
+	void FirstMoveContent();
+	void RodPutOnContent();
+	void MeteoCollisionContent();
+	void CantMoveCanRotateContent();
+	void FirstEnemyContent();
+	void EnemyCollisionToMeteoContent();
+	void MeteoAttractContent();
+
+	using FunctionPointer = void(TutorialScene::*)();
+	std::unordered_map<TutorialContent, FunctionPointer> functionMap_ = {
+	{ TutorialContent::FirstMove_Content, &TutorialScene::FirstMoveContent },
+	{ TutorialContent::RodPutOn_Content, &TutorialScene::RodPutOnContent },
+	{ TutorialContent::MeteoCollision_Content, &TutorialScene::MeteoCollisionContent },
+	{ TutorialContent::CantMoveCanRotate_Content, &TutorialScene::CantMoveCanRotateContent },
+	{ TutorialContent::FirstEnemy_Content, &TutorialScene::FirstEnemyContent },
+	{ TutorialContent::EnemyCollisionToMeteo_Content, &TutorialScene::EnemyCollisionToMeteoContent },
+	{ TutorialContent::MeteoAttract_Content, &TutorialScene::MeteoAttractContent }
+	};
+
+	void ExecuteTutorialContent(const TutorialContent& content);
+
 private:
 
 	Input* input_ = nullptr;
@@ -79,5 +122,16 @@ private:
 	std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
+	// ------------------- RenderNode ------------------- //
+	std::shared_ptr<Object3DNode> object3DNode;
+	std::shared_ptr<SpriteNode> spriteNode;
+	std::shared_ptr<OutlineNode> outlineNode;
+	RenderPath path;
+
+	// ------------------- 内容に関する変数 ------------------- //
+	bool isTutorialFinish_;
+	TutorialContent content_;
+	uint32_t frameCount_ = 0;
+	uint32_t attackCount_ = 0;
 };
 

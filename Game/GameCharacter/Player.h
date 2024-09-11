@@ -75,10 +75,14 @@ public:
 	const Vector3 GetGravityRodEnd() const { return gravityRod_->GetRodEnd(); }
 
 	// ----------- 攻撃中か ----------- //
+	void SetIsAttack(const bool& isAttack) { isAttack_ = isAttack; };
 	const bool& GetIsAttack() const { return isAttack_; }
 
 	// ----------- 半径 ----------- //
 	const float GetRadius() const { return radius_; }
+
+	// ----------- 速度 ----------- //
+	const Vector3 GetVelocity() const { return velocity_; }
 
 	// ----------- 敵が攻撃中か ----------- //
 	void SetIsAttackofEnmey(const bool& isAttack) { isAttackofEnmey_ = isAttack; }
@@ -102,6 +106,7 @@ private:
 	// 敵が攻撃中か
 	bool isAttackofEnmey_;
 
+	Vector3 velocity_;
 	Vector3 preFrameVelocity_;
 
 	bool isStan_ = false;

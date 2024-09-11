@@ -11,8 +11,8 @@ MeteoriteManager::~MeteoriteManager() {}
 
 void MeteoriteManager::Init() {
 	LoadAllFile();
-
-	SelectionArrange();
+	isStart_ = false;
+	//SelectionArrange();
 }
 
 void MeteoriteManager::Update(const Vector3& playerPosition) {
@@ -56,6 +56,13 @@ void MeteoriteManager::Update(const Vector3& playerPosition) {
 		}
 		return false;
 	});
+}
+
+void MeteoriteManager::StartPop() {
+	if (!isStart_) {
+		SelectionArrange();
+		isStart_ = false;
+	}
 }
 
 // ------------------- ファイルの選出を行う ------------------- //

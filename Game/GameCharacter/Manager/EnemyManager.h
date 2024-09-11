@@ -57,13 +57,13 @@ public:	// メンバ関数
 
 	uint32_t CheckConstrainToField(); 
 
+	void SelectArrange();
+
 #ifdef _DEBUG
 
 	void Begin_Rendering(const Camera3D& camera3D);
 
 	void Draw() const;
-
-	void SelectArrange();
 
 	void EditImGui();
 

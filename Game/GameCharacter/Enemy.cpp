@@ -68,6 +68,7 @@ void Enemy::Update(const Vector3& playerPosition) {
 				fieldOutCount_ = 0;
 				fieldOutTime_ = 120;
 				fieldOutMove_ = FieldOutMove::Stop_Move;
+				velocity_ = {0,0,0};
 			}
 			break;
 		case FieldOutMove::Stop_Move: // 空中でとどまる
