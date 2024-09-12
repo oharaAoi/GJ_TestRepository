@@ -2,6 +2,7 @@
 #include "Engine/Game/Managers/SceneManager/SceneManager.h"
 #include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
+#include "Engine/Game/Managers/AudioManager/AudioManager.h"
 
 void ClearScene::finalize() {
 	object3DNode->finalize();
@@ -13,6 +14,7 @@ void ClearScene::finalize() {
 void ClearScene::initialize() {
 	input_ = Input::GetInstance();
 	camera3D_ = std::make_unique<Camera3D>();
+	Camera2D::Initialize();
 
 	// -------------------------------------------------
 	// ↓ 
@@ -43,10 +45,23 @@ void ClearScene::initialize() {
 	path.initialize({ object3DNode, outlineNode, spriteNode });
 	RenderPathManager::RegisterPath("ClearScene", std::move(path));
 	RenderPathManager::SetPath("ClearScene");
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	start_SE_ = std::make_unique<AudioPlayer>();
+	clear_BGM_ = std::make_unique<AudioPlayer>();
+	start_SE_->initialize("meteOnigiri_start.wav", 0.5f, false);
+	clear_BGM_->initialize("meteOnigiri_AfterGameBGM4.wav", 0.5f, true);
+
+	clear_BGM_->play();
 }
 
 void ClearScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
+
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/clear", "meteOnigiri_start.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/clear", "meteOnigiri_AfterGameBGM4.wav");
 }
 
 void ClearScene::begin() {
@@ -69,7 +84,9 @@ void ClearScene::update() {
 	// -------------------------------------------------
 	Input::GetInstance()->Update();
 
-	if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A) || input_->GetKey(DIK_SPACE)) {
+	if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A)) {
+		clear_BGM_->stop();
+		start_SE_->play();
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<TitleScene>(), 
 									 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),

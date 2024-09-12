@@ -6,6 +6,7 @@
 #include "Engine/DirectX/DirectXCore.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
 #include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
+#include "Engine/Game/Managers/AudioManager/AudioManager.h"
 
 #ifdef _DEBUG
 #include "Game/Editor/EditorController.h"
@@ -117,6 +118,9 @@ void GameScene::initialize() {
 	fadePanel_ = std::make_unique<FadePanel>();
 	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
 
+	game_BGM_ = std::make_unique<AudioPlayer>();
+	game_BGM_->initialize("meteOnigiri_gameBGM.wav", 0.5f, false);
+
 #ifdef _DEBUG
 	editor = CreateUnique<EditorController>();
 	editor->initialize(camera3D_.get(), meteoriteManager_.get(), enemyManager_.get());
@@ -154,13 +158,17 @@ void GameScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_brap.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyEachOther.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_bossHited.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyAttack.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyHitToMeteo.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_fieldPush.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAtract.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_meteoEachOther.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_bossHited.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAttack.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyHitToMeteo.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_fieldPush.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_playerKick.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyEachOther.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "meteOnigiri_gameBGM.wav");//
 
 }
 
@@ -203,6 +211,9 @@ void GameScene::update() {
 					boss_->SetIsDrawOverLine(true);
 					boss_->SetIsStart(true);
 					camera3D_->SetIsPerformanceFinish(false);
+					enemyManager_->StartPop();
+					meteoriteManager_->StartPop();
+					game_BGM_->play();
 				}
 			}
 
@@ -232,12 +243,14 @@ void GameScene::update() {
 	if (boss_->GetIsClear()) {
 		boss_->SetIsDrawOverLine(false);
 		boss_->SetIsStart(false);
+		game_BGM_->stop();
 		performanceType_ = PerformanceType::GameClear_Type;
 	}
 
 	if (boss_->GetIsGameOver(field_->GetCylinderHight())) {
 		boss_->SetIsDrawOverLine(false);
 		boss_->SetIsStart(false);
+		game_BGM_->stop();
 		performanceType_ = PerformanceType::GameOver_Type;
 	}
 

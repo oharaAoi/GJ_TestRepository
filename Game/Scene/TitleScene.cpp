@@ -2,12 +2,16 @@
 #include "Engine/Game/Managers/SceneManager/SceneManager.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
 #include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
+#include "Engine/Game/Managers/AudioManager/AudioManager.h"
 
 void TitleScene::finalize() {
 	object3DNode->finalize();
 	outlineNode->finalize();
 	spriteNode->finalize();
 	RenderPathManager::UnregisterPath("GameScene");
+
+	title_BGM_->finalize();
+	start_SE_->finalize();
 }
 
 void TitleScene::initialize() {
@@ -57,12 +61,21 @@ void TitleScene::initialize() {
 	path.initialize({ object3DNode, outlineNode, spriteNode });
 	RenderPathManager::RegisterPath("GameScene", std::move(path));
 	RenderPathManager::SetPath("GameScene");
+
+	start_SE_ = std::make_unique<AudioPlayer>();
+	start_SE_->initialize("meteOnigiri_start.wav", 0.5f, false);
+	title_BGM_ = std::make_unique<AudioPlayer>();
+	title_BGM_->initialize("meteOnigiri_titleBGM.wav", 0.5f, true);
+	title_BGM_->play();
 }
 
 void TitleScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/TitleScene/Title", "Title.obj");
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
+
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/title", "meteOnigiri_start.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/title", "meteOnigiri_titleBGM.wav");
 }
 
 void TitleScene::begin() {
@@ -92,7 +105,9 @@ void TitleScene::update() {
 	Input::GetInstance()->Update();
 
 	if (!fadePanel_->GetIsFade()) {
-		if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A) || input_->GetKey(DIK_SPACE)) {
+		if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A)) {
+			start_SE_->play();
+			title_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<TutorialScene>(),
 										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),

@@ -12,6 +12,8 @@
 #include "Game/UI/FadePanel.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
 
+#include "Engine/Game/Audio/AudioPlayer.h"
+
 /// <summary>
 /// ゲームクリア時に描画する
 /// </summary>
@@ -46,6 +48,9 @@ private:
 	std::unique_ptr<Camera3D> camera3D_ = nullptr;
 
 	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
+
+	std::unique_ptr<AudioPlayer> start_SE_ = nullptr;
+	std::unique_ptr<AudioPlayer> clear_BGM_ = nullptr;
 
 	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;

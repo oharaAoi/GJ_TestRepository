@@ -16,6 +16,8 @@
 #include "Game/UI/FadePanel.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
 
+#include "Engine/Game/Audio/AudioPlayer.h"
+
 class GameOverScene :
     public BaseScene {
 public:
@@ -47,9 +49,15 @@ private:
 	std::unique_ptr<Camera3D> camera3D_ = nullptr;
 
 	bool nextGame_ = 0;
+	bool preNextGame_ = 0;
 
 	// ------------------- UI ------------------- //
 	std::unique_ptr<GameOverUI> gameOverUI_ = nullptr;
+
+	// ------------------- Sound ------------------- //
+	std::unique_ptr<AudioPlayer> start_SE_ = nullptr;
+	std::unique_ptr<AudioPlayer> choice_SE_ = nullptr;
+	std::unique_ptr<AudioPlayer> gameOver_BGM_ = nullptr;
 
 	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;

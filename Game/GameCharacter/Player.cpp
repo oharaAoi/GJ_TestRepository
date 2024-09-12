@@ -34,7 +34,7 @@ void Player::Init() {
 	transform->set_translate_y(12.5f);
 
 	enemyKick_SE_ = std::make_unique<AudioPlayer>();
-	enemyKick_SE_->initialize("SE_enemyAttack.wav", 0.5f, false);
+	enemyKick_SE_->initialize("SE_playerKick.wav", 0.5f, false);
 }
 
 void Player::Update(const float& fieldRadius) {

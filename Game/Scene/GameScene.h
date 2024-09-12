@@ -29,6 +29,8 @@
 #include "Game/RenderNode/PostEffectManager.h"
 #include "Game/UI/FadePanel.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
+
 
 class EditorController;
 
@@ -134,6 +136,9 @@ private:
 	std::unique_ptr<PostEffectManager> posteffectManager;
 
 	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
+
+	// ------------------- Audio ------------------- //
+	std::unique_ptr<AudioPlayer> game_BGM_ = nullptr;
 
 #ifdef _DEBUG
 	std::unique_ptr<EditorController> editor;
