@@ -190,6 +190,8 @@ void GameScene::update() {
 
 		case PerformanceType::GameClear_Type:
 			GameClearPerformance();
+
+			// 終わったらフェードアウトする
 			break;
 		}
 
@@ -352,7 +354,9 @@ void GameScene::draw() const {
 	RenderPathManager::Next();
 	outlineNode->draw();
 	RenderPathManager::Next();
-	playerUI_->Draw();
+	if (performanceType_ == PerformanceType::None_Type) {
+		playerUI_->Draw();
+	}
 	RenderPathManager::Next();
 }
 
@@ -440,8 +444,12 @@ void GameScene::GameStartPerformance() {
 }
 
 void GameScene::GameOverPerformance() {
-	boss_->MouthClose();
-	camera3D_->GameOverPerformance();
+	if (!camera3D_->GetIsPerformanceFinish()) {
+		boss_->MouthClose();
+		camera3D_->GameOverPerformance();
+	} else {
+		// ゲームオーバーの終了
+	}
 }
 
 void GameScene::GameClearPerformance() {
