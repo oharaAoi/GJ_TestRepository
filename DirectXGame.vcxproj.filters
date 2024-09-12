@@ -295,6 +295,12 @@
     <Filter Include="MainGame\Editor\MeteoritePopEditor">
       <UniqueIdentifier>{5e82de1c-8cbe-4a43-8af0-708431eb0bcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\PostEffect">
+      <UniqueIdentifier>{d60188d9-17c7-4e0e-9118-4e8fb4fef1ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\PostEffect\RenderNode">
+      <UniqueIdentifier>{2d8e8340-7ee3-47ef-9442-2f06af859dbd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -633,8 +639,14 @@
     <ClCompile Include="Game\UI\TutorialUI.cpp">
       <Filter>MainGame\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Game\RenderNode\VignetteNode.cpp">
+      <Filter>MainGame\PostEffect\RenderNode</Filter>
+    </ClCompile>
     <ClCompile Include="Game\UI\FadePanel.cpp">
       <Filter>MainGame\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\RenderNode\PostEffectManager.cpp">
+      <Filter>MainGame\PostEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -998,6 +1010,12 @@
     <ClInclude Include="Game\UI\FadePanel.h">
       <Filter>MainGame\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Game\RenderNode\VignetteNode.h">
+      <Filter>MainGame\PostEffect\RenderNode</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\RenderNode\PostEffectManager.h">
+      <Filter>MainGame\PostEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -1058,6 +1076,9 @@
     </FxCompile>
     <FxCompile Include="Engine\Render\RenderNode\Outline\Outline.PS.hlsl">
       <Filter>Engine\Core\Render\RenderNode\Outline</Filter>
+    </FxCompile>
+    <FxCompile Include="Game\RenderNode\Vignette.PS.hlsl">
+      <Filter>MainGame\PostEffect\RenderNode</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

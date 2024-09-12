@@ -19,6 +19,7 @@ void GameScene::finalize() {
 	object3DNode->finalize();
 	outlineNode->finalize();
 	spriteNode->finalize();
+	vignetteNode->finalize();
 	RenderPathManager::UnregisterPath("GameScene");
 }
 
@@ -87,15 +88,28 @@ void GameScene::initialize() {
 	outlineNode->set_depth_resource(DirectXSwapChain::GetDepthStencil()->texture_gpu_handle());
 	outlineNode->set_texture_resource(object3DNode->result_stv_handle());
 
+	vignetteNode = std::make_unique<VignetteNode>();
+	vignetteNode->initialize();
+	vignetteNode->set_texture_resource(outlineNode->result_stv_handle());
+	vignetteNode->set_render_target();
+	//vignetteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+
 	spriteNode = std::make_unique<SpriteNode>();
 	spriteNode->initialize();
-	spriteNode->set_background_texture(outlineNode->result_stv_handle());
+	//spriteNode->set_background_texture(outlineNode->result_stv_handle());
+	spriteNode->set_background_texture(vignetteNode->result_stv_handle());
 	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
 	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
 
-	path.initialize({ object3DNode, outlineNode, spriteNode });
+	path.initialize({ object3DNode, outlineNode, vignetteNode , spriteNode });
 	RenderPathManager::RegisterPath("GameScene", std::move(path));
 	RenderPathManager::SetPath("GameScene");
+
+	posteffectManager = std::make_unique<PostEffectManager>();
+	posteffectManager->initialize(
+		vignetteNode
+	);
+	posteffectManager->set_boss(boss_.get());
 
 #ifdef _DEBUG
 	editor = CreateUnique<EditorController>();
@@ -264,6 +278,8 @@ void GameScene::update() {
 
 	enemyManager_->Update(player_->get_transform().get_translate());
 
+	posteffectManager->update();
+
 	// -------------------------------------------------
 	// ↓ 当たり判定系
 	// -------------------------------------------------
@@ -352,6 +368,8 @@ void GameScene::draw() const {
 #endif
 	RenderPathManager::Next();
 	outlineNode->draw();
+	RenderPathManager::Next();
+	vignetteNode->draw();
 	RenderPathManager::Next();
 	if (performanceType_ == PerformanceType::None_Type) {
 		playerUI_->Draw();
@@ -501,5 +519,7 @@ void GameScene::debug_update() {
 	meteoriteManager_->DebugGui();
 
 	enemyManager_->EditImGui();
+
+	posteffectManager->debug_gui();
 }
 #endif // _DEBUG

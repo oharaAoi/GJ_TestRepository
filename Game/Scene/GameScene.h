@@ -23,8 +23,10 @@
 #include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
 #include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
 #include "Engine/Render/RenderNode/Outline/OutlineNode.h"
+#include "Game/RenderNode/VignetteNode.h"
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/PlayerUI.h"
+#include "Game/RenderNode/PostEffectManager.h"
 
 class EditorController;
 
@@ -124,7 +126,10 @@ private:
 	std::shared_ptr<Object3DNode> object3DNode;
 	std::shared_ptr<SpriteNode> spriteNode;
 	std::shared_ptr<OutlineNode> outlineNode;
+	std::shared_ptr<VignetteNode> vignetteNode;
 	RenderPath path;
+
+	std::unique_ptr<PostEffectManager> posteffectManager;
 
 #ifdef _DEBUG
 	std::unique_ptr<EditorController> editor;
