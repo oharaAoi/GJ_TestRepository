@@ -82,6 +82,7 @@ public:	// accesser
 
 	// ------------------- 満腹度 ------------------- //
 	const int GetSatietyLevel() const { return satietyLevel_; }
+	const int GetSatietyLevelLimit() const { return satietyLevelLimit_; }
 
 	void SetIsStart(const bool& isStart) { isStart_ = isStart; }
 	const bool GetIsStart() const { return isStart_; }

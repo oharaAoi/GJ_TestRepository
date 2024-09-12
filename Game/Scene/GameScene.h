@@ -31,6 +31,7 @@
 #include "Game/UI/FadePanel.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
+#include "Game/UI/SatisFactionLevel.h"
 
 
 class EditorController;
@@ -106,6 +107,8 @@ private:
 	// ------------------- WorldObject ------------------- //
 	std::unique_ptr<Field> field_ = nullptr;
 	std::unique_ptr<GameObject> skydome_ = nullptr;
+
+	std::unique_ptr<SatisFactionLevel> satisFaction_ = nullptr;
 
 	// ------------------- GameObject ------------------- //
 	std::unique_ptr<Player> player_ = nullptr;

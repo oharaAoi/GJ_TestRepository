@@ -60,6 +60,8 @@ void GameScene::initialize() {
 
 	field_ = std::make_unique<Field>();
 
+	satisFaction_ = std::make_unique<SatisFactionLevel>();
+
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
@@ -167,6 +169,18 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Field", "nattomaki.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach1.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach2.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach3.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach4.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach5.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach6.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach7.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach8.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach9.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomachPercent.obj");
+
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 
@@ -271,6 +285,7 @@ void GameScene::update() {
 	// -------------------------------------------------
 	skydome_->update();
 	field_->Update();
+	satisFaction_->Update(boss_->GetSatietyLevel(), boss_->GetSatietyLevelLimit());
 
 	player_->Update(field_->GetRadius());
 
@@ -344,6 +359,7 @@ void GameScene::begin_rendering() {
 
 	skydome_->begin_rendering(*camera3D_);
 	field_->begin_rendering(*camera3D_);
+	satisFaction_->BeginRendering(camera3D_.get());
 	player_->Begin_Rendering(camera3D_.get());
 	boss_->Begin_Rendering(camera3D_.get());
 
@@ -383,6 +399,9 @@ void GameScene::draw() const {
 	RenderPathManager::BeginFrame();
 	//DirectXCore::ShowGrid(*camera3D_);
 	skydome_->draw();
+	if (performanceType_ == PerformanceType::None_Type){
+		satisFaction_->Draw();
+	}
 	field_->draw();
 	player_->Draw();
 	boss_->Draw();
@@ -571,5 +590,7 @@ void GameScene::debug_update() {
 	enemyManager_->EditImGui();
 
 	posteffectManager->debug_gui();
+
+	satisFaction_->Debug_gui();
 }
 #endif // _DEBUG

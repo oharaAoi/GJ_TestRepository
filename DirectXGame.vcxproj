@@ -204,6 +204,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\UI\FadePanel.cpp" />
     <ClCompile Include="Game\UI\GameOverUI.cpp" />
     <ClCompile Include="Game\UI\PlayerUI.cpp" />
+    <ClCompile Include="Game\UI\SatisFactionLevel.cpp" />
     <ClCompile Include="Game\UI\TutorialUI.cpp" />
     <ClCompile Include="Game\UI\UIObject.cpp" />
     <ClCompile Include="Game\WorldObject\Field.cpp" />
@@ -330,6 +331,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\UI\FadePanel.h" />
     <ClInclude Include="Game\UI\GameOverUI.h" />
     <ClInclude Include="Game\UI\PlayerUI.h" />
+    <ClInclude Include="Game\UI\SatisFactionLevel.h" />
     <ClInclude Include="Game\UI\TutorialUI.h" />
     <ClInclude Include="Game\UI\UIObject.h" />
     <ClInclude Include="Game\WorldObject\Field.h" />
