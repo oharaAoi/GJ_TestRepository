@@ -49,6 +49,11 @@ void AdjustmentItem::Update() {
 				float* ptr = std::get_if<float>(&item.value);
 				ImGui::DragFloat(itemName.c_str(), ptr, 0, 100);
 
+			} else if (std::holds_alternative<Vector2>(item.value)) {
+
+				Vector2* ptr = std::get_if<Vector2>(&item.value);
+				ImGui::DragFloat2(itemName.c_str(), reinterpret_cast<float*>(ptr), -10.0f, 10.0f);
+
 				// Vector3の値を保持していれば
 			} else if (std::holds_alternative<Vector3>(item.value)) {
 				Vector3* ptr = std::get_if<Vector3>(&item.value);
@@ -153,6 +158,10 @@ void AdjustmentItem::LoadFile(const std::string& groupName) {
 			Vector3 value = { itItem->at(0), itItem->at(1), itItem->at(2) };
 			SetValue(groupName, itemName, value);
 
+		} else if (itItem->is_array() && itItem->size() == 2) {
+			// float型のjson配列登録
+			Vector2 value = { itItem->at(0), itItem->at(1) };
+			SetValue(groupName, itemName, value);
 			// bool
 		} else if (itItem->is_boolean()) {
 			bool flag = itItem->get<bool>();
@@ -196,6 +205,11 @@ void AdjustmentItem::SaveFile(const std::string& groupName) {
 			// Vector3型の値を登録
 			Vector3 value = std::get<Vector3>(item.value);
 			root[groupName][itemName] = json::array({ value.x, value.y, value.z });
+
+		} else if (std::holds_alternative<Vector2>(item.value)) {
+			// Vector3型の値を登録
+			Vector2 value = std::get<Vector2>(item.value);
+			root[groupName][itemName] = json::array({ value.x, value.y });
 
 			// bool
 		} else if (std::holds_alternative<bool>(item.value)) {

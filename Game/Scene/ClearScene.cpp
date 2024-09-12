@@ -13,14 +13,34 @@ void ClearScene::finalize() {
 
 void ClearScene::initialize() {
 	input_ = Input::GetInstance();
-	camera3D_ = std::make_unique<Camera3D>();
 	Camera2D::Initialize();
+	camera3D_ = std::make_unique<Camera3D>();
+	camera3D_->initialize();
+	camera3D_->set_transform({
+			CVector3::BASIS,
+			Quaternion::EulerDegree(0, 0, 0),
+			{ 0, 0, -10.0 }
+							 });
 
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
 	fadePanel_ = std::make_unique<FadePanel>();
 	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	clearUI_ = std::make_unique<ClearUI>();
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	clearTitle_ = std::make_unique<GameObject>();
+	clearTitle_->reset_object("Title.obj");
+
+	skydome_ = std::make_unique<GameObject>();
+	skydome_->reset_object("skydome.obj");
 
 	// -------------------------------------------------
 	// ↓ 
@@ -51,17 +71,26 @@ void ClearScene::initialize() {
 	// -------------------------------------------------
 	start_SE_ = std::make_unique<AudioPlayer>();
 	clear_BGM_ = std::make_unique<AudioPlayer>();
+	choice_SE_ = std::make_unique<AudioPlayer>();
 	start_SE_->initialize("meteOnigiri_start.wav", 0.5f, false);
 	clear_BGM_->initialize("meteOnigiri_AfterGameBGM4.wav", 0.5f, true);
+	choice_SE_->initialize("meteOnigiri_choice1.wav", 0.5f, false);
 
 	clear_BGM_->play();
 }
 
 void ClearScene::load() {
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/TitleScene/Title", "Title.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
+
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_goGame.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_goTitle.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_arrow.png");
 
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/clear", "meteOnigiri_start.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/clear", "meteOnigiri_AfterGameBGM4.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/clear", "meteOnigiri_choice1.wav");
 }
 
 void ClearScene::begin() {
@@ -74,6 +103,7 @@ void ClearScene::update() {
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
+	clearUI_->Update(nextGame_);
 	fadePanel_->Update();
 
 	if (!fadePanel_->GetIsFadeFinish()) {
@@ -85,18 +115,56 @@ void ClearScene::update() {
 	Input::GetInstance()->Update();
 
 	if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A)) {
-		clear_BGM_->stop();
-		start_SE_->play();
-		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
-		SceneManager::SetSceneChange(CreateUnique<TitleScene>(), 
-									 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
-									 false);
+		if (nextGame_) {	// gameへ
+			start_SE_->play();
+			clear_BGM_->stop();
+			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
+			SceneManager::SetSceneChange(CreateUnique<GameScene>(),
+										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+										 false);
+		} else {	// Titleへ
+			start_SE_->play();
+			clear_BGM_->stop();
+			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
+			SceneManager::SetSceneChange(CreateUnique<TitleScene>(),
+										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+										 false);
+		}
 	}
+
+	// -------------------------------------------------
+	// ↓ 矢印の移動
+	// -------------------------------------------------
+	Vector2 stick = input_->GetLeftJoyStick().normalize_safe();
+	if (stick.y >= 0.5f) {
+		nextGame_ = true;
+	} else if (stick.y <= -0.5f) {
+		nextGame_ = false;
+	}
+
+	if (preNextGame_ != nextGame_) {
+		choice_SE_->restart();
+	}
+
+	// -------------------------------------------------
+	// ↓ worldObjectの更新
+	// -------------------------------------------------
+
+	clearTitle_->update();
+	skydome_->update();
+
+
+	preNextGame_ = nextGame_;
 }
 
 void ClearScene::begin_rendering() {
 	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
+
+	clearTitle_->begin_rendering(*camera3D_);
+	skydome_->begin_rendering(*camera3D_);
+
+	clearUI_->Begin_Rendering();
 
 	fadePanel_->Begin_Rendering();
 }
@@ -106,10 +174,12 @@ void ClearScene::late_update() {
 
 void ClearScene::draw() const {
 	RenderPathManager::BeginFrame();
-
+	clearTitle_->draw();
+	skydome_->draw();
 	RenderPathManager::Next();
 	outlineNode->draw();
 	RenderPathManager::Next();
+	clearUI_->Draw();
 	fadePanel_->Draw();
 	RenderPathManager::Next();
 }
@@ -125,6 +195,14 @@ void ClearScene::debug_update() {
 
 	ImGui::Begin("Panel");
 	fadePanel_->Debug_gui();
+	ImGui::End();
+
+	ImGui::Begin("UI");
+	clearUI_->Debug_gui();
+	ImGui::End();
+
+	ImGui::Begin("Object");
+	clearTitle_->debug_gui();
 	ImGui::End();
 }
 #endif

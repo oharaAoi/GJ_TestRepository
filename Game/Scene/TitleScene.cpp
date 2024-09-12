@@ -32,6 +32,9 @@ void TitleScene::initialize() {
 	titleObject_ = std::make_unique<GameObject>();
 	titleObject_->reset_object("Title.obj");
 
+	skydome_ = std::make_unique<GameObject>();
+	skydome_->reset_object("skydome.obj");
+
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
@@ -67,10 +70,20 @@ void TitleScene::initialize() {
 	title_BGM_ = std::make_unique<AudioPlayer>();
 	title_BGM_->initialize("meteOnigiri_titleBGM.wav", 0.5f, true);
 	title_BGM_->play();
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	isFall_ = true; 
+	frameCount_ = 0;
+	frameTime_ = 120.0f;
+
+	titleObject_->get_transform().set_translate_y(20);
 }
 
 void TitleScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/TitleScene/Title", "Title.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
 
@@ -89,15 +102,17 @@ void TitleScene::update() {
 	// ↓ 
 	// -------------------------------------------------
 	fadePanel_->Update();
-
-	// -------------------------------------------------
-	// ↓ 次のシーンへ行くか
-	// -------------------------------------------------
-	if (fadePanel_->GetIsFade()) {
-		if (!fadePanel_->GetIsFadeFinish()) {
-
-		}
+	if (!fadePanel_->GetIsFadeFinish()) {
+		return;
 	}
+
+	if (isFall_) {
+		frameTime_ = 120.0f;
+		FallTitle();
+		return;
+	}
+
+	skydome_->update();
 
 	// -------------------------------------------------
 	// ↓ Inputの更新
@@ -120,6 +135,7 @@ void TitleScene::begin_rendering() {
 	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
 
+	skydome_->begin_rendering(*camera3D_);
 	titleObject_->begin_rendering(*camera3D_);
 
 	fadePanel_->Begin_Rendering();
@@ -130,12 +146,23 @@ void TitleScene::late_update() {
 
 void TitleScene::draw() const {
 	RenderPathManager::BeginFrame();
+	skydome_->draw();
 	titleObject_->draw();
 	RenderPathManager::Next();
 	outlineNode->draw();
 	RenderPathManager::Next();
 	fadePanel_->Draw();
 	RenderPathManager::Next();
+}
+
+void TitleScene::FallTitle() {
+	if (t <= 1.0f) {
+		t += 0.7f * GameTimer::DeltaTime();
+		float height = std::lerp(6.0f, 0.0f, EaseInOut::Bounce(t));
+		titleObject_->get_transform().set_translate_y(height);
+	} else {
+		isFall_ = false;
+	}
 }
 
 #ifdef _DEBUG

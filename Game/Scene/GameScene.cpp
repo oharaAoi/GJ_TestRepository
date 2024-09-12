@@ -22,6 +22,10 @@ void GameScene::finalize() {
 	spriteNode->finalize();
 	vignetteNode->finalize();
 	RenderPathManager::UnregisterPath("GameScene");
+
+	// followカメラにある音声を解放
+	camera3D_->finalize();
+	game_BGM_->finalize();
 }
 
 void GameScene::initialize() {
@@ -127,7 +131,7 @@ void GameScene::initialize() {
 	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
 
 	game_BGM_ = std::make_unique<AudioPlayer>();
-	game_BGM_->initialize("meteOnigiri_gameBGM.wav", 0.5f, false);
+	game_BGM_->initialize("meteOnigiri_gameBGM.wav", 0.5f, true);
 
 #ifdef _DEBUG
 	editor = CreateUnique<EditorController>();
@@ -176,6 +180,7 @@ void GameScene::load() {
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_playerKick.wav");//
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyEachOther.wav");//
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "meteOnigiri_gameBGM.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_bossAppearace.wav");//
 
 }
 

@@ -2,6 +2,10 @@
 
 #include "Game/GameCharacter/Player.h"
 
+void FollowCamera::finalize() {
+	boss_Apparance_SE_->finalize();
+}
+
 void FollowCamera::initialize() {
 	Camera3D::initialize();
 	adjustmentItem_ = AdjustmentItem::GetInstance();
@@ -44,6 +48,9 @@ void FollowCamera::initialize() {
 
 	isPerformanceFinish_ = false;
 	isStop_ = false;
+
+	boss_Apparance_SE_ = std::make_unique<AudioPlayer>();
+	boss_Apparance_SE_->initialize("SE_bossAppearace.wav", 0.5f, false);
 }
 
 void FollowCamera::update() {
@@ -74,6 +81,7 @@ void FollowCamera::GameStartPerformance() {
 
 		if (nowIndex_ == pauseIndex_) {
 			isStop_ = true;
+			boss_Apparance_SE_->play();
 		}
 
 		if (nowIndex_ >= cameraMove_.size() - 1) {

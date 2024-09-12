@@ -13,6 +13,7 @@ Meteorite::Meteorite(const Vector3& pos) {
 Meteorite::~Meteorite() {
 	meteoHit_SE_->finalize();
 	meteoHitToEnemy_SE_->finalize();
+	attracted_SE_->finalize();
 }
 
 void Meteorite::Init(const Vector3& pos) {
