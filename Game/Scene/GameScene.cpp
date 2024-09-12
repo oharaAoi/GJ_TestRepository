@@ -159,7 +159,6 @@ void GameScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAtract.wav");//
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_meteoEachOther.wav");//
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_bossHited.wav");//

@@ -128,13 +128,18 @@ void TutorialScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "woodBoard.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scroll.png");
 
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_brap.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyEachOther.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_bossHited.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyAttack.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyHitToMeteo.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_fieldPush.wav");
+	// ゲームと共有
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAtract.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_meteoEachOther.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_bossHited.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAttack.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyHitToMeteo.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_fieldPush.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_playerKick.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyEachOther.wav");
+
+
 }
 
 void TutorialScene::begin() {
