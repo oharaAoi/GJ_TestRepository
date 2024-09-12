@@ -67,7 +67,7 @@ void GameScene::initialize() {
 	// -------------------------------------------------
 	collisionManager_->register_collider("Player", player_->GetCollider());
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
-	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey());
+	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey(), field_->get_hierarchy());
 
 	// -------------------------------------------------
 	// ↓ 
@@ -483,7 +483,7 @@ void GameScene::GameOverPerformance() {
 		// ゲームオーバーの終了
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(),
-									 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+									 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 									 false);
 	}
 }
@@ -496,7 +496,7 @@ void GameScene::GameClearPerformance() {
 		boss_->Burp();	// げっぷをする
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<ClearScene>(),
-									 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+									 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 									 false);
 	}
 }

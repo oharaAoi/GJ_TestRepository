@@ -83,12 +83,12 @@ void GameOverScene::update() {
 		if (nextGame_) {
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<GameScene>(),
-										 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 										 false);
 		} else {
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<TitleScene>(),
-										 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 										 false);
 		}
 	}

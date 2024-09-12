@@ -111,7 +111,7 @@ private:
 
 	bool isStan_ = false;
 	uint32_t stanFrame_ = 0;
-	uint32_t stanTime_ = 20;
+	uint32_t stanTime_ = 60;
 
 	float radius_ = 1.0f;
 

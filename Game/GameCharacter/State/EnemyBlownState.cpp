@@ -23,6 +23,7 @@ void EnemyBlownState::IsBlown() {
 
 	if (acceleration.length() < threshold_) {
 		acceleration = Vector3{ 0,0,0 };
+		enemy_->SetBehaviorRequest(EnemyState::Root_State);
 	}
 
 	Vector3 velocity = enemy_->GetVelocity();

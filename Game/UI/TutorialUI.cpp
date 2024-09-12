@@ -11,7 +11,8 @@ void TutorialUI::Finalize() {
 }
 
 void TutorialUI::Init() {
-	content_UI = std::make_unique<UIObject>("UI_kari.png", Vector2{ 0.5f,0.5f });
+	content_UI = std::make_unique<UIObject>("UI_kari.png", ancherPoint);
+	woodBord_UI = std::make_unique<UIObject>("woodBoard.png", ancherPoint);
 }
 
 void TutorialUI::Update() {

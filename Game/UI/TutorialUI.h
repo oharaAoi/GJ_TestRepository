@@ -26,7 +26,14 @@ public:
 
 private:
 
-    std::unique_ptr<UIObject> content_UI = nullptr;
+    Vector2 ancherPoint{ 0.5f, 0.5f };
+
+    std::unique_ptr<UIObject> content_UI = nullptr; // チュートリアルか練習か
+    std::unique_ptr<UIObject> woodBord_UI = nullptr;
+
+    // 巻物
+    std::unique_ptr<UIObject> makimonoOrigine_UI = nullptr;
+    std::unique_ptr<UIObject> makimonoEnd_UI = nullptr;
 
 };
 

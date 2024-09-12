@@ -95,7 +95,7 @@ void TitleScene::update() {
 		if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A) || input_->GetKey(DIK_SPACE)) {
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<TutorialScene>(),
-										 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()), 
+										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 										 false);
 		}
 	}

@@ -1,8 +1,9 @@
 #include "EnemyManager.h"
 
 EnemyManager::EnemyManager(std::list<std::unique_ptr<Enemy>>& sceneEnemyList,
-						   CollisionManager* collisionManager, bool* isPlayerFlagPtr)
-	: sceneEnemyList_(sceneEnemyList), collisionManager_(collisionManager), isPlayerFlagPtr_(isPlayerFlagPtr) {
+						   CollisionManager* collisionManager, bool* isPlayerFlagPtr, const Hierarchy& fieldHierarchy)
+	: sceneEnemyList_(sceneEnemyList), collisionManager_(collisionManager), isPlayerFlagPtr_(isPlayerFlagPtr),
+	fieldHierarchy_(fieldHierarchy){
 	Init();
 }
 EnemyManager::~EnemyManager() {}
@@ -114,6 +115,7 @@ void EnemyManager::AddEnemy(const Vector3& positoin, const EnemyType& type) {
 	auto& newEnemy = sceneEnemyList_.emplace_back(std::make_unique<Enemy>(positoin, type));
 	collisionManager_->register_collider("Enemy", newEnemy->GetCollider());
 	newEnemy->SetIsPlayerFlragPtr(isPlayerFlagPtr_);
+	newEnemy->set_parent(fieldHierarchy_);
 }
 
 void EnemyManager::LoadFileName() {

@@ -48,7 +48,7 @@ void TutorialScene::initialize() {
 	// -------------------------------------------------
 	collisionManager_->register_collider("Player", player_->GetCollider());
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
-	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey());
+	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey(), field_->get_hierarchy());
 
 	// ---------------------------------------------
 	tutorialUI_ = std::make_unique<TutorialUI>();
@@ -107,6 +107,26 @@ void TutorialScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_kari.png");
 
+	// content
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "appearance.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "attract.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "attractEnemy.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "collision.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "collisionEnemy.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "complete.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "fall.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "kick.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "move.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "practiceRange.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "putAway.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "putOut.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "rotate.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scrollEnd.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scrollStart.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "tips.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "tutorial.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "woodBoard.png");
+
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_brap.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyEachOther.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
@@ -144,7 +164,7 @@ void TutorialScene::update() {
 		if (++skipCount_ >= 120) {
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<GameScene>(),
-										 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 										 false);
 		}
 	}
@@ -153,6 +173,7 @@ void TutorialScene::update() {
 	// ↓ カメラを更新
 	// -------------------------------------------------
 	if (!isTutorialFinish_) {
+		field_->Update();
 		ExecuteTutorialContent(content_);
 		return;
 	}
@@ -162,7 +183,6 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	skydome_->update();
 	field_->Update();
-	field_->get_transform().set_translate({0,0,0});
 	player_->Update(field_->GetRadius());
 	boss_->Update();
 
@@ -241,14 +261,14 @@ void TutorialScene::begin_rendering() {
 void TutorialScene::late_update() {
 	collisionManager_->update();
 
-	// 敵とPlayer --------------------------------------------------
-	collisionManager_->collision("Enemy", "Player");
-	// メテオ同士 ---------------------------------------------------
-	collisionManager_->collision("Meteo", "Meteo");
 	// Enemy同士 ---------------------------------------------------
 	collisionManager_->collision("Enemy", "Enemy");
 	// Enemyと隕石 -------------------------------------------------
 	collisionManager_->collision("Enemy", "Meteo");
+	// 敵とPlayer --------------------------------------------------
+	collisionManager_->collision("Enemy", "Player");
+	// メテオ同士 ---------------------------------------------------
+	collisionManager_->collision("Meteo", "Meteo");
 }
 
 void TutorialScene::draw() const {
@@ -433,11 +453,10 @@ void TutorialScene::RodPutOnContent() {
 
 	if (player_->GetIsAttack()) {
 		content_ = TutorialContent::MeteoCollision_Content;
-		Vector3 playerTranslate = player_->GetGravityRodOrigine();
-		meteoriteManager_->AddMeteo(playerTranslate + Vector3{ 12, 0, 0 });
-		meteoriteManager_->AddMeteo(playerTranslate + Vector3{ 15, 0, 0 });
+		Vector3 playerTranslate = player_->GetGravityRodOrigine() + Vector3{10, 0, 0};
+		meteoriteManager_->AddMeteo(player_->GetGravityRodEnd() + Vector3{ 10, 0, 0 });
+		meteoriteManager_->AddMeteo(player_->GetGravityRodEnd() + Vector3{ 15, 0, 0 });
 	}
-	player_->Update(field_->GetRadius());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -450,6 +469,7 @@ void TutorialScene::MeteoCollisionContent() {
 
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		meteo->Update(player_->get_transform().get_translate());
+		meteo->get_transform().set_translate_z(player_->GetGravityRodOrigine().z);
 	}
 
 	// 死亡フラグのチェックを行う
@@ -564,6 +584,12 @@ void TutorialScene::EnemyCollisionToMeteoContent() {
 void TutorialScene::MeteoAttractContent() {
 	// 隕石を引き寄せられることを教える
 	player_->Update(field_->GetRadius());
+
+	// 無視した場合を考慮
+	if (++frameCount_ > 200) {
+		meteoriteManager_->AddMeteo(Vector3{ 20, 0, RandomFloat(-3, 5)});
+		frameCount_ = 0;
+	}
 
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		meteo->Update(player_->get_transform().get_translate());
