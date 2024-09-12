@@ -1,7 +1,7 @@
 # Blender 4.2.1 LTS MTL File: 'Field.blend'
 # www.blender.org
 
-newmtl マテリアル
+newmtl natto
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -11,7 +11,7 @@ d 1.000000
 illum 2
 map_Kd natto.png
 
-newmtl マテリアル.001
+newmtl kometubu
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -21,7 +21,7 @@ d 1.000000
 illum 2
 map_Kd kometubu.png
 
-newmtl マテリアル.002
+newmtl nattomaki
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
