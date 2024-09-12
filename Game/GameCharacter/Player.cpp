@@ -13,13 +13,18 @@ Player::~Player() {
 }
 
 void Player::Init() {
-	reset_object("player.obj");
+	reset_object("playerBody.obj");
 
 	sphereCollider_ = std::make_unique<SphereCollider>();
 	sphereCollider_->initialize();
 	sphereCollider_->get_hierarchy().set_parent(this->get_hierarchy());
 	sphereCollider_->set_on_collision(std::bind(&Player::On_Collision, this, std::placeholders::_1));
 	sphereCollider_->set_on_collision_enter(std::bind(&Player::On_Collision_Enter, this, std::placeholders::_1, (&isAttackofEnmey_)));
+
+	playerArm_ = std::make_unique<GameObject>();
+	playerArm_->reset_object("playerArm.obj");
+	playerArm_->set_parent(this->get_hierarchy());
+	playerArm_->get_transform().set_translate_y(1.0f);
 
 	gravityRod_ = std::make_unique<GravityRod>(this);
 	isAttack_ = false;
@@ -56,24 +61,40 @@ void Player::Update(const float& fieldRadius) {
 
 	if (isAttack_) {
 		gravityRod_->Update();
+
+		//playerArm_->get_transform().set_rotate(Quaternion::EulerDegree(-70, 0, 0));
 	}
 
 #ifdef _DEBUG
 	ImGui::Begin("GravityRod");
 	gravityRod_->EditImGui();
+	playerArm_->debug_gui();
 	ImGui::End();
 #endif
 }
 
 void Player::Begin_Rendering(Camera3D* camera3d) {
 	begin_rendering(*camera3d);
+	playerArm_->begin_rendering(*camera3d);
 	gravityRod_->Begin_Rendering(camera3d);
 }
 
 void Player::Draw() const {
 	draw();
+	playerArm_->draw();
 	if (isAttack_) {
 		gravityRod_->Draw();
+		playerArm_->get_transform().set_rotate(Quaternion::Slerp(
+			playerArm_->get_transform().get_quaternion(),
+			Quaternion::EulerDegree(-120, 0, 0),
+			0.3f
+		));
+	} else {
+		playerArm_->get_transform().set_rotate(Quaternion::Slerp(
+			playerArm_->get_transform().get_quaternion(),
+			Quaternion::EulerDegree(0, 0, 0),
+			0.3f
+		));
 	}
 }
 

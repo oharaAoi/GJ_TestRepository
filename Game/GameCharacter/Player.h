@@ -115,6 +115,9 @@ private:
 
 	float radius_ = 1.0f;
 
+	// Arm
+	std::unique_ptr<GameObject> playerArm_ = nullptr;
+
 	std::unique_ptr<AudioPlayer> enemyKick_SE_ = nullptr;
 };
 
