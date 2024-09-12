@@ -1,7 +1,17 @@
-# Blender 4.1.1 MTL File: 'player.blend'
+# Blender 4.2.1 LTS MTL File: 'None'
 # www.blender.org
 
-newmtl マテリアル.001
+newmtl blackParts
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd blackEyes.png
+
+newmtl body
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -11,7 +21,7 @@ d 1.000000
 illum 2
 map_Kd playerBody.png
 
-newmtl マテリアル.002
+newmtl face
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -21,7 +31,7 @@ d 1.000000
 illum 2
 map_Kd playerFace.png
 
-newmtl マテリアル.003
+newmtl hear
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -31,47 +41,7 @@ d 1.000000
 illum 2
 map_Kd playerHair.png
 
-newmtl マテリアル.004
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd blackEyes.png
-
-newmtl マテリアル.005
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd blackEyes.png
-
-newmtl マテリアル.006
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd blackEyes.png
-
-newmtl マテリアル.008
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd blackEyes.png
-
-newmtl マテリアル.009
+newmtl lip
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -81,7 +51,7 @@ d 1.000000
 illum 2
 map_Kd playerLip.png
 
-newmtl マテリアル.010
+newmtl whiteEys
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -90,13 +60,3 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd playerWhiteEyes.png
-
-newmtl マテリアル.011
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd blackEyes.png

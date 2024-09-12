@@ -110,12 +110,15 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "GravityRod.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "mouth.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "mob.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "Field.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariEnemy.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariSpEnemy.obj");
+
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/PlayerBody", "playerBody.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/PlayerArm", "playerArm.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/RiceScoop", "riceScoop.obj");
 
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossFace", "bossFace.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/LowerJaw", "lowerJaw.obj");

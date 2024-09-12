@@ -12,7 +12,7 @@ GravityRod::~GravityRod() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GravityRod::Init(GameObject* gameObject) {
-	reset_object("GravityRod.obj");
+	reset_object("riceScoop.obj");
 
 	set_parent(gameObject->get_hierarchy());
 
