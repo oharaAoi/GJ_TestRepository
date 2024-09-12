@@ -55,11 +55,13 @@ void Boss::Init() {
 
 	adjustmentItem_ = AdjustmentItem::GetInstance();
 	const char* groupName = "Boss";
+	adjustmentItem_->AddItem(groupName, "Face", faceParts_[Face_Parts]->get_transform().get_translate());
 	adjustmentItem_->AddItem(groupName, "LeftEye", faceParts_[LeftEye_Parts]->get_transform().get_translate());
 	adjustmentItem_->AddItem(groupName, "RightEye", faceParts_[RightEye_Parts]->get_transform().get_translate());
 	adjustmentItem_->AddItem(groupName, "LeftEyebrows", faceParts_[LeftEyebrows_Parts]->get_transform().get_translate());
 	adjustmentItem_->AddItem(groupName, "RightEyebrows", faceParts_[RightEyebrows_Parts]->get_transform().get_translate());
 
+	faceParts_[Face_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "Face"));
 	faceParts_[LeftEye_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "LeftEye"));
 	faceParts_[RightEye_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "RightEye"));
 	faceParts_[LeftEyebrows_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "LeftEyebrows"));

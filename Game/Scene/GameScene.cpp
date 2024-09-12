@@ -283,7 +283,7 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ UI
 	// -------------------------------------------------
-	playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
+	//playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
 }
 
 void GameScene::begin_rendering() {

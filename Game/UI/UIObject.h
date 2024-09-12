@@ -12,7 +12,7 @@ public:
 
 	void Init();
 
-	void Update(const Vector2& scale, const Vector2& translate);
+	void Update(const Vector2& scale, const Vector2& translate, const float& alpha = 1);
 
 private:
 

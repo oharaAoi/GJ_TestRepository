@@ -2,8 +2,14 @@
 #include <memory>
 #include "Engine/Game/Scene/BaseScene.h"
 #include "Engine/Game/Camera/Camera3D.h"
+#include "Engine/Game/Camera/Camera2D.h"
 #include "Game/Input/Input.h"
 #include "Game/Scene/TutorialScene.h"
+#include "Engine/Render/RenderPath/RenderPath.h"
+#include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
+#include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
+#include "Engine/Render/RenderNode/Outline/OutlineNode.h"
+#include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/FadePanel.h"
 
 /// <summary>
@@ -16,6 +22,8 @@ public:
 
     TitleScene() = default;
     ~TitleScene() = default;
+
+	void finalize()override;
 
 	void initialize() override;
 
@@ -41,6 +49,12 @@ private:
 	std::unique_ptr<GameObject> titleObject_ = nullptr;
 
 	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
+
+	// ------------------- RenderNode ------------------- //
+	std::shared_ptr<Object3DNode> object3DNode;
+	std::shared_ptr<SpriteNode> spriteNode;
+	std::shared_ptr<OutlineNode> outlineNode;
+	RenderPath path;
 
 };
 
