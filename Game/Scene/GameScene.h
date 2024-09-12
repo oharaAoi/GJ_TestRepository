@@ -27,6 +27,8 @@
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/PlayerUI.h"
 #include "Game/RenderNode/PostEffectManager.h"
+#include "Game/UI/FadePanel.h"
+#include "Engine/Game/GameTimer/GameTimer.h"
 
 class EditorController;
 
@@ -130,6 +132,8 @@ private:
 	RenderPath path;
 
 	std::unique_ptr<PostEffectManager> posteffectManager;
+
+	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
 
 #ifdef _DEBUG
 	std::unique_ptr<EditorController> editor;

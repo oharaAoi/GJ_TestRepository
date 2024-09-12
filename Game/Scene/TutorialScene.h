@@ -21,6 +21,8 @@
 #include "Engine/Render/RenderNode/Outline/OutlineNode.h"
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/TutorialUI.h"
+#include "Game/UI/FadePanel.h"
+#include "Engine/Game/GameTimer/GameTimer.h"
 
 /// <summary>
 /// 内容
@@ -104,10 +106,13 @@ private:
 
 	Input* input_ = nullptr;
 
+	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
+
 	std::unique_ptr<Camera3D> camera3D_ = nullptr;
 
 	// ----------- WorldObject ----------- //
 	std::unique_ptr<Field> field_ = nullptr;
+	std::unique_ptr<GameObject> skydome_ = nullptr;
 	
 	// ----------- GameCharacter ----------- //
 	std::unique_ptr<Player> player_ = nullptr;

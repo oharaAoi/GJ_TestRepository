@@ -11,6 +11,9 @@ void FadePanel::Init() {
 	fadePanel_ = std::make_unique<UIObject>("Fade_Panel.png", Vector2{ 0.0f,0.0f });
 
 	isFade_ = false;
+	isFadeFisnish_ = false;
+
+	fadeTime_ = 60;
 }
 
 void FadePanel::Update() {
@@ -39,31 +42,36 @@ void FadePanel::Draw() const {
 
 void FadePanel::SetFadeFadeStart(const FadeType& type) {
 	isFade_ = true;
+	isFadeFisnish_ = false;
 	fadeType_ = type;
 	frameCount_ = 0;
 }
 
 void FadePanel::FadeIn() {
-	if (++frameCount_ < fadeTime_) {
+	if (++frameCount_ <= fadeTime_) {
 		float t = static_cast<float>(frameCount_) / static_cast<float>(fadeTime_);
 		panelAlpha_ = std::lerp(0.0f, 1.0f, t);
 	} else {
 		frameCount_ = 0;
 		isFade_ = false;
+		isFadeFisnish_ = true;
 	}
 }
 
 void FadePanel::FadeOut() {
-	if (++frameCount_ < fadeTime_) {
+	if (++frameCount_ <= fadeTime_) {
 		float t = static_cast<float>(frameCount_) / static_cast<float>(fadeTime_);
 		panelAlpha_ = std::lerp(1.0f, 0.0f, t);
 	} else {
 		frameCount_ = 0;
 		isFade_ = false;
+		isFadeFisnish_ = true;
 	}
 }
 
 #ifdef _DEBUG
+#include <externals/imgui/imgui.h>
 void FadePanel::Debug_gui() {
+	ImGui::Text("frameCount: %d / %d", frameCount_, fadeTime_);
 }
 #endif // _DEBUG

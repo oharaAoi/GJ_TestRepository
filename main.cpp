@@ -21,7 +21,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp::Initialize("DirectXGame", kClientWidth, kClientHight);
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 
-	auto&& scene = CreateUnique<GameScene>();
+	auto&& scene = CreateUnique<TitleScene>();
 	SceneManager::Initialize(std::move(scene));
 
 	while (!WinApp::IsEndApp()) {

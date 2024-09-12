@@ -10,8 +10,11 @@
 #include "Engine/Render/RenderPath/RenderPath.h"
 #include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
 #include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
+#include "Engine/Render/RenderNode/Outline/OutlineNode.h"
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Engine/Render/RenderNode/ChromaticAberration/ChromaticAberrationNode.h"
+#include "Game/UI/FadePanel.h"
+#include "Engine/Game/GameTimer/GameTimer.h"
 
 class GameOverScene :
     public BaseScene {
@@ -19,6 +22,8 @@ public:
 
     GameOverScene() = default;
     ~GameOverScene() = default;
+
+	void finalize() override;
 
 	void initialize() override;
 
@@ -46,9 +51,12 @@ private:
 	// ------------------- UI ------------------- //
 	std::unique_ptr<GameOverUI> gameOverUI_ = nullptr;
 
+	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;
 	std::shared_ptr<SpriteNode> spriteNode;
+	std::shared_ptr<OutlineNode> outlineNode;
 	RenderPath path;
 
+	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
 };
 

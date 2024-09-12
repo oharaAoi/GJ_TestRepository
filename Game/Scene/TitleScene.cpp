@@ -69,22 +69,36 @@ void TitleScene::begin() {
 }
 
 void TitleScene::update() {
+	camera3D_->update();
+	Camera2D::CameraUpdate();
+	
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	fadePanel_->Update();
+
+	// -------------------------------------------------
+	// ↓ 次のシーンへ行くか
+	// -------------------------------------------------
+	if (fadePanel_->GetIsFade()) {
+		if (!fadePanel_->GetIsFadeFinish()) {
+
+		}
+	}
+
 	// -------------------------------------------------
 	// ↓ Inputの更新
 	// -------------------------------------------------
 	Input::GetInstance()->Update();
 
-	if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A) || input_->GetKey(DIK_SPACE)) {
-		SceneManager::SetSceneChange(CreateUnique<TutorialScene>(), false);
+	if (!fadePanel_->GetIsFade()) {
+		if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A) || input_->GetKey(DIK_SPACE)) {
+			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
+			SceneManager::SetSceneChange(CreateUnique<TutorialScene>(),
+										 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()), 
+										 false);
+		}
 	}
-
-	camera3D_->update();
-	Camera2D::CameraUpdate();
-
-	// -------------------------------------------------
-	// ↓ 
-	// -------------------------------------------------
-	fadePanel_->Update();
 }
 
 void TitleScene::begin_rendering() {
@@ -121,6 +135,11 @@ void TitleScene::debug_update() {
 	ImGui::Begin("Camera3D");
 	camera3D_->debug_gui();
 	ImGui::End();
+
+	ImGui::Begin("Panel");
+	fadePanel_->Debug_gui();
+	ImGui::End();
+
 
 }
 #endif

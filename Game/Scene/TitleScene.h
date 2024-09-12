@@ -11,6 +11,7 @@
 #include "Engine/Render/RenderNode/Outline/OutlineNode.h"
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/FadePanel.h"
+#include "Engine/Game/GameTimer/GameTimer.h"
 
 /// <summary>
 /// TitleScene

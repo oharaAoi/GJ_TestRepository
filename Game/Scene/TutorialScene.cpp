@@ -2,8 +2,6 @@
 #include "Engine/Game/Managers/SceneManager/SceneManager.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
 #include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
-#include "Engine/Game/Managers/TextureManager/TextureManager.h"
-
 
 void TutorialScene::finalize() {
 	object3DNode->finalize();
@@ -18,6 +16,9 @@ void TutorialScene::initialize() {
 	AdjustmentItem::GetInstance()->Init("TutorialScene");
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
 	Camera2D::Initialize();
 	camera3D_ = std::make_unique<Camera3D>();
 	camera3D_->initialize();
@@ -27,11 +28,24 @@ void TutorialScene::initialize() {
 		{ 0, 50, -28.0 }
 							 });
 
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
 	field_ = std::make_unique<Field>();
+	skydome_ = std::make_unique<GameObject>();
+	skydome_->reset_object("skydome.obj");
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
 	player_ = std::make_unique<Player>();
 	player_->set_parent(field_->get_hierarchy());
 	boss_ = std::make_unique<Boss>();
+	boss_->get_transform().set_translate_y(-2.0f);
 
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
 	collisionManager_->register_collider("Player", player_->GetCollider());
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
 	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey());
@@ -65,18 +79,17 @@ void TutorialScene::initialize() {
 	path.initialize({ object3DNode, outlineNode, spriteNode });
 	RenderPathManager::RegisterPath("TutorialScene", std::move(path));
 	RenderPathManager::SetPath("TutorialScene");
+
+	fadePanel_ = std::make_unique<FadePanel>();
+	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
 }
 
 void TutorialScene::load() {
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "GravityRod.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "mouth.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "mob.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "Field.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariEnemy.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariSpEnemy.obj");
+
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/PlayerBody", "playerBody.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/PlayerArm", "playerArm.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/RiceScoop", "riceScoop.obj");
 
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossFace", "bossFace.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/LowerJaw", "lowerJaw.obj");
@@ -88,11 +101,13 @@ void TutorialScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/TriangleRiceBall", "triangleRiceBall.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/CircleRiceBall", "circleRiceBall.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Field", "nattomaki.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_kari.png");
 
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_brap.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyEachOther.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_bossHited.wav");
@@ -105,6 +120,18 @@ void TutorialScene::begin() {
 }
 
 void TutorialScene::update() {
+	camera3D_->update();
+	Camera2D::CameraUpdate();
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	fadePanel_->Update();
+
+	if (!fadePanel_->GetIsFadeFinish()) {
+		return;
+	}
+
 	// -------------------------------------------------
 	// ↓ Inputの更新
 	// -------------------------------------------------
@@ -115,16 +142,16 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	if (input_->GetIsPadPress(XINPUT_GAMEPAD_A)) {
 		if (++skipCount_ >= 120) {
-			SceneManager::SetSceneChange(CreateUnique<GameScene>(), false);
+			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
+			SceneManager::SetSceneChange(CreateUnique<GameScene>(),
+										 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+										 false);
 		}
 	}
 
 	// -------------------------------------------------
 	// ↓ カメラを更新
 	// -------------------------------------------------
-	camera3D_->update();
-	Camera2D::CameraUpdate();
-
 	if (!isTutorialFinish_) {
 		ExecuteTutorialContent(content_);
 		return;
@@ -133,6 +160,7 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	// ↓ GameObjectの更新
 	// -------------------------------------------------
+	skydome_->update();
 	field_->Update();
 	field_->get_transform().set_translate({0,0,0});
 	player_->Update(field_->GetRadius());
@@ -191,7 +219,9 @@ void TutorialScene::begin_rendering() {
 	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
 
+	skydome_->begin_rendering(*camera3D_);
 	field_->begin_rendering(*camera3D_);
+
 	player_->Begin_Rendering(camera3D_.get());
 	boss_->Begin_Rendering(camera3D_.get());
 
@@ -204,6 +234,8 @@ void TutorialScene::begin_rendering() {
 	}
 
 	tutorialUI_->BeginRendering();
+
+	fadePanel_->Begin_Rendering();
 }
 
 void TutorialScene::late_update() {
@@ -221,6 +253,7 @@ void TutorialScene::late_update() {
 
 void TutorialScene::draw() const {
 	RenderPathManager::BeginFrame();
+	skydome_->draw();
 	field_->draw();
 	player_->Draw();
 	boss_->Draw();
@@ -239,9 +272,8 @@ void TutorialScene::draw() const {
 	outlineNode->draw();
 	RenderPathManager::Next();
 	tutorialUI_->Draw();
+	fadePanel_->Draw();
 	RenderPathManager::Next();
-
-
 }
 
 

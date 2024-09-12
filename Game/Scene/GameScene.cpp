@@ -38,8 +38,8 @@ void GameScene::initialize() {
 	camera3D_->initialize();
 	camera3D_->set_transform({
 		CVector3::BASIS,
-		Quaternion::EulerDegree(75, 0, 0),
-		{ 0, 50, -28.0 }
+		Quaternion::EulerDegree(55, 0, 0),
+		{ 0, 30, -13.0 }
 							 });
 
 	// -------------------------------------------------
@@ -111,6 +111,12 @@ void GameScene::initialize() {
 	);
 	posteffectManager->set_boss(boss_.get());
 
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	fadePanel_ = std::make_unique<FadePanel>();
+	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
+
 #ifdef _DEBUG
 	editor = CreateUnique<EditorController>();
 	editor->initialize(camera3D_.get(), meteoriteManager_.get(), enemyManager_.get());
@@ -162,6 +168,17 @@ void GameScene::begin() {
 }
 
 void GameScene::update() {
+	camera3D_->update();
+	Camera2D::CameraUpdate();
+
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	fadePanel_->Update();
+
+	if (!fadePanel_->GetIsFadeFinish()) {
+		return;
+	}
 
 	// -------------------------------------------------
 	// ↓ Inputの更新
@@ -169,12 +186,6 @@ void GameScene::update() {
 	Input::GetInstance()->Update();
 
 	AdjustmentItem::GetInstance()->Update();
-
-	// -------------------------------------------------
-	// ↓ カメラを更新
-	// -------------------------------------------------
-	camera3D_->update();
-	Camera2D::CameraUpdate();
 
 	// -------------------------------------------------
 	// ↓ 演出が始まるかどうか
@@ -202,6 +213,7 @@ void GameScene::update() {
 
 			// 終わったらフェードアウトする
 
+
 			break;
 
 		case PerformanceType::GameClear_Type:
@@ -221,14 +233,12 @@ void GameScene::update() {
 		boss_->SetIsDrawOverLine(false);
 		boss_->SetIsStart(false);
 		performanceType_ = PerformanceType::GameClear_Type;
-		//SceneManager::SetSceneChange(CreateUnique<ClearScene>(), false);
 	}
 
 	if (boss_->GetIsGameOver(field_->GetCylinderHight())) {
 		boss_->SetIsDrawOverLine(false);
 		boss_->SetIsStart(false);
 		performanceType_ = PerformanceType::GameOver_Type;
-		//SceneManager::SetSceneChange(CreateUnique<GameOverScene>(), false);
 	}
 
 	// -------------------------------------------------
@@ -236,8 +246,6 @@ void GameScene::update() {
 	// -------------------------------------------------
 	skydome_->update();
 	field_->Update();
-
-	skydome_->update();
 
 	player_->Update(field_->GetRadius());
 
@@ -329,6 +337,8 @@ void GameScene::begin_rendering() {
 #endif
 
 	playerUI_->BeginRendering();
+
+	fadePanel_->Begin_Rendering();
 }
 
 void GameScene::late_update() {
@@ -377,6 +387,8 @@ void GameScene::draw() const {
 	if (performanceType_ == PerformanceType::None_Type) {
 		playerUI_->Draw();
 	}
+
+	fadePanel_->Draw();
 	RenderPathManager::Next();
 }
 
@@ -469,6 +481,10 @@ void GameScene::GameOverPerformance() {
 		camera3D_->GameOverPerformance();
 	} else {
 		// ゲームオーバーの終了
+		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
+		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(),
+									 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+									 false);
 	}
 }
 
@@ -478,6 +494,10 @@ void GameScene::GameClearPerformance() {
 		camera3D_->GameClearPerformance();
 	} else {
 		boss_->Burp();	// げっぷをする
+		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
+		SceneManager::SetSceneChange(CreateUnique<ClearScene>(),
+									 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+									 false);
 	}
 }
 

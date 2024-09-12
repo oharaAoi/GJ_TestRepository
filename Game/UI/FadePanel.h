@@ -34,15 +34,22 @@ public:
 	void FadeIn();
 	void FadeOut();
 
+	const uint32_t GetFadeTime() const { return fadeTime_; }
+
+	const bool GetIsFade() const { return isFade_; }
+
+	const bool GetIsFadeFinish() const { return isFadeFisnish_; }
+
 private:
 
 	std::unique_ptr<UIObject> fadePanel_ = nullptr;
 
 	bool isFade_ = false;
+	bool isFadeFisnish_ = false;
 
 	FadeType fadeType_;
 	uint32_t frameCount_ = 0;
-	uint32_t fadeTime_ = 200;
+	uint32_t fadeTime_ = 60;
 
 	float panelAlpha_ = 0.0f;
 };
