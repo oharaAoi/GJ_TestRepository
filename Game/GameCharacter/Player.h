@@ -88,6 +88,9 @@ public:
 	void SetIsAttackofEnmey(const bool& isAttack) { isAttackofEnmey_ = isAttack; }
 	bool* GetIsAttackofEnmey() { return &isAttackofEnmey_; }
 
+	// ----------- スタン中か ----------- //
+	bool GetIsStan() const { return isStan_; };
+
 private:
 
 	const float speed = 4.0f;

@@ -99,18 +99,26 @@ void GameScene::initialize() {
 	spriteNode->initialize();
 	//spriteNode->set_background_texture(outlineNode->result_stv_handle());
 	spriteNode->set_background_texture(vignetteNode->result_stv_handle());
-	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+	spriteNode->set_render_target();
+	//spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+
+	chromaticAberrationNode = std::make_unique<ChromaticAberrationNode>();
+	chromaticAberrationNode->initialize();
+	chromaticAberrationNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+	chromaticAberrationNode->set_texture_resource(spriteNode->result_stv_handle());
+
 	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
 
-	path.initialize({ object3DNode, outlineNode, vignetteNode , spriteNode });
+	path.initialize({ object3DNode, outlineNode, vignetteNode , spriteNode, chromaticAberrationNode });
 	RenderPathManager::RegisterPath("GameScene", std::move(path));
 	RenderPathManager::SetPath("GameScene");
 
 	posteffectManager = std::make_unique<PostEffectManager>();
 	posteffectManager->initialize(
-		vignetteNode
+		vignetteNode, chromaticAberrationNode
 	);
 	posteffectManager->set_boss(boss_.get());
+	posteffectManager->set_player(player_.get());
 
 	// -------------------------------------------------
 	// ↓ 
@@ -401,6 +409,8 @@ void GameScene::draw() const {
 	}
 
 	fadePanel_->Draw();
+	RenderPathManager::Next();
+	chromaticAberrationNode->draw();
 	RenderPathManager::Next();
 }
 

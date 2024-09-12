@@ -117,7 +117,7 @@ std::string MeteoriteManager::GetRandomKey() {
 		std::string randomKey = keys[randomKeyIndex];
 
 		// 選ばれたキーを使用しマップを参照して使用可能かを確認
-		if (groupMap_[randomKey].spawnedFrameCount == 0) {
+		if (groupMap_[randomKey].spawnedFrameCount <= 0) {
 			return randomKey;
 		}
 
