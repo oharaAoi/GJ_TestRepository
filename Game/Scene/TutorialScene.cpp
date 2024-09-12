@@ -64,6 +64,8 @@ void TutorialScene::initialize() {
 	frameCount_ = 0;
 	// ---------------------------------------------
 
+	tutorialUI_->ChangeContentUI(int(content_));
+
 	object3DNode = std::make_unique<Object3DNode>();
 	object3DNode->initialize();
 	object3DNode->set_render_target();
@@ -145,6 +147,7 @@ void TutorialScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "tutorial.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "woodBoard.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scroll.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "null.png");
 
 	// ゲームと共有
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
@@ -174,7 +177,7 @@ void TutorialScene::update() {
 	// ↓ 
 	// -------------------------------------------------
 	fadePanel_->Update();
-
+	tutorialUI_->Update(static_cast<int>(content_));
 	if (!fadePanel_->GetIsFadeFinish()) {
 		return;
 	}
@@ -198,8 +201,12 @@ void TutorialScene::update() {
 		}
 	}
 
+	if (isStop_) {
+		return;
+	}
+
 	// -------------------------------------------------
-	// ↓ カメラを更新
+	// ↓ 
 	// -------------------------------------------------
 	if (!isTutorialFinish_) {
 		field_->Update();
@@ -260,8 +267,6 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	// ↓ UI
 	// -------------------------------------------------
-
-	tutorialUI_->Update();
 }
 
 void TutorialScene::begin_rendering() {
@@ -334,6 +339,7 @@ void TutorialScene::debug_update() {
 	ImGui::Text("nextScene: Game");
 	ImGui::Text("Press: A");
 	ImGui::Text("nextOfFrame: %d / 120", frameCount_);
+	ImGui::Checkbox("isStop", &isStop_);
 	ImGui::Separator();
 	ImGui::Text("now content :");
 	ImGui::SameLine();
@@ -468,6 +474,7 @@ void TutorialScene::FirstMoveContent() {
 
 	if (frameCount_ > 100) {
 		content_ = TutorialContent::RodPutOn_Content;
+		tutorialUI_->ChangeContentUI(int(content_));
 		frameCount_ = 0;
 		success_SE_->restart();
 	}
@@ -484,6 +491,7 @@ void TutorialScene::RodPutOnContent() {
 	if (player_->GetIsAttack()) {
 		success_SE_->restart();
 		content_ = TutorialContent::MeteoCollision_Content;
+		tutorialUI_->ChangeContentUI(int(content_));
 		Vector3 playerTranslate = player_->GetGravityRodOrigine() + Vector3{ 10, 0, 0 };
 		meteoriteManager_->AddMeteo(player_->GetGravityRodEnd() + Vector3{ 10, 0, 0 });
 		meteoriteManager_->AddMeteo(player_->GetGravityRodEnd() + Vector3{ 15, 0, 0 });
@@ -518,6 +526,7 @@ void TutorialScene::MeteoCollisionContent() {
 	if (meteoriteList_.size() == 0) {
 		success_SE_->restart();
 		content_ = TutorialContent::CantMoveCanRotate_Content;
+		tutorialUI_->ChangeContentUI(int(content_));
 	}
 }
 
@@ -528,16 +537,11 @@ void TutorialScene::MeteoCollisionContent() {
 void TutorialScene::CantMoveCanRotateContent() {
 	// Playerがスティックを回していたら
 	player_->Update(field_->GetRadius());
-	player_->SetIsAttack(true);
 
-	Vector3 velocity = player_->GetVelocity();
-	if (std::abs(velocity.x) > 0.4f || std::abs(velocity.z) > 0.4f) {
-		++frameCount_;
-	}
-
-	if (frameCount_ > 80) {
+	if (!player_->GetIsAttack()) {
 		success_SE_->restart();
 		content_ = TutorialContent::FirstEnemy_Content;
+		tutorialUI_->ChangeContentUI(int(content_));
 		frameCount_ = 0;
 		enemyManager_->AddEnemy(player_->get_transform().get_translate() + Vector3{ 2.0f, 0.0f, 2.0f }, EnemyType::Normal_Type);
 	}
@@ -559,6 +563,7 @@ void TutorialScene::FirstEnemyContent() {
 			if (enemy->GetVelocity() == Vector3{ 0,0,0 }) {
 				success_SE_->restart();
 				content_ = TutorialContent::EnemyCollisionToMeteo_Content;
+				tutorialUI_->ChangeContentUI(int(content_));
 				meteoriteManager_->AddMeteo(Vector3{ 20, 0, enemy->get_transform().get_translate().z });
 			}
 		}
@@ -609,6 +614,11 @@ void TutorialScene::EnemyCollisionToMeteoContent() {
 	if (enemyList_.size() == 0) {
 		success_SE_->restart();
 		content_ = TutorialContent::MeteoAttract_Content;
+		isTutorialFinish_ = true;
+		enemyManager_->StartPop();
+		meteoriteManager_->StartPop();
+		frameCount_ = 0;
+		tutorialUI_->ChangeContentUI(int(content_));
 	}
 }
 

@@ -23,6 +23,8 @@ void GameScene::finalize() {
 	vignetteNode->finalize();
 	RenderPathManager::UnregisterPath("GameScene");
 
+	// followカメラにある音声を解放
+	camera3D_->finalize();
 	game_BGM_->finalize();
 }
 

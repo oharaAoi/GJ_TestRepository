@@ -6,6 +6,7 @@
 #include <string>
 #include <variant>
 #include "Engine/Math/Vector3.h"
+#include "Engine/Math/Vector2.h"
 
 #include "externals/nlohmann/json.hpp"
 
@@ -23,7 +24,7 @@ class AdjustmentItem {
 public: // 構造体
 
 	struct Item {
-		std::variant<uint32_t, float, Vector3, bool> value;
+		std::variant<uint32_t, float, Vector2, Vector3, bool> value;
 	};
 
 	struct Group {

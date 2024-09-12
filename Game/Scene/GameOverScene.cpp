@@ -20,10 +20,22 @@ void GameOverScene::initialize() {
 
 	Camera2D::Initialize();
 	camera3D_ = std::make_unique<Camera3D>();
+	camera3D_->initialize();
+	camera3D_->set_transform({
+			CVector3::BASIS,
+			Quaternion::EulerDegree(0, 0, 0),
+			{ 0, 0, -10.0 }
+							 });
 
 	gameOverUI_ = std::make_unique<GameOverUI>();
 
 	preNextGame_ = false;
+
+	gameOverTitle_ = std::make_unique<GameObject>();
+	gameOverTitle_->reset_object("Title.obj");
+
+	skydome_ = std::make_unique<GameObject>();
+	skydome_->reset_object("skydome.obj");
 
 	// -------------------------------------------------
 	// ↓ 
@@ -70,6 +82,10 @@ void GameOverScene::initialize() {
 }
 
 void GameOverScene::load() {
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/TitleScene/Title", "Title.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
+
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_goGame.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_goTitle.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_arrow.png");
@@ -130,12 +146,21 @@ void GameOverScene::update() {
 		choice_SE_->restart();
 	}
 
+	// -------------------------------------------------
+	// ↓ Objectの更新
+	// -------------------------------------------------
+	gameOverTitle_->update();
+	skydome_->update();
+
 	preNextGame_ = nextGame_;
 }
 
 void GameOverScene::begin_rendering() {
 	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
+
+	gameOverTitle_->begin_rendering(*camera3D_);
+	skydome_->begin_rendering(*camera3D_);
 	
 	gameOverUI_->Begin_Rendering();
 
@@ -147,7 +172,8 @@ void GameOverScene::late_update() {
 
 void GameOverScene::draw() const {
 	RenderPathManager::BeginFrame();
-	
+	gameOverTitle_->draw();
+	skydome_->draw();
 	RenderPathManager::Next();
 	outlineNode->draw();
 	RenderPathManager::Next();

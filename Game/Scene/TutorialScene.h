@@ -27,7 +27,7 @@
 /// <summary>
 /// 内容
 /// </summary>
-enum class TutorialContent {
+enum TutorialContent {
 	FirstMove_Content = 0,
 	RodPutOn_Content,
 	MeteoCollision_Content,
@@ -105,6 +105,8 @@ public:	// チュートリアルの内容
 private:
 
 	Input* input_ = nullptr;
+
+	bool isStop_ = false;
 
 	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
 

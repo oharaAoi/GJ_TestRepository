@@ -51,6 +51,9 @@ private:
 	bool nextGame_ = 0;
 	bool preNextGame_ = 0;
 
+	std::unique_ptr<GameObject> gameOverTitle_ = nullptr;
+	std::unique_ptr<GameObject> skydome_ = nullptr;
+
 	// ------------------- UI ------------------- //
 	std::unique_ptr<GameOverUI> gameOverUI_ = nullptr;
 

@@ -648,6 +648,9 @@
     <ClCompile Include="Game\MyRandom.cpp">
       <Filter>MainGame</Filter>
     </ClCompile>
+    <ClCompile Include="Game\UI\ClearUI.cpp">
+      <Filter>MainGame\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WinApp.h">
@@ -1015,6 +1018,9 @@
     </ClInclude>
     <ClInclude Include="Game\MyRandom.h">
       <Filter>MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\ClearUI.h">
+      <Filter>MainGame\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
