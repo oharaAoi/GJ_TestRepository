@@ -1,0 +1,22 @@
+# Blender 4.1.1 MTL File: 'None'
+# www.blender.org
+
+newmtl マテリアル
+Ns 25.776455
+Ka 0.834862 0.834862 0.834862
+Ks 0.500000 0.500000 0.500000
+Ke 0.028477 0.099021 0.100000
+Ni 1.000000
+d 1.000000
+illum 3
+map_Kd harapeKotyan.png
+
+newmtl マテリアル.002
+Ns 25.776455
+Ka 0.834862 0.834862 0.834862
+Ks 0.500000 0.500000 0.500000
+Ke 0.028477 0.099021 0.100000
+Ni 1.000000
+d 1.000000
+illum 3
+map_Kd harapeKotyan.png

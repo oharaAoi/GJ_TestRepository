@@ -1,22 +1,22 @@
-# Blender 4.2.1 LTS MTL File: 'Title.blend'
+# Blender 4.1.1 MTL File: 'Title.blend'
 # www.blender.org
 
-newmtl meteMaterial
+newmtl マテリアル
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-Ni 1.500000
+Ni 1.000000
 d 1.000000
-illum 2
+illum 3
 map_Kd meteColor.png
 
-newmtl onigiriMaterial
+newmtl マテリアル.001
 Ns 250.000000
-Ka 1.000000 1.000000 1.000000
+Ka 0.376147 0.376147 0.376147
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-Ni 1.500000
+Ni 1.000000
 d 1.000000
-illum 2
+illum 3
 map_Kd onigiriColor.png
