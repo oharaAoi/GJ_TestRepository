@@ -19,6 +19,7 @@ const std::int32_t kClientHight = 720;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp::Initialize("DirectXGame", kClientWidth, kClientHight);
+	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 
 	auto&& scene = CreateUnique<GameScene>();
 	SceneManager::Initialize(std::move(scene));

@@ -23,7 +23,6 @@ void GameScene::finalize() {
 }
 
 void GameScene::initialize() {
-	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 	EffectManager::GetInstance()->Init();
 	AdjustmentItem::GetInstance()->Init("GameScene");
 

@@ -11,7 +11,6 @@ void TitleScene::finalize() {
 }
 
 void TitleScene::initialize() {
-	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 	input_ = Input::GetInstance();
 
 	Camera2D::Initialize();
