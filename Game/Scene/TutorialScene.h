@@ -130,6 +130,12 @@ private:
 	// ----------- Sprite ----------- //
 	std::unique_ptr<TutorialUI> tutorialUI_ = nullptr;
 
+	// ------------------- Audio ------------------- //
+	std::unique_ptr<AudioPlayer> theme_SE_;
+	std::unique_ptr<AudioPlayer> success_SE_;
+	std::unique_ptr<AudioPlayer> start_SE_;
+	std::unique_ptr<AudioPlayer> tutorial_BGM_;
+
 	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;
 	std::shared_ptr<SpriteNode> spriteNode;

@@ -4,6 +4,7 @@
 #include "Game/Easing.h"
 #include "Game/GameCharacter/Manager/AdjustmentItem.h"
 #include "Game/Easing.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
 
 class Player;
 
@@ -17,6 +18,8 @@ public:
 	};
 
 public:
+	void finalize();
+
 	void initialize() override;
 	void update() override;
 
@@ -58,5 +61,7 @@ private:
 
 	uint32_t frameCount_ = 0;
 	uint32_t frameTime_ = 200;
+
+	std::unique_ptr<AudioPlayer> boss_Apparance_SE_ = nullptr;
 
 };
