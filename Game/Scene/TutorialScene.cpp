@@ -8,6 +8,11 @@ void TutorialScene::finalize() {
 	outlineNode->finalize();
 	spriteNode->finalize();
 	RenderPathManager::UnregisterPath("TutorialScene");
+
+	theme_SE_->finalize();
+	success_SE_->finalize();
+	start_SE_->finalize();
+	tutorial_BGM_->finalize();
 }
 
 void TutorialScene::initialize() {
@@ -48,7 +53,7 @@ void TutorialScene::initialize() {
 	// -------------------------------------------------
 	collisionManager_->register_collider("Player", player_->GetCollider());
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
-	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey());
+	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey(), field_->get_hierarchy());
 
 	// ---------------------------------------------
 	tutorialUI_ = std::make_unique<TutorialUI>();
@@ -58,6 +63,8 @@ void TutorialScene::initialize() {
 	content_ = TutorialContent::FirstMove_Content;
 	frameCount_ = 0;
 	// ---------------------------------------------
+
+	tutorialUI_->ChangeContentUI(int(content_));
 
 	object3DNode = std::make_unique<Object3DNode>();
 	object3DNode->initialize();
@@ -82,6 +89,19 @@ void TutorialScene::initialize() {
 
 	fadePanel_ = std::make_unique<FadePanel>();
 	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
+
+	theme_SE_ = std::make_unique<AudioPlayer>();
+	success_SE_ = std::make_unique<AudioPlayer>();
+	start_SE_ = std::make_unique<AudioPlayer>();
+	tutorial_BGM_ = std::make_unique<AudioPlayer>();
+
+	theme_SE_->initialize("meteOnigiri_tutorialTheme1.wav", 0.5f, false);
+	success_SE_->initialize("meteOnigiri_tutorialOk.wav", 0.5f, false);
+	start_SE_->initialize("meteOnigiri_start.wav", 0.5f, false);
+	tutorial_BGM_->initialize("meteOnigiri_tutorialBGM.wav", 0.5f, true);
+
+	theme_SE_->play();
+	tutorial_BGM_->play();
 }
 
 void TutorialScene::load() {
@@ -107,13 +127,43 @@ void TutorialScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_kari.png");
 
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_brap.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyEachOther.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_bossHited.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyAttack.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyHitToMeteo.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_fieldPush.wav");
+	// content
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "appearance.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "attract.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "attractEnemy.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "collision.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "collisionEnemy.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "complete.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "fall.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "kick.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "move.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "practiceRange.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "putAway.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "putOut.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "rotate.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scrollEnd.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scrollStart.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "tips.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "tutorial.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "woodBoard.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scroll.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "null.png");
+
+	// ゲームと共有
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAtract.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_meteoEachOther.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_bossHited.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAttack.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyHitToMeteo.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_fieldPush.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_playerKick.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyEachOther.wav");
+
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/tutorial", "meteOnigiri_tutorialTheme1.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/tutorial", "meteOnigiri_tutorialOk.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/tutorial", "meteOnigiri_tutorialBGM.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/tutorial", "meteOnigiri_start.wav");
 }
 
 void TutorialScene::begin() {
@@ -127,7 +177,7 @@ void TutorialScene::update() {
 	// ↓ 
 	// -------------------------------------------------
 	fadePanel_->Update();
-
+	tutorialUI_->Update(static_cast<int>(content_));
 	if (!fadePanel_->GetIsFadeFinish()) {
 		return;
 	}
@@ -142,17 +192,24 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	if (input_->GetIsPadPress(XINPUT_GAMEPAD_A)) {
 		if (++skipCount_ >= 120) {
+			start_SE_->play();
+			tutorial_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<GameScene>(),
-										 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 										 false);
 		}
 	}
 
+	if (isStop_) {
+		return;
+	}
+
 	// -------------------------------------------------
-	// ↓ カメラを更新
+	// ↓ 
 	// -------------------------------------------------
 	if (!isTutorialFinish_) {
+		field_->Update();
 		ExecuteTutorialContent(content_);
 		return;
 	}
@@ -162,7 +219,6 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	skydome_->update();
 	field_->Update();
-	field_->get_transform().set_translate({0,0,0});
 	player_->Update(field_->GetRadius());
 	boss_->Update();
 
@@ -211,8 +267,6 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	// ↓ UI
 	// -------------------------------------------------
-
-	tutorialUI_->Update();
 }
 
 void TutorialScene::begin_rendering() {
@@ -241,14 +295,14 @@ void TutorialScene::begin_rendering() {
 void TutorialScene::late_update() {
 	collisionManager_->update();
 
-	// 敵とPlayer --------------------------------------------------
-	collisionManager_->collision("Enemy", "Player");
-	// メテオ同士 ---------------------------------------------------
-	collisionManager_->collision("Meteo", "Meteo");
 	// Enemy同士 ---------------------------------------------------
 	collisionManager_->collision("Enemy", "Enemy");
 	// Enemyと隕石 -------------------------------------------------
 	collisionManager_->collision("Enemy", "Meteo");
+	// 敵とPlayer --------------------------------------------------
+	collisionManager_->collision("Enemy", "Player");
+	// メテオ同士 ---------------------------------------------------
+	collisionManager_->collision("Meteo", "Meteo");
 }
 
 void TutorialScene::draw() const {
@@ -285,6 +339,7 @@ void TutorialScene::debug_update() {
 	ImGui::Text("nextScene: Game");
 	ImGui::Text("Press: A");
 	ImGui::Text("nextOfFrame: %d / 120", frameCount_);
+	ImGui::Checkbox("isStop", &isStop_);
 	ImGui::Separator();
 	ImGui::Text("now content :");
 	ImGui::SameLine();
@@ -419,7 +474,9 @@ void TutorialScene::FirstMoveContent() {
 
 	if (frameCount_ > 100) {
 		content_ = TutorialContent::RodPutOn_Content;
+		tutorialUI_->ChangeContentUI(int(content_));
 		frameCount_ = 0;
+		success_SE_->restart();
 	}
 }
 
@@ -432,12 +489,13 @@ void TutorialScene::RodPutOnContent() {
 	player_->Update(field_->GetRadius());
 
 	if (player_->GetIsAttack()) {
+		success_SE_->restart();
 		content_ = TutorialContent::MeteoCollision_Content;
-		Vector3 playerTranslate = player_->GetGravityRodOrigine();
-		meteoriteManager_->AddMeteo(playerTranslate + Vector3{ 12, 0, 0 });
-		meteoriteManager_->AddMeteo(playerTranslate + Vector3{ 15, 0, 0 });
+		tutorialUI_->ChangeContentUI(int(content_));
+		Vector3 playerTranslate = player_->GetGravityRodOrigine() + Vector3{ 10, 0, 0 };
+		meteoriteManager_->AddMeteo(player_->GetGravityRodEnd() + Vector3{ 10, 0, 0 });
+		meteoriteManager_->AddMeteo(player_->GetGravityRodEnd() + Vector3{ 15, 0, 0 });
 	}
-	player_->Update(field_->GetRadius());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -450,6 +508,7 @@ void TutorialScene::MeteoCollisionContent() {
 
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		meteo->Update(player_->get_transform().get_translate());
+		meteo->get_transform().set_translate_z(player_->GetGravityRodOrigine().z);
 	}
 
 	// 死亡フラグのチェックを行う
@@ -458,14 +517,16 @@ void TutorialScene::MeteoCollisionContent() {
 			return true;
 		}
 		return false;
-	});
+							 });
 
 	if (player_->GetIsAttack()) { CheckMeteoAttraction(); }
 	CheckMeteoToField();
 	CheckBossCollision();
 
 	if (meteoriteList_.size() == 0) {
+		success_SE_->restart();
 		content_ = TutorialContent::CantMoveCanRotate_Content;
+		tutorialUI_->ChangeContentUI(int(content_));
 	}
 }
 
@@ -476,17 +537,13 @@ void TutorialScene::MeteoCollisionContent() {
 void TutorialScene::CantMoveCanRotateContent() {
 	// Playerがスティックを回していたら
 	player_->Update(field_->GetRadius());
-	player_->SetIsAttack(true);
 
-	Vector3 velocity = player_->GetVelocity();
-	if (std::abs(velocity.x) > 0.4f || std::abs(velocity.z) > 0.4f) {
-		++frameCount_;
-	}
-
-	if (frameCount_ > 80) {
+	if (!player_->GetIsAttack()) {
+		success_SE_->restart();
 		content_ = TutorialContent::FirstEnemy_Content;
+		tutorialUI_->ChangeContentUI(int(content_));
 		frameCount_ = 0;
-		enemyManager_->AddEnemy(player_->get_transform().get_translate() + Vector3{2.0f, 0.0f, 2.0f}, EnemyType::Normal_Type);
+		enemyManager_->AddEnemy(player_->get_transform().get_translate() + Vector3{ 2.0f, 0.0f, 2.0f }, EnemyType::Normal_Type);
 	}
 }
 
@@ -504,18 +561,20 @@ void TutorialScene::FirstEnemyContent() {
 		if (enemy->GetIsKickToPlayer()) {
 			// 速度が0になったら
 			if (enemy->GetVelocity() == Vector3{ 0,0,0 }) {
+				success_SE_->restart();
 				content_ = TutorialContent::EnemyCollisionToMeteo_Content;
-				meteoriteManager_->AddMeteo(Vector3{20, 0, enemy->get_transform().get_translate().z});
+				tutorialUI_->ChangeContentUI(int(content_));
+				meteoriteManager_->AddMeteo(Vector3{ 20, 0, enemy->get_transform().get_translate().z });
 			}
 		}
 	}
 
 	enemyList_.remove_if([](const std::unique_ptr<Enemy>& enemy) {
-	if (enemy->GetIsDead()) {
-		return true;
-	}
-	return false;
-	 });
+		if (enemy->GetIsDead()) {
+			return true;
+		}
+		return false;
+						 });
 
 }
 
@@ -537,11 +596,11 @@ void TutorialScene::EnemyCollisionToMeteoContent() {
 			return true;
 		}
 		return false;
-	 });
+							 });
 
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		Quaternion rotation = enemy->get_transform().get_quaternion();
-		Quaternion rotateValue = Quaternion::AngleAxis(enemy->GetRotateAxis(),4.0f * ToRadian);
+		Quaternion rotateValue = Quaternion::AngleAxis(enemy->GetRotateAxis(), 4.0f * ToRadian);
 		enemy->get_transform().set_rotate(rotateValue * rotation);
 	}
 
@@ -553,7 +612,13 @@ void TutorialScene::EnemyCollisionToMeteoContent() {
 						 });
 
 	if (enemyList_.size() == 0) {
+		success_SE_->restart();
 		content_ = TutorialContent::MeteoAttract_Content;
+		isTutorialFinish_ = true;
+		enemyManager_->StartPop();
+		meteoriteManager_->StartPop();
+		frameCount_ = 0;
+		tutorialUI_->ChangeContentUI(int(content_));
 	}
 }
 
@@ -565,9 +630,16 @@ void TutorialScene::MeteoAttractContent() {
 	// 隕石を引き寄せられることを教える
 	player_->Update(field_->GetRadius());
 
+	// 無視した場合を考慮
+	if (++frameCount_ > 200) {
+		meteoriteManager_->AddMeteo(Vector3{ 20, 0, RandomFloat(-3, 5) });
+		frameCount_ = 0;
+	}
+
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		meteo->Update(player_->get_transform().get_translate());
 		if (meteo->GetIsAttraction()) {
+			success_SE_->restart();
 			isTutorialFinish_ = true;
 			enemyManager_->StartPop();
 			meteoriteManager_->StartPop();
@@ -581,7 +653,7 @@ void TutorialScene::MeteoAttractContent() {
 			return true;
 		}
 		return false;
-	 });
+							 });
 
 	if (player_->GetIsAttack()) { CheckMeteoAttraction(); }
 	CheckMeteoToField();
@@ -596,5 +668,5 @@ void TutorialScene::ExecuteTutorialContent(const TutorialContent& content) {
 	const auto& it = functionMap_.find(content);
 	if (it != functionMap_.end()) {
 		(this->*(it->second))(); // メンバー関数ポインタを使って関数を呼び出す
-	} 
+	}
 }

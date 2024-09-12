@@ -9,6 +9,10 @@ void GameOverScene::finalize() {
 	outlineNode->finalize();
 	spriteNode->finalize();
 	RenderPathManager::UnregisterPath("GameOver");
+
+	start_SE_->finalize();
+	choice_SE_->finalize();
+	gameOver_BGM_->finalize();
 }
 
 void GameOverScene::initialize() {
@@ -16,8 +20,22 @@ void GameOverScene::initialize() {
 
 	Camera2D::Initialize();
 	camera3D_ = std::make_unique<Camera3D>();
+	camera3D_->initialize();
+	camera3D_->set_transform({
+			CVector3::BASIS,
+			Quaternion::EulerDegree(0, 0, 0),
+			{ 0, 0, -10.0 }
+							 });
 
 	gameOverUI_ = std::make_unique<GameOverUI>();
+
+	preNextGame_ = false;
+
+	gameOverTitle_ = std::make_unique<GameObject>();
+	gameOverTitle_->reset_object("Title.obj");
+
+	skydome_ = std::make_unique<GameObject>();
+	skydome_->reset_object("skydome.obj");
 
 	// -------------------------------------------------
 	// ↓ 
@@ -49,12 +67,32 @@ void GameOverScene::initialize() {
 	fadePanel_ = std::make_unique<FadePanel>();
 	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
 
+	// -------------------------------------------------
+	// ↓ 
+	// -------------------------------------------------
+	start_SE_ = std::make_unique<AudioPlayer>();
+	choice_SE_ = std::make_unique<AudioPlayer>();
+	gameOver_BGM_ = std::make_unique<AudioPlayer>();
+
+	start_SE_->initialize("meteOnigiri_start.wav" ,0.5f, false);
+	choice_SE_->initialize("meteOnigiri_choice1.wav", 0.5f, false);
+	gameOver_BGM_->initialize("meteOnigiri_AfterGameBGM2.wav", 0.5f, false);
+
+	gameOver_BGM_->play();
 }
 
 void GameOverScene::load() {
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/TitleScene/Title", "Title.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
+
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_goGame.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_goTitle.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_arrow.png");
+
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/gameOver", "meteOnigiri_start.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/gameOver", "meteOnigiri_choice1.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/gameOver", "meteOnigiri_AfterGameBGM2.wav");
 }
 
 void GameOverScene::begin() {
@@ -79,16 +117,20 @@ void GameOverScene::update() {
 	// -------------------------------------------------
 	Input::GetInstance()->Update();
 	
-	if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A) || input_->GetKey(DIK_SPACE)) {
+	if (input_->GetIsPadTrigger(XINPUT_GAMEPAD_A)) {
 		if (nextGame_) {
+			start_SE_->play();
+			gameOver_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<GameScene>(),
-										 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 										 false);
 		} else {
+			start_SE_->play();
+			gameOver_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<TitleScene>(),
-										 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 										 false);
 		}
 	}
@@ -99,11 +141,26 @@ void GameOverScene::update() {
 	} else if(stick.y <= -0.5f) {
 		nextGame_ = false;
 	}
+
+	if (preNextGame_ != nextGame_) {
+		choice_SE_->restart();
+	}
+
+	// -------------------------------------------------
+	// ↓ Objectの更新
+	// -------------------------------------------------
+	gameOverTitle_->update();
+	skydome_->update();
+
+	preNextGame_ = nextGame_;
 }
 
 void GameOverScene::begin_rendering() {
 	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
+
+	gameOverTitle_->begin_rendering(*camera3D_);
+	skydome_->begin_rendering(*camera3D_);
 	
 	gameOverUI_->Begin_Rendering();
 
@@ -115,7 +172,8 @@ void GameOverScene::late_update() {
 
 void GameOverScene::draw() const {
 	RenderPathManager::BeginFrame();
-	
+	gameOverTitle_->draw();
+	skydome_->draw();
 	RenderPathManager::Next();
 	outlineNode->draw();
 	RenderPathManager::Next();

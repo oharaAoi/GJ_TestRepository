@@ -63,6 +63,7 @@ void Enemy::Update(const Vector3& playerPosition) {
 				float t = float(fieldOutCount_) / float(fieldOutTime_);
 				Quaternion rotateValue = Quaternion::AngleAxis(rotateAxis_, (1.0f - t) * (8.0f * ToRadian));
 				transform->set_rotate(rotateValue * rotation);
+				translate.y = 13.0f;
 				transform->set_translate(translate);
 			} else {
 				fieldOutCount_ = 0;
@@ -121,6 +122,7 @@ void Enemy::Update(const Vector3& playerPosition) {
 			Quaternion targetRotateValue = Quaternion::EulerRadian({ 0,targetAngle,0 });
 			transform->set_rotate(rotateValue * targetRotateValue);
 			// 敵を進める
+			velocity_ = (Vector3{ 0.0f, translate.y, 0.0f } - translate).normalize_safe();
 			translate += velocity_ * GameTimer::DeltaTime();
 			// 少し小さめの円周に行くまで進む
 			Vector3 distance = (translate - Vector3(0, translate.y, 0)).normalize_safe();
@@ -132,6 +134,7 @@ void Enemy::Update(const Vector3& playerPosition) {
 				behaviorRequest_ = EnemyState::Approach_State;
 
 			}
+			translate.y = 13.0f;
 			transform->set_translate(translate);
 
 			break;
@@ -182,13 +185,13 @@ void Enemy::Update(const Vector3& playerPosition) {
 }
 
 void Enemy::Attack() {
-	if (++frameCount_ < 30) {
+	if (++frameCount_ < 40) {
 		Vector3 translate = transform->get_translate();
 		translate += -(playerPosition_ - translate).normalize_safe() * GameTimer::DeltaTime();
 		transform->set_translate(translate);
-	} else if (++frameCount_ < 50) {
+	} else if (++frameCount_ < 70) {
 		Vector3 translate = transform->get_translate();
-		translate += (playerPosition_ - translate).normalize_safe() * 8.0f * GameTimer::DeltaTime();
+		translate += (playerPosition_ - translate).normalize_safe() * 10.0f * GameTimer::DeltaTime();
 		transform->set_translate(translate);
 	} else {
 		isAttack_ = false;
@@ -240,12 +243,45 @@ void Enemy::CheckBehaviorRequest() {
 }
 
 void Enemy::On_Collision(const BaseCollider* const other) {
-	if (other->group() == "Enemy") {
-		velocity_ = { 0,0,0 };
-		velocity_ = (other->world_position() - world_position()).normalize_safe() * -1.0f;
-		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -3.0f;
+	if (isAttack_) {
+		*isPlayerFlragPtr_ = true;
+	} else {
+		*isPlayerFlragPtr_ = false;
+	}
+
+	if (other->group() == "Player") { // player
+		if (isAttack_) {
+			velocity_ *= -0.1f;
+			enemyAttack_SE_->restart();
+			return;
+		} else {
+			isKickToPlayer_ = true;
+			velocity_ = (other->world_position() - world_position()).normalize_safe() * -5.0f;
+			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -8.0f;
+			fieldOutMove_ = FieldOutMove::Rotate_Move;
+			behaviorRequest_ = EnemyState::Blown_State;
+		}
+
+	} else if (other->group() == "Meteo") { // 隕石
+		isDead_ = true;
+
+	} else if (other->group() == "Enemy") { // 敵同士
+		velocity_ = (other->world_position() - world_position()).normalize_safe() * -2.0f;
+		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -4.0f;
+		behaviorRequest_ = EnemyState::Blown_State;
+
+		// 場外に出ている場合でも
+		if (isFieldOut_) {
+			velocity_ = (other->world_position() - world_position()).normalize_safe() * -2.0f;
+			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -4.0f;
+			behaviorRequest_ = EnemyState::Blown_State;
+			fieldOutMove_ = FieldOutMove::Rotate_Move;
+			fieldOutCount_ = 0;
+			fieldOutTime_ = 120;
+		}
 	}
 }
+
 void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 	// playerの攻撃されている状態かのフラグを変更する
 	if (isAttack_) {
@@ -256,7 +292,7 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 
 	if (other->group() == "Player") { // player
 		if (isAttack_) {
-			velocity_ *= -0.1f;
+			velocity_ *= -0.05f;	// 値を小さくしておく
 			enemyAttack_SE_->restart();
 			return;
 		} else {
@@ -275,6 +311,16 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 		acceleration_ = (other->world_position() - world_position()).normalize_safe() * -0.7f;
 		behaviorRequest_ = EnemyState::Blown_State;
 		enemyEachOther_SE_->restart();
+
+		// 場外に出ている場合でも
+		if (isFieldOut_) {
+			velocity_ = (other->world_position() - world_position()).normalize_safe() * -0.5f;
+			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -0.7f;
+			behaviorRequest_ = EnemyState::Blown_State;
+			fieldOutMove_ = FieldOutMove::Rotate_Move;
+			fieldOutCount_ = 0;
+			fieldOutTime_ = 120;
+		}
 	}
 }
 

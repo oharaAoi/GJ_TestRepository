@@ -95,11 +95,13 @@ private:
 
 	bool isFalling_;
 	bool isAttraction_;	// 引き寄せられているか
+	bool isPreAttraction_;	// 引き寄せられているか
 	bool isDead_;
 
 	bool isEnemyHit_;
 
 	std::unique_ptr<AudioPlayer> meteoHit_SE_ = nullptr;
 	std::unique_ptr<AudioPlayer> meteoHitToEnemy_SE_ = nullptr;
+	std::unique_ptr<AudioPlayer> attracted_SE_ = nullptr;
 };
 

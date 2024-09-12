@@ -27,7 +27,7 @@
 /// <summary>
 /// 内容
 /// </summary>
-enum class TutorialContent {
+enum TutorialContent {
 	FirstMove_Content = 0,
 	RodPutOn_Content,
 	MeteoCollision_Content,
@@ -106,6 +106,8 @@ private:
 
 	Input* input_ = nullptr;
 
+	bool isStop_ = false;
+
 	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
 
 	std::unique_ptr<Camera3D> camera3D_ = nullptr;
@@ -129,6 +131,12 @@ private:
 
 	// ----------- Sprite ----------- //
 	std::unique_ptr<TutorialUI> tutorialUI_ = nullptr;
+
+	// ------------------- Audio ------------------- //
+	std::unique_ptr<AudioPlayer> theme_SE_;
+	std::unique_ptr<AudioPlayer> success_SE_;
+	std::unique_ptr<AudioPlayer> start_SE_;
+	std::unique_ptr<AudioPlayer> tutorial_BGM_;
 
 	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;

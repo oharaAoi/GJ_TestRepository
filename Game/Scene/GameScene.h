@@ -23,12 +23,15 @@
 #include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
 #include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
 #include "Engine/Render/RenderNode/Outline/OutlineNode.h"
+#include "Engine/Render/RenderNode/ChromaticAberration/ChromaticAberrationNode.h"
 #include "Game/RenderNode/VignetteNode.h"
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/PlayerUI.h"
 #include "Game/RenderNode/PostEffectManager.h"
 #include "Game/UI/FadePanel.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
+
 
 class EditorController;
 
@@ -129,11 +132,15 @@ private:
 	std::shared_ptr<SpriteNode> spriteNode;
 	std::shared_ptr<OutlineNode> outlineNode;
 	std::shared_ptr<VignetteNode> vignetteNode;
+	std::shared_ptr<ChromaticAberrationNode> chromaticAberrationNode;
 	RenderPath path;
 
 	std::unique_ptr<PostEffectManager> posteffectManager;
 
 	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
+
+	// ------------------- Audio ------------------- //
+	std::unique_ptr<AudioPlayer> game_BGM_ = nullptr;
 
 #ifdef _DEBUG
 	std::unique_ptr<EditorController> editor;

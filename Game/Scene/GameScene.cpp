@@ -6,6 +6,7 @@
 #include "Engine/DirectX/DirectXCore.h"
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
 #include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
+#include "Engine/Game/Managers/AudioManager/AudioManager.h"
 
 #ifdef _DEBUG
 #include "Game/Editor/EditorController.h"
@@ -21,6 +22,10 @@ void GameScene::finalize() {
 	spriteNode->finalize();
 	vignetteNode->finalize();
 	RenderPathManager::UnregisterPath("GameScene");
+
+	// followカメラにある音声を解放
+	camera3D_->finalize();
+	game_BGM_->finalize();
 }
 
 void GameScene::initialize() {
@@ -67,7 +72,7 @@ void GameScene::initialize() {
 	// -------------------------------------------------
 	collisionManager_->register_collider("Player", player_->GetCollider());
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
-	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey());
+	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey(), field_->get_hierarchy());
 
 	// -------------------------------------------------
 	// ↓ 
@@ -98,24 +103,35 @@ void GameScene::initialize() {
 	spriteNode->initialize();
 	//spriteNode->set_background_texture(outlineNode->result_stv_handle());
 	spriteNode->set_background_texture(vignetteNode->result_stv_handle());
-	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+	spriteNode->set_render_target();
+	//spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+
+	chromaticAberrationNode = std::make_unique<ChromaticAberrationNode>();
+	chromaticAberrationNode->initialize();
+	chromaticAberrationNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+	chromaticAberrationNode->set_texture_resource(spriteNode->result_stv_handle());
+
 	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
 
-	path.initialize({ object3DNode, outlineNode, vignetteNode , spriteNode });
+	path.initialize({ object3DNode, outlineNode, vignetteNode , spriteNode, chromaticAberrationNode });
 	RenderPathManager::RegisterPath("GameScene", std::move(path));
 	RenderPathManager::SetPath("GameScene");
 
 	posteffectManager = std::make_unique<PostEffectManager>();
 	posteffectManager->initialize(
-		vignetteNode
+		vignetteNode, chromaticAberrationNode
 	);
 	posteffectManager->set_boss(boss_.get());
+	posteffectManager->set_player(player_.get());
 
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
 	fadePanel_ = std::make_unique<FadePanel>();
 	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
+
+	game_BGM_ = std::make_unique<AudioPlayer>();
+	game_BGM_->initialize("meteOnigiri_gameBGM.wav", 0.5f, true);
 
 #ifdef _DEBUG
 	editor = CreateUnique<EditorController>();
@@ -154,13 +170,17 @@ void GameScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_brap.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyEachOther.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_bossHited.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyAttack.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyHitToMeteo.wav");
-	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_fieldPush.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAtract.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_meteoEachOther.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_bossHited.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAttack.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyHitToMeteo.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_fieldPush.wav");
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_playerKick.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyEachOther.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "meteOnigiri_gameBGM.wav");//
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_bossAppearace.wav");//
 
 }
 
@@ -203,6 +223,9 @@ void GameScene::update() {
 					boss_->SetIsDrawOverLine(true);
 					boss_->SetIsStart(true);
 					camera3D_->SetIsPerformanceFinish(false);
+					enemyManager_->StartPop();
+					meteoriteManager_->StartPop();
+					game_BGM_->play();
 				}
 			}
 
@@ -232,12 +255,14 @@ void GameScene::update() {
 	if (boss_->GetIsClear()) {
 		boss_->SetIsDrawOverLine(false);
 		boss_->SetIsStart(false);
+		game_BGM_->stop();
 		performanceType_ = PerformanceType::GameClear_Type;
 	}
 
 	if (boss_->GetIsGameOver(field_->GetCylinderHight())) {
 		boss_->SetIsDrawOverLine(false);
 		boss_->SetIsStart(false);
+		game_BGM_->stop();
 		performanceType_ = PerformanceType::GameOver_Type;
 	}
 
@@ -390,6 +415,8 @@ void GameScene::draw() const {
 
 	fadePanel_->Draw();
 	RenderPathManager::Next();
+	chromaticAberrationNode->draw();
+	RenderPathManager::Next();
 }
 
 void GameScene::CheckMeteoToField() {
@@ -483,7 +510,7 @@ void GameScene::GameOverPerformance() {
 		// ゲームオーバーの終了
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(),
-									 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+									 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 									 false);
 	}
 }
@@ -496,7 +523,7 @@ void GameScene::GameClearPerformance() {
 		boss_->Burp();	// げっぷをする
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<ClearScene>(),
-									 static_cast<float>(fadePanel_->GetFadeTime() * GameTimer::DeltaTime()),
+									 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 									 false);
 	}
 }

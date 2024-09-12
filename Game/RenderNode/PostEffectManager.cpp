@@ -2,11 +2,15 @@
 
 #include <Engine/Game/GameTimer/GameTimer.h>
 #include <Engine/Math/Definition.h>
+#include <Game/MyRandom.h>
 
 #include "Game/GameCharacter/Boss.h"
+#include "Game/GameCharacter/Player.h"
 
-void PostEffectManager::initialize(const std::shared_ptr<VignetteNode>& vignetteNode_) {
+void PostEffectManager::initialize(const std::shared_ptr<VignetteNode>& vignetteNode_, const std::shared_ptr<ChromaticAberrationNode>& chromaticAberrationNode_) {
+	assert(vignetteNode_ && chromaticAberrationNode_);
 	vignetteNode = vignetteNode_;
+	chromaticAberrationNode = chromaticAberrationNode_;
 	vignetteNode->set_level(0);
 	isActiveVignette = false;
 	vignetteTimer = 0;
@@ -19,10 +23,7 @@ void PostEffectManager::update() {
 	constexpr float VignetteActivateHight = 7;
 	vignetteResetCall.update();
 	if (!vignetteResetCall.is_finished()) {
-		vignetteTimer += GameTimer::DeltaTime();
-		vignetteNode->set_level(
-			1 - (std::cos(vignetteTimer * PI2) + 1) / 2
-		);
+		vignette_update();
 	}
 	float bossWorldY = boss->world_position().y;
 	if (isActiveVignette) {
@@ -35,6 +36,7 @@ void PostEffectManager::update() {
 			active_vignette();
 		}
 	}
+	aberration_update();
 }
 
 void PostEffectManager::restart_vignette() {
@@ -46,6 +48,13 @@ void PostEffectManager::restart_vignette() {
 	}
 }
 
+void PostEffectManager::vignette_update() {
+	vignetteTimer += GameTimer::DeltaTime();
+	vignetteNode->set_level(
+		1 - (std::cos(vignetteTimer * PI2) + 1) / 2
+	);
+}
+
 void PostEffectManager::active_vignette() {
 	isActiveVignette = true;
 	restart_vignette();
@@ -55,8 +64,21 @@ void PostEffectManager::stop_vignette() {
 	isActiveVignette = false;
 }
 
+void PostEffectManager::aberration_update() {
+	if (player->GetIsStan()) {
+		chromaticAberrationNode->set_length(RandomFloat(0.0f, 0.03f));
+	}
+	else {
+		chromaticAberrationNode->set_length(0);
+	}
+}
+
 void PostEffectManager::set_boss(const Boss* boss_) {
 	boss = boss_;
+}
+
+void PostEffectManager::set_player(const Player* player_) {
+	player = player_;
 }
 
 #ifdef _DEBUG
@@ -72,6 +94,8 @@ void PostEffectManager::debug_gui() {
 		}
 	}
 	vignetteNode->debug_gui();
+
+	chromaticAberrationNode->debug_gui();
 	ImGui::End();
 }
 #endif // _DEBUG

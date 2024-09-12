@@ -516,9 +516,6 @@
     <ClCompile Include="TestCode\SceneDemo.cpp">
       <Filter>TestProgram</Filter>
     </ClCompile>
-    <ClCompile Include="Game\MyRandom.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Effect\Effect.cpp">
       <Filter>MainGame\Effect</Filter>
     </ClCompile>
@@ -545,9 +542,6 @@
     </ClCompile>
     <ClCompile Include="Game\WorldObject\Field.cpp">
       <Filter>MainGame\WorldObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\FollowCamera.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\WorldObject\Meteorite.cpp">
       <Filter>MainGame\WorldObject</Filter>
@@ -633,9 +627,6 @@
     <ClCompile Include="Game\Editor\EnemyPopEditor\EnemyPopEditor.cpp">
       <Filter>MainGame\Editor\EnemyPopEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Easing.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\UI\TutorialUI.cpp">
       <Filter>MainGame\UI</Filter>
     </ClCompile>
@@ -647,6 +638,18 @@
     </ClCompile>
     <ClCompile Include="Game\RenderNode\PostEffectManager.cpp">
       <Filter>MainGame\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Easing.cpp">
+      <Filter>MainGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\FollowCamera.cpp">
+      <Filter>MainGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\MyRandom.cpp">
+      <Filter>MainGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\ClearUI.cpp">
+      <Filter>MainGame\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -866,9 +869,6 @@
     <ClInclude Include="Engine\Game\Audio\AudioResource.h">
       <Filter>Engine\Core\Game\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="Game\MyRandom.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Game\Managers\SceneManager\SceneManager.h">
       <Filter>Engine\Core\Game\Manager\SceneManager</Filter>
     </ClInclude>
@@ -905,9 +905,6 @@
     <ClInclude Include="Game\WorldObject\Field.h">
       <Filter>MainGame\WorldObject</Filter>
     </ClInclude>
-    <ClInclude Include="Game\FollowCamera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Game\WorldObject\Meteorite.h">
       <Filter>MainGame\WorldObject</Filter>
     </ClInclude>
@@ -940,9 +937,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameCharacter\Boss.h">
       <Filter>MainGame\GameCharacter</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Enviroment.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameCharacter\Enemy.h">
       <Filter>MainGame\GameCharacter</Filter>
@@ -1001,9 +995,6 @@
     <ClInclude Include="Engine\Render\RenderNode\Outline\OutlineNode.h">
       <Filter>Engine\Core\Render\RenderNode\Outline</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Easing.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Game\UI\TutorialUI.h">
       <Filter>MainGame\UI</Filter>
     </ClInclude>
@@ -1015,6 +1006,21 @@
     </ClInclude>
     <ClInclude Include="Game\RenderNode\PostEffectManager.h">
       <Filter>MainGame\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Easing.h">
+      <Filter>MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enviroment.h">
+      <Filter>MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\FollowCamera.h">
+      <Filter>MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\MyRandom.h">
+      <Filter>MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\ClearUI.h">
+      <Filter>MainGame\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

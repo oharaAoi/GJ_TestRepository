@@ -67,8 +67,8 @@ void MeteoritePopEditor::edit_window() {
 
 void MeteoritePopEditor::group_config() {
 	ImGui::Begin("GroupConfig##Meteorite");
-	ImGui::DragScalar("RepopTime", ImGuiDataType_U32, &repopTime);
-	ImGui::DragFloat("PopWidth", &popWidth);
+	ImGui::DragFloat("RepopTime", &repopTime, 0.1f, 0.0f, 100000.0f, "%.2fs");
+	ImGui::DragFloat("PopWidth", &popWidth, 0.01f);
 
 	if (ImGui::Button("AddMeteorite")) {
 		popList.emplace_back();
@@ -88,6 +88,7 @@ void MeteoritePopEditor::group_config() {
 			std::string deleteButton = "Delete##" + std::to_string(popIndex);
 			if (ImGui::Button(deleteButton.c_str())) {
 				position = popList.erase(position);
+				debugDrawObject.erase(debugDrawObject.begin() + popIndex);
 			}
 			else {
 				++popIndex;

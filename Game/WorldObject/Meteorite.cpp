@@ -13,6 +13,7 @@ Meteorite::Meteorite(const Vector3& pos) {
 Meteorite::~Meteorite() {
 	meteoHit_SE_->finalize();
 	meteoHitToEnemy_SE_->finalize();
+	attracted_SE_->finalize();
 }
 
 void Meteorite::Init(const Vector3& pos) {
@@ -43,6 +44,8 @@ void Meteorite::Init(const Vector3& pos) {
 	meteoHit_SE_->initialize("SE_meteoEachOther.wav", 0.5f, false);
 	meteoHitToEnemy_SE_ = std::make_unique<AudioPlayer>();
 	meteoHitToEnemy_SE_->initialize("SE_enemyHitToMeteo.wav", 0.5f, false);
+	attracted_SE_ = std::make_unique<AudioPlayer>();
+	attracted_SE_->initialize("SE_enemyAtract.wav", 0.4f, true);
 }
 
 void Meteorite::Update(const Vector3& playerPosition) {
@@ -58,6 +61,14 @@ void Meteorite::Update(const Vector3& playerPosition) {
 	} else {
 		Falling();
 	}
+
+	if (isAttraction_ && !isPreAttraction_) {
+		attracted_SE_->restart();
+	} else if(!isAttraction_ && isPreAttraction_) {
+		attracted_SE_->stop();
+	}
+
+	isPreAttraction_ = isAttraction_;
 }
 
 void Meteorite::Move(const Vector3& playerPosition) {

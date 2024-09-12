@@ -34,12 +34,13 @@ void Player::Init() {
 	transform->set_translate_y(12.5f);
 
 	enemyKick_SE_ = std::make_unique<AudioPlayer>();
-	enemyKick_SE_->initialize("SE_enemyAttack.wav", 0.5f, false);
+	enemyKick_SE_->initialize("SE_playerKick.wav", 0.5f, false);
 }
 
 void Player::Update(const float& fieldRadius) {
 	fieldRadius_ = fieldRadius;
 
+	// スタン中なら
 	if (isStan_) {
 		if (++stanFrame_ < stanTime_) {
 			Vector3 translate = transform->get_translate();
@@ -55,7 +56,6 @@ void Player::Update(const float& fieldRadius) {
 		}
 	}
 	
-	moveRotation = CQuaternion::IDENTITY;
 	Move();
 	Attack();
 
@@ -129,6 +129,10 @@ void Player::On_Collision_Exit(const BaseCollider* const) {
 
 // ------------------- 移動を行う関数 ------------------- //
 void Player::Move() {
+	if (isStan_) {
+		return;
+	}
+
 	Vector3 translate = transform->get_translate();
 	Quaternion playerQuaternion = transform->get_quaternion();
 

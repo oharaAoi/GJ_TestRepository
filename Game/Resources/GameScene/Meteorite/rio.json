@@ -2,7 +2,7 @@
     "rio": {
         "Adjustment": {
             "NumMeteorites": 4,
-            "RepopTime": 240,
+            "RepopTime": 4.0,
             "PopWidth": 5.0
         },
         "Position0": [

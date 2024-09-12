@@ -66,6 +66,8 @@ bool AudioResource::load(const std::string& directoryPath,const std::string& fil
 			file.seekg(formatChunk.chunk.size, std::ios_base::cur);
 		} else if (std::strncmp(formatChunk.chunk.id, "LIST", 4) == 0) {
 			file.seekg(formatChunk.chunk.size, std::ios_base::cur);
+		} else if (std::strncmp(formatChunk.chunk.id, "bext", 4) == 0) {
+			file.seekg(formatChunk.chunk.size, std::ios_base::cur);
 		} else {
 			file.seekg(formatChunk.chunk.size, std::ios_base::cur);
 			Log(std::format("[AudioResource] Unknown chunk found: {}.\n", std::string(formatChunk.chunk.id, 4)));

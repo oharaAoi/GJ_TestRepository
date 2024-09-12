@@ -12,6 +12,8 @@
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/FadePanel.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
+#include "Engine/Game/Audio/AudioPlayer.h"
+#include "Game/Easing.h"
 
 /// <summary>
 /// TitleScene
@@ -41,15 +43,31 @@ public:
 	void debug_update() override;
 #endif // _DEBUG
 
+	void FallTitle();
+
 private:
 
 	Input* input_ = nullptr;
 
+	bool isFall_ = true;
+
+	float frameCount_ = 0;
+	float frameTime_ = 120 * GameTimer::DeltaTime();
+	float t = 0;
+	
 	std::unique_ptr<Camera3D> camera3D_ = nullptr;
 
+	// ------------------- object ------------------- //
 	std::unique_ptr<GameObject> titleObject_ = nullptr;
+	std::unique_ptr<GameObject> skydome_ = nullptr;
+
+	// ------------------- sprite ------------------- //
 
 	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
+
+	// ------------------- Audio ------------------- //
+	std::unique_ptr<AudioPlayer> start_SE_ = nullptr;
+	std::unique_ptr<AudioPlayer> title_BGM_ = nullptr;
 
 	// ------------------- RenderNode ------------------- //
 	std::shared_ptr<Object3DNode> object3DNode;

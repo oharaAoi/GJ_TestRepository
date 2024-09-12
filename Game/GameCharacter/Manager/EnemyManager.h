@@ -15,6 +15,8 @@
 
 using json = nlohmann::json;
 
+class Hierarchy;
+
 /// <summary>
 /// Enemyの生成を管理するクラス
 /// </summary>
@@ -47,7 +49,7 @@ public:	// データ構造体
 public:
 
 	EnemyManager(std::list<std::unique_ptr<Enemy>>& sceneEnemyList,
-				 CollisionManager* collisionManager, bool* isPlayerFlagPtr);
+				 CollisionManager* collisionManager, bool* isPlayerFlagPtr, const Hierarchy& fieldHierarchy);
 	~EnemyManager();
 
 public:	// メンバ関数
@@ -88,7 +90,7 @@ private:
 
 private:
 
-	const std::string kDirectoryPath_ = "./Engine/Resources/EnemyData/";
+	const std::string kDirectoryPath_ = "./Game/Resources/GameScene/EnemyData/";
 
 	std::map<std::string, Group> loadData_;
 
@@ -100,6 +102,7 @@ private:
 	std::list<std::unique_ptr<Enemy>>& sceneEnemyList_; // シーンが持っている敵のリスト
 	CollisionManager* collisionManager_ = nullptr;
 	bool* isPlayerFlagPtr_ = nullptr;
+	const Hierarchy& fieldHierarchy_;
 	// ------------------------------------------------------------------------------
 
 	uint32_t popTime_ = 500;

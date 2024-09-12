@@ -41,7 +41,7 @@ private:
 	std::string resultString;
 
 	MeteoriteManager::Group editGroup;
-	uint32_t repopTime;
+	float repopTime;
 	float popWidth;
 	std::vector<Vector3> popList;
 

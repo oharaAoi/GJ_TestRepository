@@ -95,9 +95,9 @@ void EnemyPopEditor::group_config() {
 			ImGui::DragFloat3(name.c_str(), &data.position.x, 0.01f);
 			data.position.y = 13.0f;
 			itr->object.get_transform().set_translate(data.position);
-			if (ImGui::RadioButton("Normal", data.enemyType == EnemyType::Normal_Type)) { data.enemyType = EnemyType::Normal_Type;}
+			if (ImGui::RadioButton(("Normal" + name).c_str(), data.enemyType == EnemyType::Normal_Type)) { data.enemyType = EnemyType::Normal_Type; }
 			ImGui::SameLine();
-			if (ImGui::RadioButton("Special", data.enemyType == EnemyType::SpecialPop_Type)) { data.enemyType = EnemyType::SpecialPop_Type; }
+			if (ImGui::RadioButton(("Special" + name).c_str(), data.enemyType == EnemyType::SpecialPop_Type)) { data.enemyType = EnemyType::SpecialPop_Type; }
 			ImGui::SameLine();
 			std::string deleteButton = "Delete##" + std::to_string(popIndex);
 			if (ImGui::Button(deleteButton.c_str())) {
