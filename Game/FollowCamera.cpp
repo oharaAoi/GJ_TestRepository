@@ -89,6 +89,21 @@ void FollowCamera::GameOverPerformance() {
 		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, 80, -40 }, EaseOut::Quint(t)));
 	} else {
 		isPerformanceFinish_ = true;
+		frameCount_ = 0;
+	}
+}
+
+void FollowCamera::GameClearPerformance() {
+	if (++frameCount_ < 180) {
+		isPerformanceFinish_ = false;
+		float t = static_cast<float>(frameCount_) / 180.0f;
+		// cameraMove_[4].posは開始時の最後の位置
+		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, -18, 14 }, EaseOut::Quint(t)));
+		transform->set_rotate(Quaternion::Slerp(Quaternion::EulerDegree(cameraMove_[4].rotateDegree),
+												Quaternion::EulerDegree({90, 0,0 }), EaseOut::Quint(t)));
+	} else {
+		isPerformanceFinish_ = true;
+		frameCount_ = 0;
 	}
 }
 

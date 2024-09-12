@@ -27,6 +27,8 @@ public:
 
 	void GameOverPerformance();
 
+	void GameClearPerformance();
+
 	void SetIsPerformanceFinish(const bool& isPerformanceFinish) { isPerformanceFinish_ = isPerformanceFinish; }
 	const bool GetIsPerformanceFinish() const { return isPerformanceFinish_; }
 

@@ -50,12 +50,29 @@ bool AudioResource::load(const std::string& directoryPath,const std::string& fil
 
 	// chunk読み込み
 	FormatChunk formatChunk{};
-	file.read((char*)&formatChunk, sizeof(ChunkHeader));
-	// なにかおかしい
-	if (std::strncmp(formatChunk.chunk.id, "fmt ", 4)) {
-		assert(false);
-		return false;
+	//file.read((char*)&formatChunk, sizeof(ChunkHeader));
+	//// なにかおかしい
+	//if (std::strncmp(formatChunk.chunk.id, "fmt ", 4)) {
+	//	assert(false);
+	//	return false;
+	//}
+
+	while (file.read((char*)&formatChunk, sizeof(ChunkHeader))) {
+		if (std::strncmp(formatChunk.chunk.id, "fmt ", 4) == 0) {
+			break;
+		}
+
+		if (std::strncmp(formatChunk.chunk.id, "JUNK", 4) == 0) {
+			file.seekg(formatChunk.chunk.size, std::ios_base::cur);
+		} else if (std::strncmp(formatChunk.chunk.id, "LIST", 4) == 0) {
+			file.seekg(formatChunk.chunk.size, std::ios_base::cur);
+		} else {
+			file.seekg(formatChunk.chunk.size, std::ios_base::cur);
+			Log(std::format("[AudioResource] Unknown chunk found: {}.\n", std::string(formatChunk.chunk.id, 4)));
+			return false;
+		}
 	}
+
 	// chunk.sizeよりformatが小さくないとread時にエラーになる
 	assert(formatChunk.chunk.size <= sizeof(formatChunk.format));
 	// 読み込み

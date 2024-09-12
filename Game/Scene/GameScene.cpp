@@ -132,12 +132,14 @@ void GameScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
 
+	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_brap.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyEachOther.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_meteoEachOther.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_bossHited.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyAttack.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyHitToMeteo.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_fieldPush.wav");
+
 }
 
 void GameScene::begin() {
@@ -172,6 +174,8 @@ void GameScene::update() {
 				if (boss_->GetIsFinish()) {
 					performanceType_ = PerformanceType::None_Type;
 					boss_->SetIsDrawOverLine(true);
+					boss_->SetIsStart(true);
+					camera3D_->SetIsPerformanceFinish(false);
 				}
 			}
 
@@ -179,6 +183,13 @@ void GameScene::update() {
 		
 		case PerformanceType::GameOver_Type:
 			GameOverPerformance();
+
+			// 終わったらフェードアウトする
+
+			break;
+
+		case PerformanceType::GameClear_Type:
+			GameClearPerformance();
 			break;
 		}
 
@@ -189,11 +200,15 @@ void GameScene::update() {
 	// ↓ ゲームクリア/オーバー確認
 	// -------------------------------------------------
 	if (boss_->GetIsClear()) {
-		SceneManager::SetSceneChange(CreateUnique<ClearScene>(), false);
+		boss_->SetIsDrawOverLine(false);
+		boss_->SetIsStart(false);
+		performanceType_ = PerformanceType::GameClear_Type;
+		//SceneManager::SetSceneChange(CreateUnique<ClearScene>(), false);
 	}
 
 	if (boss_->GetIsGameOver(field_->GetCylinderHight())) {
 		boss_->SetIsDrawOverLine(false);
+		boss_->SetIsStart(false);
 		performanceType_ = PerformanceType::GameOver_Type;
 		//SceneManager::SetSceneChange(CreateUnique<GameOverScene>(), false);
 	}
@@ -266,7 +281,7 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ UI
 	// -------------------------------------------------
-	//playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
+	playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
 }
 
 void GameScene::begin_rendering() {
@@ -427,6 +442,15 @@ void GameScene::GameStartPerformance() {
 void GameScene::GameOverPerformance() {
 	boss_->MouthClose();
 	camera3D_->GameOverPerformance();
+}
+
+void GameScene::GameClearPerformance() {
+	if (!camera3D_->GetIsPerformanceFinish()) {
+		boss_->GameClearFaceSet();
+		camera3D_->GameClearPerformance();
+	} else {
+		boss_->Burp();	// げっぷをする
+	}
 }
 
 #ifdef _DEBUG

@@ -66,9 +66,13 @@ public:	// メンバ変数
 
 	void FaceSet();
 
+	void GameClearFaceSet();
+
 	void FaceShake();
 
 	void MouthClose();
+
+	void Burp();	// げっぷ
 
 #ifdef _DEBUG
 	void EditImGui();
@@ -93,6 +97,7 @@ private:
 
 	bool isStart_ = false;
 	bool isDrawOverLine_ = false;
+	bool isPlayBrap_ = false;
 
 	Vector3 velocity_;
 	float pushBackValue_;
@@ -102,6 +107,7 @@ private:
 	int satietyLevelLimit_ = 200;
 
 	Moving movingMouth_;
+	Moving burp_;
 
 	uint32_t frameCount_ = 0;
 	bool isFinish_ = false;
@@ -116,6 +122,7 @@ private:
 
 	std::unique_ptr<AudioPlayer> bossHit_SE_ = nullptr;
 	std::unique_ptr<AudioPlayer> fieldPush_SE_ = nullptr;
+	std::unique_ptr<AudioPlayer> burp_SE_ = nullptr;
 
 };
 

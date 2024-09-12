@@ -12,6 +12,7 @@ Boss::~Boss() {
 void Boss::Finalize() {
 	bossHit_SE_->finalize();
 	fieldPush_SE_->finalize();
+	burp_SE_->finalize();
 }
 
 void Boss::Init() {
@@ -48,6 +49,10 @@ void Boss::Init() {
 	movingMouth_.period = 90;
 	movingMouth_.amplitude = 0.4f;
 
+	burp_.parameter = 0;
+	burp_.period = 30;
+	burp_.amplitude = 0.2f;
+
 	adjustmentItem_ = AdjustmentItem::GetInstance();
 	const char* groupName = "Boss";
 	adjustmentItem_->AddItem(groupName, "LeftEye", faceParts_[LeftEye_Parts]->get_transform().get_translate());
@@ -60,10 +65,14 @@ void Boss::Init() {
 	faceParts_[LeftEyebrows_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "LeftEyebrows"));
 	faceParts_[RightEyebrows_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "RightEyebrows"));
 
+	isPlayBrap_ = false;
+
 	bossHit_SE_ = std::make_unique<AudioPlayer>();
 	bossHit_SE_->initialize("SE_bossHited.wav", 0.5f, false);
 	fieldPush_SE_ = std::make_unique<AudioPlayer>();
 	fieldPush_SE_->initialize("SE_fieldPush.wav", 0.3f, false);
+	burp_SE_ = std::make_unique<AudioPlayer>();
+	burp_SE_->initialize("SE_brap.wav", 0.5f, false);
 }
 
 void Boss::Update() {
@@ -161,6 +170,17 @@ void Boss::FaceSet() {
 	}
 }
 
+void Boss::GameClearFaceSet() {
+	if (++frameCount_ < 180) {
+		isFinish_ = false;
+		float t = static_cast<float>(frameCount_) / 180.0f;
+		transform->set_translate_y(std::lerp(-2.0f, -150.0f, EaseOut::Quint(t)));
+	} else {
+		isFinish_ = true;
+		frameCount_ = 0;
+	}
+}
+
 void Boss::FaceShake() {
 	if (++frameCount_ <= 180) {
 		float angle = std::sinf(static_cast<float>(frameCount_ * 4.0f) * ToRadian) * ((PI) / 6.0f);
@@ -182,6 +202,7 @@ void Boss::MouthClose() {
 	
 	// 口を閉じるアニメーションを行う
 	if (++frameCount_ < 120) {
+		isFinish_ = false;
 		float t = static_cast<float>(frameCount_) / 120.0f;
 		// 上-6, 下1.4, 口内0.5
 		upTranslate = std::lerp(closeStartUp_, -6.0f, EaseInOut::Elastic(t));
@@ -196,6 +217,29 @@ void Boss::MouthClose() {
 	faceParts_[InMouth_Parts]->get_transform().set_scale({1,1,inMouthScale});
 }
 
+void Boss::Burp() {
+	float upTranslate = faceParts_[UpperJaw_Parts]->get_transform().get_translate().z;
+	float lowerTranslate = faceParts_[LowerJaw_Parts]->get_transform().get_translate().z;
+	// 口を動かすアニメーションを行う
+	const float step = (2.0f * PI) / static_cast<float>(burp_.period);
+	burp_.parameter += step;
+	burp_.parameter = std::fmod(burp_.parameter, 2.0f * PI);
+	// 移動させる量を動かす
+	upTranslate += std::sin(burp_.parameter) * 0.2f;
+	lowerTranslate -= std::sin(burp_.parameter) * 0.2f;
+
+	faceParts_[LowerJaw_Parts]->get_transform().set_translate_z(upTranslate);
+	faceParts_[UpperJaw_Parts]->get_transform().set_translate_z(lowerTranslate);
+
+	faceParts_[LeftEye_Parts]->get_transform().set_scale({3.0f, 1.0f, 0.3f});
+	faceParts_[RightEye_Parts]->get_transform().set_scale({3.0f, 1.0f, 0.3f});
+	
+	if (!isPlayBrap_) {
+		burp_SE_->play();
+		isPlayBrap_ = false;
+	}
+}
+
 
 #ifdef _DEBUG
 #include "externals/imgui/imgui.h"
@@ -206,6 +250,9 @@ void Boss::EditImGui() {
 	ImGui::DragFloat("pushBackStrength", &pushBackStrength_, 0.1f, 0.0f, 1.0f);
 	ImGui::DragScalar("period", ImGuiDataType_U32, &movingMouth_.period);
 	ImGui::DragFloat("amplitude", &movingMouth_.amplitude, 0.1f, 0.0f, 1.0f);
+	ImGui::Separator();
+	ImGui::DragScalar("burp_period", ImGuiDataType_U32, &burp_.period);
+	ImGui::DragFloat("burp_amplitude", &burp_.amplitude, 0.1f, 0.0f, 1.0f);
 	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
 		faceParts_[oi]->debug_gui();
 	}
