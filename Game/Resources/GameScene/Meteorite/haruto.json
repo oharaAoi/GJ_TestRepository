@@ -1,14 +1,14 @@
 {
-    "syoma": {
+    "haruto": {
         "Adjustment": {
-            "NumMeteorites": 3,
-            "RepopTime": 120,
-            "PopWidth": 5.0
+            "RepopTime": 3.0,
+            "PopWidth": 5.0,
+            "NumMeteorites": 2
         },
         "Position0": [
-            17.0,
+            18.0,
             6.0,
-            -4.0
+            7.0
         ],
         "Position1": [
             18.0,

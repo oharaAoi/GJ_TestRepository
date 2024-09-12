@@ -88,7 +88,7 @@ private:
 
 private:
 
-	const std::string kDirectoryPath_ = "./Engine/Resources/EnemyData/";
+	const std::string kDirectoryPath_ = "./Game/Resources/GameScene/EnemyData/";
 
 	std::map<std::string, Group> loadData_;
 

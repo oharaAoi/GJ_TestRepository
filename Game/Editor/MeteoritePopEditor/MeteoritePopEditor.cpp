@@ -88,6 +88,7 @@ void MeteoritePopEditor::group_config() {
 			std::string deleteButton = "Delete##" + std::to_string(popIndex);
 			if (ImGui::Button(deleteButton.c_str())) {
 				position = popList.erase(position);
+				debugDrawObject.erase(debugDrawObject.begin() + popIndex);
 			}
 			else {
 				++popIndex;

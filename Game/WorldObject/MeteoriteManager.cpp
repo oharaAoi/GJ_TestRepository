@@ -19,11 +19,11 @@ void MeteoriteManager::Update(const Vector3& playerPosition) {
 	// 選出されているファイルの選出不可時間を更新する
 	auto it = groupRefs_.begin();
 	while (it != groupRefs_.end()) {
-		if ((*it)->spawnedFrameCount == 0) {
+		if ((*it)->spawnedFrameCount <= 0) {
 			it = groupRefs_.erase(it);
 		}
 		else {
-			(*it)->spawnedFrameCount--;
+			(*it)->spawnedFrameCount -= GameTimer::DeltaTime();
 			++it;
 		}
 	}
@@ -90,19 +90,6 @@ void MeteoriteManager::SelectionArrange() {
 }
 
 void MeteoriteManager::PopFromGroup(const MeteoriteManager::Group& group) {
-	//std::vector<std::string> itemArray;
-	//for (const auto& pair : group.items) {
-	//	const std::string& category = pair.first;
-	//	itemArray.push_back(category);
-	//}
-
-	//// 隕石の位置を取得する
-	//for (uint32_t oi = 0; oi < itemArray.size(); ++oi) {
-	//	if (itemArray[oi] != "Adjustment") {
-	//		AddMeteo(GetValue<Vector3>(group, itemArray[oi]));
-	//	}
-	//}
-
 	for (const auto& item : group.items) {
 		if (item.second.value.index() == 3) {
 			AddMeteo(GetValue<Vector3>(group, item.first));
@@ -315,7 +302,7 @@ std::optional<MeteoriteManager::Group> MeteoriteManager::LoadFile(const std::str
 		}
 		else if (itItem->is_object() && itItem->contains("NumMeteorites") && itItem->contains("RepopTime") && itItem->contains("PopWidth")) {
 			Adjustment value = {
-			   itItem->at("RepopTime").get<uint32_t>(),
+			   itItem->at("RepopTime").get<float>(),
 			   itItem->at("PopWidth").get<float>(),
 			   itItem->at("NumMeteorites").get<uint32_t>()
 			};

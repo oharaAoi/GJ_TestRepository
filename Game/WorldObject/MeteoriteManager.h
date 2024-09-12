@@ -32,7 +32,7 @@ class MeteoriteManager {
 public: // データ構造体
 
 	struct Adjustment {
-		uint32_t repopTime;
+		float repopTime;
 		float popWidth;
 		uint32_t numMeteorites;
 	};
@@ -43,7 +43,7 @@ public: // データ構造体
 
 	struct Group {
 		std::map<std::string, Items> items;
-		uint32_t spawnedFrameCount = 0;	// 選出されてから数えるカウント
+		float spawnedFrameCount = 0;	// 選出されてから数えるカウント
 	};
 
 public:
@@ -134,7 +134,7 @@ public:
 
 private:
 
-	const std::string kDirectoryPath_ = "./Engine/Resources/Meteorite/";
+	const std::string kDirectoryPath_ = "./Game/Resources/GameScene/Meteorite/";
 
 	// 隕石の情報が格納されたデータ
 	std::map<std::string, Group> groupMap_;
