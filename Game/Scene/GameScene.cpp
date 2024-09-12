@@ -171,9 +171,14 @@ void GameScene::update() {
 				// 顔を上げるのが終わったら
 				if (boss_->GetIsFinish()) {
 					performanceType_ = PerformanceType::None_Type;
+					boss_->SetIsDrawOverLine(true);
 				}
 			}
 
+			break;
+		
+		case PerformanceType::GameOver_Type:
+			GameOverPerformance();
 			break;
 		}
 
@@ -188,7 +193,9 @@ void GameScene::update() {
 	}
 
 	if (boss_->GetIsGameOver(field_->GetCylinderHight())) {
-		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(), false);
+		boss_->SetIsDrawOverLine(false);
+		performanceType_ = PerformanceType::GameOver_Type;
+		//SceneManager::SetSceneChange(CreateUnique<GameOverScene>(), false);
 	}
 
 	// -------------------------------------------------
@@ -415,6 +422,11 @@ void GameScene::GameStartPerformance() {
 			camera3D_->SetIsStop(false);
 		}
 	}
+}
+
+void GameScene::GameOverPerformance() {
+	boss_->MouthClose();
+	camera3D_->GameOverPerformance();
 }
 
 #ifdef _DEBUG

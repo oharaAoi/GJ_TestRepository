@@ -76,8 +76,10 @@ namespace EaseInOut {
 
 	float Back(float t) {
 		const float c1 = 1.70158f;
-		const float c2 = c1 * 1.525f;
-		return t < 0.5f ? (pow(2.0f * t, 2.0f) * ((c2 + 1.0f) * 2.0f * t - c2)) / 2.0f : (pow(2.0f * t - 2.0f, 2.0f) * ((c2 + 1.0f) * (t * 2.0f - 2.0f) + c2) + 2.0f) / 2.0f;
+		const float c3 = c1 * 1.525f;
+		return t < 0.5f
+			? (powf(2.0f * t, 2.0f) * ((c3 + 1) * 2.0f * t - c3)) / 2.0f
+			: (powf(2.0f * t - 2.0f, 2.0f) * ((c3 + 1.0f) * (t * 2.0f - 2.0f) + c3) + 2.0f) / 2.0f;
 	}
 
 	float Elastic(float t) {

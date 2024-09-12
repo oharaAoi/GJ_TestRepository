@@ -82,6 +82,16 @@ void FollowCamera::GameStartPerformance() {
 	}
 }
 
+void FollowCamera::GameOverPerformance() {
+	if (++frameCount_ <= 120) {
+		isPerformanceFinish_ = false;
+		float t = static_cast<float>(frameCount_) / 120.0f;
+		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, 80, -40 }, EaseOut::Quint(t)));
+	} else {
+		isPerformanceFinish_ = true;
+	}
+}
+
 void FollowCamera::Restart() {
 	nowIndex_ = 0;
 	frameCount_ = 0;

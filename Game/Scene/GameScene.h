@@ -30,7 +30,8 @@ class EditorController;
 
 enum class PerformanceType {
 	None_Type,
-	GameStart_Type
+	GameStart_Type,
+	GameOver_Type
 };
 
 class GameScene :
@@ -77,6 +78,11 @@ public:
 	/// ゲーム開始時の演出
 	/// </summary>
 	void GameStartPerformance();
+
+	/// <summary>
+	/// ゲームオーバー時の演出
+	/// </summary>
+	void GameOverPerformance();
 
 private:
 

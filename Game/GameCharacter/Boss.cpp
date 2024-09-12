@@ -87,8 +87,10 @@ void Boss::Draw() const {
 	for (uint32_t oi = 0; oi < faceParts_.size(); ++oi) {
 		faceParts_[oi]->draw();
 	}
-	overLine_->draw();
-	overLine_->draw();
+
+	if (isDrawOverLine_) {
+		overLine_->draw();
+	}
 }
 
 void Boss::Move() {
@@ -135,6 +137,8 @@ bool Boss::GetIsClear() {
 
 bool Boss::GetIsGameOver(const float& cylinderHight) {
 	if (cylinderHight < world_position().y) {
+		closeStartUp_ = faceParts_[UpperJaw_Parts]->get_transform().get_translate().z;
+		closeStartLow_ = faceParts_[LowerJaw_Parts]->get_transform().get_translate().z;
 		return true;
 	}
 	return false;
@@ -169,6 +173,27 @@ void Boss::FaceShake() {
 		isFinish_ = true;
 		frameCount_ = 0;
 	}
+}
+
+void Boss::MouthClose() {
+	float upTranslate = faceParts_[UpperJaw_Parts]->get_transform().get_translate().z;
+	float lowerTranslate = faceParts_[LowerJaw_Parts]->get_transform().get_translate().z;
+	float inMouthScale = faceParts_[InMouth_Parts]->get_transform().get_scale().z;
+	
+	// 口を閉じるアニメーションを行う
+	if (++frameCount_ < 120) {
+		float t = static_cast<float>(frameCount_) / 120.0f;
+		// 上-6, 下1.4, 口内0.5
+		upTranslate = std::lerp(closeStartUp_, -6.0f, EaseInOut::Elastic(t));
+		lowerTranslate = std::lerp(closeStartLow_, 1.4f, EaseInOut::Elastic(t));
+		inMouthScale = std::lerp(1.0f, 0.5f, EaseInOut::Back(t));
+	} else {
+		isFinish_ = true;
+	}
+	
+	faceParts_[LowerJaw_Parts]->get_transform().set_translate_z(lowerTranslate);
+	faceParts_[UpperJaw_Parts]->get_transform().set_translate_z(upTranslate);
+	faceParts_[InMouth_Parts]->get_transform().set_scale({1,1,inMouthScale});
 }
 
 

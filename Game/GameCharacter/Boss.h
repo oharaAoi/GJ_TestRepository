@@ -68,6 +68,8 @@ public:	// メンバ変数
 
 	void FaceShake();
 
+	void MouthClose();
+
 #ifdef _DEBUG
 	void EditImGui();
 #endif
@@ -83,11 +85,14 @@ public:	// accesser
 	void SetIsFinish(const bool& isFinish) { isFinish_ = isFinish; }
 	const bool GetIsFinish() const { return isFinish_; }
 
+	void SetIsDrawOverLine(const bool& isDraw) { isDrawOverLine_ = isDraw; }
+
 private:
 
 	AdjustmentItem* adjustmentItem_ = nullptr;
 
 	bool isStart_ = false;
+	bool isDrawOverLine_ = false;
 
 	Vector3 velocity_;
 	float pushBackValue_;
@@ -100,6 +105,9 @@ private:
 
 	uint32_t frameCount_ = 0;
 	bool isFinish_ = false;
+
+	float closeStartUp_;
+	float closeStartLow_;
 
 	// 顔の表示用のゲームオブジェクト配列
 	std::vector<std::unique_ptr<GameObject>> faceParts_;
