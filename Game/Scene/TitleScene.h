@@ -4,6 +4,7 @@
 #include "Engine/Game/Camera/Camera3D.h"
 #include "Game/Input/Input.h"
 #include "Game/Scene/TutorialScene.h"
+#include "Game/UI/FadePanel.h"
 
 /// <summary>
 /// TitleScene
@@ -38,6 +39,8 @@ private:
 	std::unique_ptr<Camera3D> camera3D_ = nullptr;
 
 	std::unique_ptr<GameObject> titleObject_ = nullptr;
+
+	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
 
 };
 

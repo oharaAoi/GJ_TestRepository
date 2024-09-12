@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/Game/GameObject/SpriteObject.h"
-
 #include "Game/UI/UIObject.h"
 
 /// <summary>

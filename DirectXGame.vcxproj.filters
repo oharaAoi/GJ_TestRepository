@@ -633,6 +633,9 @@
     <ClCompile Include="Game\UI\TutorialUI.cpp">
       <Filter>MainGame\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Game\UI\FadePanel.cpp">
+      <Filter>MainGame\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WinApp.h">
@@ -990,6 +993,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Game\UI\TutorialUI.h">
+      <Filter>MainGame\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\FadePanel.h">
       <Filter>MainGame\UI</Filter>
     </ClInclude>
   </ItemGroup>

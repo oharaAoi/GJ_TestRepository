@@ -1,5 +1,6 @@
 #include "TitleScene.h"
 #include "Engine/Game/Managers/SceneManager/SceneManager.h"
+#include "Engine/Game/Managers/TextureManager/TextureManager.h"
 
 void TitleScene::initialize() {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
@@ -15,10 +16,14 @@ void TitleScene::initialize() {
 
 	titleObject_ = std::make_unique<GameObject>();
 	titleObject_->reset_object("Title.obj");
+
+	fadePanel_ = std::make_unique<FadePanel>();
 }
 
 void TitleScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/TitleScene/Title", "Title.obj");
+
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
 }
 
 void TitleScene::begin() {
