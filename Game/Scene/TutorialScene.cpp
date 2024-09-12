@@ -126,6 +126,7 @@ void TutorialScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "tips.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "tutorial.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "woodBoard.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scroll.png");
 
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_brap.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio", "SE_enemyEachOther.wav");

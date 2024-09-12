@@ -6,6 +6,7 @@
 #include "TestCode/SceneDemo.h"
 #include "Game/Scene/GameScene.h"
 #include "Game/Scene/TitleScene.h"
+#include "Game/Scene/TutorialScene.h"
 #include "Engine/Game/Managers/SceneManager/SceneManager.h"
 #include "Engine/Utility/Utility.h"
 #include "TestCode/SceneDemo.h"
@@ -21,7 +22,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp::Initialize("DirectXGame", kClientWidth, kClientHight);
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 
-	auto&& scene = CreateUnique<TitleScene>();
+	auto&& scene = CreateUnique<TutorialScene>();
 	SceneManager::Initialize(std::move(scene));
 
 	while (!WinApp::IsEndApp()) {
