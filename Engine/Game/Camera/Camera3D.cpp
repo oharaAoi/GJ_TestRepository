@@ -18,11 +18,13 @@ void Camera3D::initialize() {
 		0.1f, 1000
 	);
 
+#ifdef _DEBUG
 	isVaildDebugCamera = false;
 	notuseTransform = std::make_unique<Transform3D>();
 	debugCameraCenter = std::make_unique<Transform3D>();
 	debugCameraCenterHierarchy = std::make_unique<Hierarchy>();
 	debugCameraCenterHierarchy->initialize(debugCameraCenterMatrix);
+#endif // _DEBUG
 }
 
 void Camera3D::update_matrix() {
