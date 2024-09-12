@@ -65,20 +65,6 @@ void EnemyManager::StartPop() {
 	}
 }
 
-#ifdef _DEBUG
-
-void EnemyManager::Begin_Rendering(const Camera3D& camera3D) {
-	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
-		enemy->begin_rendering(camera3D);
-	}
-}
-
-void EnemyManager::Draw() const {
-	for (const std::unique_ptr<Enemy>& enemy : enemyList_) {
-		enemy->draw();
-	}
-}
-
 // ------------------- ファイルの選出を行う ------------------- //
 void EnemyManager::SelectArrange() {
 	std::vector<std::string> keyArray;
@@ -91,6 +77,20 @@ void EnemyManager::SelectArrange() {
 
 	// timedCallをリセットする
 	timedCalls_.push_back(Test::TimedCall(std::bind(&EnemyManager::SelectArrange, this), popTime_));
+}
+
+#ifdef _DEBUG
+
+void EnemyManager::Begin_Rendering(const Camera3D& camera3D) {
+	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->begin_rendering(camera3D);
+	}
+}
+
+void EnemyManager::Draw() const {
+	for (const std::unique_ptr<Enemy>& enemy : enemyList_) {
+		enemy->draw();
+	}
 }
 
 

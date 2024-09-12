@@ -107,9 +107,11 @@ void FollowCamera::GameClearPerformance() {
 	}
 }
 
+#ifdef _DEBUG
 void FollowCamera::Restart() {
 	nowIndex_ = 0;
 	frameCount_ = 0;
 	isPerformanceFinish_ = false;
 	isStop_ = false;
 }
+#endif // _DEBUG
