@@ -107,7 +107,7 @@ private:
 	float pushBackStrength_ = 0.2f;
 
 	int satietyLevel_ = 0;
-	int satietyLevelLimit_ = 200;
+	int satietyLevelLimit_ = 70;
 
 	Moving movingMouth_;
 	Moving burp_;

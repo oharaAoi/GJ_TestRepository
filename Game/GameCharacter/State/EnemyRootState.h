@@ -22,6 +22,6 @@ public:
 private:
 
 	uint32_t frameCount_ = 0;
-	uint32_t attackTime_ = 600;
+	uint32_t attackTime_ = 420;
 };
 

@@ -947,9 +947,6 @@
     <ClInclude Include="Game\GameCharacter\Enemy.h">
       <Filter>MainGame\GameCharacter</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameCharacter\Manager\EnemyManager.h">
-      <Filter>MainGame\GameCharacter\Manager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameCharacter\State\BaseEnemyState.h">
       <Filter>MainGame\GameCharacter\State</Filter>
     </ClInclude>
@@ -1033,6 +1030,9 @@
     </ClInclude>
     <ClInclude Include="Game\Effect\Billboard.h">
       <Filter>MainGame\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameCharacter\Manager\EnemyManager.h">
+      <Filter>MainGame\GameCharacter\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
