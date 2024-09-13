@@ -26,6 +26,7 @@ public:
 	static void Finalize();
 
 	static void Set3DLight();
+	static DirectionalLightData& Get3DLight();
 
 #ifdef _DEBUG
 	/// <summary>

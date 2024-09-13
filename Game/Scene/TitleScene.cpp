@@ -24,7 +24,7 @@ void TitleScene::initialize() {
 		CVector3::BASIS,
 		Quaternion::EulerDegree(0, 0, 0),
 		{ 0, 0, -10.0 }
-							 });
+		});
 
 	// -------------------------------------------------
 	// ↓ 
@@ -41,7 +41,7 @@ void TitleScene::initialize() {
 	fadePanel_ = std::make_unique<FadePanel>();
 	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
 
-	startUI_ = std::make_unique<UIObject>("startKey.png", Vector2{0.5f, 0.5f});
+	startUI_ = std::make_unique<UIObject>("startKey.png", Vector2{ 0.5f, 0.5f });
 
 	// -------------------------------------------------
 	// ↓ 
@@ -76,7 +76,7 @@ void TitleScene::initialize() {
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
-	isFall_ = true; 
+	isFall_ = true;
 	frameCount_ = 0;
 	frameTime_ = 120.0f;
 
@@ -100,7 +100,7 @@ void TitleScene::begin() {
 void TitleScene::update() {
 	camera3D_->update();
 	Camera2D::CameraUpdate();
-	
+
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
@@ -129,8 +129,8 @@ void TitleScene::update() {
 			title_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<TutorialScene>(),
-										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
-										 false);
+				static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+				false);
 		}
 	}
 }
@@ -166,7 +166,8 @@ void TitleScene::FallTitle() {
 		t += 0.7f * GameTimer::DeltaTime();
 		float height = std::lerp(6.0f, 0.0f, EaseInOut::Bounce(t));
 		titleObject_->get_transform().set_translate_y(height);
-	} else {
+	}
+	else {
 		isFall_ = false;
 	}
 }
@@ -187,7 +188,5 @@ void TitleScene::debug_update() {
 	ImGui::Begin("Panel");
 	fadePanel_->Debug_gui();
 	ImGui::End();
-
-
 }
 #endif
