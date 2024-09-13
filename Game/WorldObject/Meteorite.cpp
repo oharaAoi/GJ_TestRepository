@@ -115,7 +115,7 @@ void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
 		meteoHitToEnemy_SE_->restart();
 		sphereCollider_->set_radius(sphereCollider_->get_radius() + 0.1f);
 		Vector3 scale = transform->get_scale();
-		scale = { scale.x + 0.2f,scale.y + 0.2f, scale.z + 0.2f, };
+		scale = { scale.x + 0.2f,scale.y + 0.2f, scale.z + 0.2f };
 		if (scale.x <= 1.6f) {
 			transform->set_scale(scale);
 		}
