@@ -435,6 +435,8 @@ void GameScene::draw() const {
 		enemy->draw();
 	}
 
+	effectManager_->Draw();
+
 #ifdef _DEBUG
 
 	enemyManager_->Draw();
@@ -442,8 +444,6 @@ void GameScene::draw() const {
 	if (isDrawCollider_) {
 		collisionManager_->debug_draw3d(*camera3D_);
 	}
-
-	effectManager_->Draw();
 
 #endif
 	RenderPathManager::Next();

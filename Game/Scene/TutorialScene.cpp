@@ -204,6 +204,8 @@ void TutorialScene::update() {
 		);
 	}
 
+	effectManager_->Update();
+
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
@@ -285,7 +287,7 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	// ↓ Manager系の更新
 	// -------------------------------------------------
-	effectManager_->Update();
+	
 	meteoriteManager_->Update(player_->get_transform().get_translate());
 	enemyManager_->Update(player_->get_transform().get_translate());
 	posteffectManager->update();
@@ -304,9 +306,6 @@ void TutorialScene::update() {
 	CheckBossCollision();
 	CheckMeteoToField();
 
-	// -------------------------------------------------
-	// ↓ UI
-	// -------------------------------------------------
 }
 
 void TutorialScene::begin_rendering() {
