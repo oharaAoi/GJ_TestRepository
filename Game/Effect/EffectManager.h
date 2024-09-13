@@ -91,8 +91,8 @@ public:	// メンバ関数
 
 private:
 
-	const std::string kEffectDirectoryPath_ = "./Engine/Resources/Effect/";
-	const std::string kEmitterDirectoryPath_ = "./Engine/Resources/Effect/Emitter/";
+	const std::string kEffectDirectoryPath_ = "./Game/Resources/Effect/";
+	const std::string kEmitterDirectoryPath_ = "./Game/Resources/Effect/Emitter/";
 
 	// ------------------- ゲームで使用するリスト ------------------- //
 	std::list<Particle> particleList_;
