@@ -1,10 +1,10 @@
 {
     "GameStartCameraMove": {
-        "moveTime_0": 90,
-        "moveTime_1": 70,
-        "moveTime_2": 100,
-        "moveTime_3": 70,
-        "moveTime_4": 100,
+        "moveTime_0": 0.6,
+        "moveTime_1": 0.7,
+        "moveTime_2": 0.8,
+        "moveTime_3": 0.7,
+        "moveTime_4": 0.8,
         "pos_0": [
             0.0,
             30.0,

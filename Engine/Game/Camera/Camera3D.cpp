@@ -106,6 +106,10 @@ void Camera3D::debug_camera() {
 		debugCameraCenterMatrix = debugCameraCenter->get_matrix();
 	}
 }
+
+bool Camera3D::isActiveDebugCamera() const {
+	return isVaildDebugCamera;
+}
 #endif // _DEBUG
 
 void Camera3D::make_view_matrix() {

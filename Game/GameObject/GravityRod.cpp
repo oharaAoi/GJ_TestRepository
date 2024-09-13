@@ -47,8 +47,8 @@ void GravityRod::Begin_Rendering(Camera3D* camera3d) {
 
 void GravityRod::Draw() const {
 	draw();
-	tipObject_[Tips::Tips_origine]->draw();
-	tipObject_[Tips::Tips_end]->draw();
+	/*tipObject_[Tips::Tips_origine]->draw();
+	tipObject_[Tips::Tips_end]->draw();*/
 }
 
 #ifdef _DEBUG

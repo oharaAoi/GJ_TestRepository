@@ -3,6 +3,8 @@
 #include "Engine/Game/GameObject/SpriteObject.h"
 #include "Game/UI/UIObject.h"
 
+#include "Engine/Game/GameTimer/GameTimer.h"
+
 enum class FadeType {
 	Fade_In,
 	Fade_Out
@@ -50,6 +52,8 @@ private:
 	FadeType fadeType_;
 	uint32_t frameCount_ = 0;
 	uint32_t fadeTime_ = 60;
+
+	float moveT_ = 0;
 
 	float panelAlpha_ = 0.0f;
 };

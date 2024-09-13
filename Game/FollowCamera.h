@@ -3,8 +3,8 @@
 #include "Engine/Game/Camera/Camera3D.h"
 #include "Game/Easing.h"
 #include "Game/GameCharacter/Manager/AdjustmentItem.h"
-#include "Game/Easing.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
+#include "Engine/Game/GameTimer/GameTimer.h"
 
 class Player;
 
@@ -14,7 +14,7 @@ public:
 	struct CameraMoveDara {
 		Vector3 pos;
 		Vector3 rotateDegree;
-		uint32_t moveTime;
+		float moveTime;
 	};
 
 public:
@@ -61,6 +61,8 @@ private:
 
 	uint32_t frameCount_ = 0;
 	uint32_t frameTime_ = 200;
+
+	float moveT_ = 0;
 
 	std::unique_ptr<AudioPlayer> boss_Apparance_SE_ = nullptr;
 

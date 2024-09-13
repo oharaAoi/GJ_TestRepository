@@ -15,8 +15,8 @@
 #include "Engine/Render/RenderNode/ChromaticAberration/ChromaticAberrationNode.h"
 #include "Game/UI/FadePanel.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
-
 #include "Engine/Game/Audio/AudioPlayer.h"
+#include "Game/GameCharacter/Boss.h"
 
 class GameOverScene :
     public BaseScene {
@@ -51,8 +51,14 @@ private:
 	bool nextGame_ = 0;
 	bool preNextGame_ = 0;
 
+	bool isSave_ = false;
+
+	Quaternion bossMoveRotate_;
+
 	std::unique_ptr<GameObject> gameOverTitle_ = nullptr;
 	std::unique_ptr<GameObject> skydome_ = nullptr;
+
+	std::unique_ptr<Boss> boss_ = nullptr;
 
 	// ------------------- UI ------------------- //
 	std::unique_ptr<GameOverUI> gameOverUI_ = nullptr;

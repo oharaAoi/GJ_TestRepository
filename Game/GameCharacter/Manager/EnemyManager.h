@@ -109,8 +109,6 @@ private:
 	uint32_t firstPopCount_ = 0;
 	bool isPop_ = false;
 
-	uint32_t fieldOnEnemyNum_ = 0;
-
 #ifdef _DEBUG
 
 	char fileNameBuffer_[36] = "";

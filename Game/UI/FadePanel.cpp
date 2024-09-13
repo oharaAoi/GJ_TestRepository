@@ -14,6 +14,8 @@ void FadePanel::Init() {
 	isFadeFisnish_ = false;
 
 	fadeTime_ = 60;
+
+	moveT_ = 0;
 }
 
 void FadePanel::Update() {
@@ -48,22 +50,22 @@ void FadePanel::SetFadeFadeStart(const FadeType& type) {
 }
 
 void FadePanel::FadeIn() {
-	if (++frameCount_ <= fadeTime_) {
-		float t = static_cast<float>(frameCount_) / static_cast<float>(fadeTime_);
-		panelAlpha_ = std::lerp(0.0f, 1.0f, t);
+	if (moveT_ <= 1.0f) {
+		moveT_ += 1.0f * GameTimer::DeltaTime();
+		panelAlpha_ = std::lerp(0.0f, 1.0f, moveT_);
 	} else {
-		frameCount_ = 0;
+		moveT_ = 0;
 		isFade_ = false;
 		isFadeFisnish_ = true;
 	}
 }
 
 void FadePanel::FadeOut() {
-	if (++frameCount_ <= fadeTime_) {
-		float t = static_cast<float>(frameCount_) / static_cast<float>(fadeTime_);
-		panelAlpha_ = std::lerp(1.0f, 0.0f, t);
+	if (moveT_ <= 1.0f) {
+		moveT_ += 1.0f * GameTimer::DeltaTime();
+		panelAlpha_ = std::lerp(1.0f, 0.0f, moveT_);
 	} else {
-		frameCount_ = 0;
+		moveT_ = 0;
 		isFade_ = false;
 		isFadeFisnish_ = true;
 	}

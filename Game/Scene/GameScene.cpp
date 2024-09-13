@@ -46,6 +46,8 @@ void GameScene::initialize() {
 		Quaternion::EulerDegree(55, 0, 0),
 		{ 0, 30, -13.0 }
 							 });
+	camera3D_->begin_rendering(*camera3D_);
+	camera3D_->update_matrix();
 
 	// -------------------------------------------------
 	// ↓ 
@@ -209,6 +211,10 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
+	if (!camera3D_->isActiveDebugCamera()) {
+		playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
+	}
+
 	fadePanel_->Update();
 
 	if (!fadePanel_->GetIsFadeFinish()) {
@@ -335,13 +341,8 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ 当たり判定系
 	// -------------------------------------------------
-	if (player_->GetIsAttack()) {
-		CheckMeteoAttraction();
-	} else {
-		for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
-			meteo->SetIsAttraction(false);
-		}
-	}
+	
+	CheckMeteoAttraction();
 
 	CheckBossCollision();
 
@@ -350,7 +351,6 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ UI
 	// -------------------------------------------------
-	playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
 }
 
 void GameScene::begin_rendering() {
@@ -456,7 +456,7 @@ void GameScene::CheckMeteoToField() {
 			if (meteo->get_transform().get_translate().y < 12.5f && meteo->get_transform().get_translate().y > 10.0f) {
 				meteo->SetIsDead(true);
 				field_->SetVelocityY(-3.0f);
-				boss_->OnCollision();
+				boss_->OnCollision(meteo->GetRadius());
 				boss_->PlayFieldPushSE();
 			}
 		}
@@ -465,6 +465,10 @@ void GameScene::CheckMeteoToField() {
 
 void GameScene::CheckMeteoAttraction() {
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		if (!player_->GetIsAttack()) {
+			meteo->SetIsAttraction(false);
+			continue;
+		}
 		Vector3 direction{};
 		float length = 0;
 		// 引き寄せる2つの球体との距離を測る
@@ -502,7 +506,7 @@ void GameScene::CheckBossCollision() {
 
 			if (length < meteo->GetRadius()) {
 				meteo->SetIsDead(true);
-				boss_->OnCollision();
+				boss_->OnCollision(meteo->GetRadius());
 			}
 		}
 	}
@@ -558,13 +562,6 @@ void GameScene::debug_update() {
 		camera3D_->Restart();
 	}
 	camera3D_->debug_gui();
-	ImGui::End();
-
-	ImGui::Begin("field");
-	if (ImGui::Button("exit")) {
-		field_->SetVelocityY(-3.0f);
-		boss_->OnCollision();
-	}
 	ImGui::End();
 
 	field_->EditImGui();

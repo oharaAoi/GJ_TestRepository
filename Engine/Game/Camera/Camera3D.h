@@ -25,6 +25,7 @@ public:
 #ifdef _DEBUG
 	virtual void debug_gui();
 	void debug_camera();
+	bool isActiveDebugCamera() const;
 #endif // _DEBUG
 
 private:

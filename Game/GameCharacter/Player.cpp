@@ -29,6 +29,10 @@ void Player::Init() {
 	gravityRod_ = std::make_unique<GravityRod>(this);
 	isAttack_ = false;
 
+	floatinGimmick_.parameter = 0;
+	floatinGimmick_.period = 120;
+	floatinGimmick_.amplitude = 0.01f;
+
 	input_ = Input::GetInstance();
 	Vector3 translate = transform->get_translate();
 	transform->set_translate_y(12.5f);
@@ -58,19 +62,13 @@ void Player::Update(const float& fieldRadius) {
 	
 	Move();
 	Attack();
+	Floating();
 
 	if (isAttack_) {
 		gravityRod_->Update();
 
 		//playerArm_->get_transform().set_rotate(Quaternion::EulerDegree(-70, 0, 0));
 	}
-
-#ifdef _DEBUG
-	ImGui::Begin("GravityRod");
-	gravityRod_->EditImGui();
-	playerArm_->debug_gui();
-	ImGui::End();
-#endif
 }
 
 void Player::Begin_Rendering(Camera3D* camera3d) {
@@ -122,6 +120,17 @@ void Player::On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAt
 void Player::On_Collision_Exit(const BaseCollider* const) {
 
 }
+#ifdef _DEBUG
+void Player::Debug_Gui() {
+	ImGui::Begin("Player");
+	debug_gui();
+	ImGui::End();
+	ImGui::Begin("GravityRod");
+	gravityRod_->EditImGui();
+	playerArm_->debug_gui();
+	ImGui::End();
+}
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // ↓　メンバ関数
@@ -198,6 +207,17 @@ void Player::ConstrainToField(Vector3& translate) {
 		distance = distance * fieldRadius_;
 		translate = { distance.x, translate.y, distance.z };
 	}
+}
+
+void Player::Floating() {
+	float upTranslate = transform->get_translate().y;
+	// 口を動かすアニメーションを行う
+	const float step = (2.0f * PI) / static_cast<float>(floatinGimmick_.period);
+	floatinGimmick_.parameter += step;
+	floatinGimmick_.parameter = std::fmod(floatinGimmick_.parameter, 2.0f * PI);
+	// 移動させる量を動かす
+	upTranslate += std::sin(floatinGimmick_.parameter) * 0.01f;
+	transform->set_translate_y(upTranslate);
 }
 
 const Quaternion& Player::GetMoveQuaternion() const {

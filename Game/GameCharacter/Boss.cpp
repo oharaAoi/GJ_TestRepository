@@ -132,8 +132,19 @@ void Boss::FaceMove() {
 	faceParts_[UpperJaw_Parts]->get_transform().set_translate_z(lowerTranslate);
 }
 
-void Boss::OnCollision() {
-	satietyLevel_++;
+void Boss::OnCollision(const float& meteoRadius) {
+	float meteoDiffRadius = meteoRadius - 1.0f;
+	meteoDiffRadius *= 10;
+	meteoDiffRadius /= 2.0f;
+	if (meteoDiffRadius >= 3) {
+		meteoDiffRadius = 3;
+	}
+
+	if (meteoDiffRadius <= 0) {
+		meteoDiffRadius = 1;
+	}
+
+	satietyLevel_ += static_cast<int>(meteoDiffRadius);
 	pushBackValue_ += pushBackStrength_;
 	bossHit_SE_->restart();
 }
@@ -240,6 +251,27 @@ void Boss::Burp() {
 		burp_SE_->play();
 		isPlayBrap_ = false;
 	}
+}
+
+void Boss::SetParentTransform(const std::string& groupName) {
+	
+	adjustmentItem_->AddItem(groupName, "Face", faceParts_[Face_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "LeftEye", faceParts_[LeftEye_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "RightEye", faceParts_[RightEye_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "LeftEyebrows", faceParts_[LeftEyebrows_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "RightEyebrows", faceParts_[RightEyebrows_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "LowerJaw_Parts", faceParts_[LowerJaw_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "UpperJaw_Parts", faceParts_[UpperJaw_Parts]->get_transform().get_translate());
+	adjustmentItem_->AddItem(groupName, "InMouth_Parts", faceParts_[InMouth_Parts]->get_transform().get_translate());
+
+	faceParts_[Face_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "Face"));
+	faceParts_[LeftEye_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "LeftEye"));
+	faceParts_[RightEye_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "RightEye"));
+	faceParts_[LeftEyebrows_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "LeftEyebrows"));
+	faceParts_[RightEyebrows_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "RightEyebrows"));
+	faceParts_[LowerJaw_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "LowerJaw_Parts"));
+	faceParts_[UpperJaw_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "UpperJaw_Parts"));
+	faceParts_[InMouth_Parts]->get_transform().set_translate(adjustmentItem_->GetValue<Vector3>(groupName, "InMouth_Parts"));
 }
 
 
