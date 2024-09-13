@@ -21,7 +21,7 @@ const std::int32_t kClientWidth = 1280;
 const std::int32_t kClientHight = 720;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	WinApp::Initialize("DirectXGame", kClientWidth, kClientHight);
+	WinApp::Initialize("2006_メテおにぎり", kClientWidth, kClientHight);
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 
 #ifdef _DEBUG
