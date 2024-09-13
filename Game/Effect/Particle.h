@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Game/GameObject/GameObject.h"
 #include "Engine/Math/Vector3.h"
+#include "Game/MyRandom.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
 #include "Engine/Math/Definition.h"
 
