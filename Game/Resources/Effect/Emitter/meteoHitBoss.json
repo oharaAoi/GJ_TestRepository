@@ -1,12 +1,12 @@
 {
-    "aoi": {
-        "angle": 180.0,
+    "meteoHitBoss": {
+        "angle": 70.0,
         "centerPos": [
-            5.0,
-            0.9599999785423279,
+            0.07000000029802322,
+            16.59000015258789,
             0.0
         ],
-        "createCount": 42,
+        "createCount": 3,
         "createTime": 120,
         "direction": [
             0.0,
@@ -14,15 +14,15 @@
             0.0
         ],
         "emitCount": 1,
-        "emitterName": "aoi",
-        "lifeTime": 120,
+        "emitterName": "meteoHitBoss",
+        "lifeTime": 60,
         "radius": 1.0,
         "range": [
             1.0,
             1.0,
             1.0
         ],
-        "speed": 1.0,
-        "useObjectName": "player.obj"
+        "speed": 2.5,
+        "useObjectName": "sisui.obj"
     }
 }

@@ -105,7 +105,7 @@ private:
 	const Hierarchy& fieldHierarchy_;
 	// ------------------------------------------------------------------------------
 
-	uint32_t popTime_ = 500;
+	uint32_t popTime_ = 420;
 	uint32_t firstPopCount_ = 0;
 	bool isPop_ = false;
 

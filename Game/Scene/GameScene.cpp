@@ -189,8 +189,10 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomachPercent.obj");
 
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "kometubu.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "attract.obj");
-
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "enemyMeteoHit.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "triangle.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "sisui.obj");
+	
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI1.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI2.png");
 
@@ -239,8 +241,6 @@ void GameScene::update() {
 	Input::GetInstance()->Update();
 
 	AdjustmentItem::GetInstance()->Update();
-
-	//effectManager_->Update();
 
 	// -------------------------------------------------
 	// ↓ 演出が始まるかどうか
@@ -368,22 +368,9 @@ void GameScene::update() {
 	// ↓ Particle
 	// -------------------------------------------------
 
-	for (std::unique_ptr<Billboard>& billboard : billboardList_) {
-		billboard->Update(camera3D_->world_position());
-	}
-
-	billboardList_.remove_if([](const std::unique_ptr<Billboard>& billboard) {
-		if (billboard->GetIsDead()) {
-			return true;
-		}
-		return false;
-	});
-	
-	CreateBillBoard();
 }
 
 void GameScene::begin_rendering() {
-
 	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
 
@@ -401,10 +388,6 @@ void GameScene::begin_rendering() {
 		enemy->begin_rendering(*camera3D_);
 	}
 
-	for (std::unique_ptr<Billboard>& billboard : billboardList_) {
-		billboard->Begine_Rendering(*camera3D_);
-	}
-
 	effectManager_->BeginRendering(*camera3D_);
 
 #ifdef _DEBUG
@@ -420,7 +403,9 @@ void GameScene::late_update() {
 	collisionManager_->update();
 
 	// 敵とPlayer --------------------------------------------------
-	collisionManager_->collision("Enemy", "Player");
+	if (!player_->GetIsStan()) {
+		collisionManager_->collision("Enemy", "Player");
+	}
 	// メテオ同士 ---------------------------------------------------
 	collisionManager_->collision("Meteo", "Meteo");
 	// Enemy同士 ---------------------------------------------------
@@ -448,18 +433,16 @@ void GameScene::draw() const {
 		enemy->draw();
 	}
 
-	for (const std::unique_ptr<Billboard>& billboard : billboardList_) {
-		billboard->Draw();
-	}
-
-	effectManager_->Draw();
-
 #ifdef _DEBUG
+
 	enemyManager_->Draw();
 	editor->draw_debug3d();
 	if (isDrawCollider_) {
 		collisionManager_->debug_draw3d(*camera3D_);
 	}
+
+	effectManager_->Draw();
+
 #endif
 	RenderPathManager::Next();
 	outlineNode->draw();
@@ -593,32 +576,6 @@ void GameScene::GameClearPerformance() {
 			static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 			false);
 	}
-}
-
-void GameScene::CreateBillBoard() {
-	//// 攻撃していないなら早期リターン
-	//if (!player_->GetIsAttack()) {
-	//	return;
-	//}
-
-	//billboardPopT_ += GameTimer::DeltaTime();
-
-	//if (billboardPopT_ > 1.0f) {
-	//	int engineOrEnd = RandomInt(0, 1);
-	//	// ビルボードを生成する
-	//	if (engineOrEnd == 0) { // 原点の方出す
-	//		billboardPopT_ = 0;
-	//		auto& newBillborad = billboardList_.emplace_back(
-	//			std::make_unique<Billboard>(player_->GetGravityRodOrigine()));
-
-	//	} else if(engineOrEnd == 1) { // 終点の方出す
-	//		billboardPopT_ = 0;
-	//		auto& newBillborad = billboardList_.emplace_back(
-	//			std::make_unique<Billboard>(player_->GetGravityRodEnd()));
-	//	}
-	//} else {
-
-	//}
 }
 
 #ifdef _DEBUG

@@ -1,0 +1,28 @@
+{
+    "enemyHitPlayer": {
+        "angle": 78.0,
+        "centerPos": [
+            0.0,
+            13.770000457763672,
+            0.0
+        ],
+        "createCount": 4,
+        "createTime": 120,
+        "direction": [
+            0.23999999463558197,
+            1.0,
+            -0.15000000596046448
+        ],
+        "emitCount": 1,
+        "emitterName": "enemyHitPlayer",
+        "lifeTime": 60,
+        "radius": 1.0,
+        "range": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "speed": 1.0,
+        "useObjectName": "triangle.obj"
+    }
+}

@@ -26,13 +26,9 @@ void Particle::Init(const Vector3& pos, const Vector3& scale, const Vector3& vel
 void Particle::Update() {
 	Vector3 translate = transform->get_translate();
 	Vector3 preVelocity = velocity_;
-	velocity_ += Vector3{ speed_ * GameTimer::DeltaTime() ,speed_ * GameTimer::DeltaTime() , speed_ * GameTimer::DeltaTime() };
-	translate += (velocity_ * speed_) * GameTimer::DeltaTime();
+	translate += (velocity_.normalize_safe());
 	transform->set_translate(translate);
-	// 向きを移動方向に合わせる
-	Quaternion moveRotate = transform->get_quaternion();
-	transform->set_rotate(Quaternion::FromToRotation(preVelocity, velocity_) * moveRotate);
-
+	
 	if (--lifeTime_ <= 0) {
 		isDead_ = true;
 	}

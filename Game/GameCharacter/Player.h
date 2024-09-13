@@ -109,6 +109,9 @@ public:
 	// ----------- スタン中か ----------- //
 	bool GetIsStan() const { return isStan_; };
 
+	// ----------- 無敵状態か ----------- //
+	const bool GetIsInvincible() const { return isInvincible_; }
+
 private:
 
 	EffectManager* effectManager_ = nullptr;
@@ -136,9 +139,13 @@ private:
 
 	bool isStan_ = false;
 	uint32_t stanFrame_ = 0;
-	uint32_t stanTime_ = 60;
+	uint32_t stanTime_ = 40;
 
 	float radius_ = 1.0f;
+
+	bool isInvincible_; // 無敵のbool
+	uint32_t invincibleCount_;
+	uint32_t invincibleTime_;
 
 	FloatingGimmick floatinGimmick_;
 

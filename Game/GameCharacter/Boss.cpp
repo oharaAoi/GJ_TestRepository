@@ -40,10 +40,10 @@ void Boss::Init() {
 	translate.y = -130.0f;
 	transform->set_translate(translate);
 
-	velocity_ = { 0,0.2f,0 };
+	velocity_ = { 0,0.4f,0 };
 
 	pushBackValue_ = 0.0f;
-	pushBackStrength_ = 0.2f;
+	pushBackStrength_ = 0.225f;
 
 	movingMouth_.parameter = 0;
 	movingMouth_.period = 90;

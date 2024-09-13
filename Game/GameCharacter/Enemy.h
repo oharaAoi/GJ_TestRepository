@@ -12,6 +12,7 @@
 #include "Engine/Game/Collision/Collider/SphereCollider.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
+#include "Game/Effect/EffectManager.h"
 
 class EnemyManager;
 
@@ -101,6 +102,8 @@ public:
 
 private:
 
+	EffectManager* effectManager_ = nullptr;
+
 	std::unique_ptr<BaseEnemyState> state_ = nullptr;
 	std::shared_ptr<SphereCollider> sphereCollider_ = nullptr;
 
@@ -109,7 +112,6 @@ private:
 
 	EnemyType enemyType_;
 	float radius_ = 1.0f;
-
 
 	Vector3 velocity_;
 	Vector3 acceleration_;

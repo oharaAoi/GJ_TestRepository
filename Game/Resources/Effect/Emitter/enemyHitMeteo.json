@@ -1,0 +1,28 @@
+{
+    "enemyHitMeteo": {
+        "angle": 91.0,
+        "centerPos": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "createCount": 4,
+        "createTime": 120,
+        "direction": [
+            0.36000001430511475,
+            1.0,
+            0.25
+        ],
+        "emitCount": 1,
+        "emitterName": "enemyHitMeteo",
+        "lifeTime": 60,
+        "radius": 1.0,
+        "range": [
+            1.3899999856948853,
+            1.2400000095367432,
+            1.2699999809265137
+        ],
+        "speed": 1.0,
+        "useObjectName": "enemyMeteoHit.obj"
+    }
+}

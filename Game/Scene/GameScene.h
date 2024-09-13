@@ -33,7 +33,6 @@
 #include "Engine/Game/Audio/AudioPlayer.h"
 #include "Game/UI/SatisFactionLevel.h"
 #include "Game/Effect/EffectManager.h"
-#include "Game/Effect/Billboard.h"
 
 class EditorController;
 
@@ -127,8 +126,6 @@ private:
 	std::unique_ptr<FollowCamera> camera3D_ = nullptr;
 
 	// ------------------- ビルボード ------------------- //
-	float billboardPopT_;
-	std::list<std::unique_ptr<Billboard>> billboardList_;
 
 	// ------------------- Manager ------------------- //
 	EffectManager* effectManager_ = nullptr;

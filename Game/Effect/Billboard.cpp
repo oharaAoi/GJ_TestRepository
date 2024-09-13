@@ -13,14 +13,13 @@ void Billboard::Init(const Vector3& pos) {
 	transform->set_scale(RandomVector3(3.5f, 5.0f));
 	velocity_ = RandomVector3(-1, 1);
 	accelaration_ = velocity_.normalize_safe();
-	lifeTime_ = 60.0f;
+	lifeTime_ = 40.0f;
 	isDead_ = false;
 }
 
 void Billboard::Update(const Vector3& camera3DTranslate) {
 	// 移動をさせる
 	Vector3 translate = transform->get_translate();
-	accelaration_ += accelaration_ * GameTimer::DeltaTime();
 	velocity_ += accelaration_ * GameTimer::DeltaTime();
 	translate += velocity_;
 	transform->set_translate(translate);
@@ -31,7 +30,7 @@ void Billboard::Update(const Vector3& camera3DTranslate) {
 	// カメラとのベクトルが板ポリを向ける方向になる
 	Quaternion boardRotate = transform->get_quaternion();
 	// 板ポリの前方方向を取得する
-	Quaternion lookCameraRotate = Quaternion::FromToRotation(Vector3{ 0.0f, 0.0f, 1.0f }, distance);
+	Quaternion lookCameraRotate = Quaternion::FromToRotation(Vector3{ 0.0f, 0.0f, -1.0f }, distance);
 	// 向きを整える
 	transform->set_rotate(lookCameraRotate);
 
