@@ -25,6 +25,8 @@
 #include "Game/UI/TutorialUI.h"
 #include "Game/UI/FadePanel.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
+#include "Engine/Game/GameObject/SpriteObject.h"
+#include "Game/UI/PlayerUI.h"
 
 /// <summary>
 /// 内容
@@ -135,6 +137,7 @@ private:
 
 	// ----------- Sprite ----------- //
 	std::unique_ptr<TutorialUI> tutorialUI_ = nullptr;
+	std::unique_ptr<PlayerUI> playerUI = nullptr;
 
 	// ------------------- Audio ------------------- //
 	std::unique_ptr<AudioPlayer> theme_SE_;

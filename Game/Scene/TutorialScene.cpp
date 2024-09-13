@@ -142,6 +142,8 @@ void TutorialScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "skipKey.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI1.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI2.png");
 
 	// content
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "move.png");
@@ -184,6 +186,14 @@ void TutorialScene::begin() {
 void TutorialScene::update() {
 	camera3D_->update();
 	Camera2D::CameraUpdate();
+
+	if (playerUI) {
+		playerUI->Update(
+			player_->world_position(),
+			camera3D_->vp_matrix(),
+			player_->GetIsAttack()
+		);
+	}
 
 	// -------------------------------------------------
 	// ↓ 
@@ -310,6 +320,10 @@ void TutorialScene::begin_rendering() {
 	tutorialUI_->BeginRendering();
 
 	fadePanel_->Begin_Rendering();
+
+	if (playerUI) {
+		playerUI->BeginRendering();
+	}
 }
 
 void TutorialScene::late_update() {
@@ -347,6 +361,11 @@ void TutorialScene::draw() const {
 	RenderPathManager::Next();
 	tutorialUI_->Draw();
 	fadePanel_->Draw();
+
+	if (playerUI) {
+		playerUI->Draw();
+	}
+
 	RenderPathManager::Next();
 	chromaticAberrationNode->draw();
 	RenderPathManager::Next();
@@ -506,6 +525,7 @@ void TutorialScene::FirstMoveContent() {
 		tutorialUI_->ChangeContentUI(int(content_));
 		frameCount_ = 0;
 		success_SE_->restart();
+		playerUI = std::make_unique<PlayerUI>();
 	}
 }
 

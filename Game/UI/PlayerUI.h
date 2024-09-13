@@ -38,6 +38,6 @@ private:
  
     bool isPlayerAttack_;
 
-    Vector2 offsetPos_ = {40,-50};
+	Vector2 offsetPos_;
 };
 

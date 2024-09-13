@@ -16,6 +16,7 @@ void PlayerUI::Finalize() {
 void PlayerUI::Init() {
 	playerControl_UI = std::make_unique<UIObject>( "UI1.png", Vector2{ 0.5f,0.5f } );
 	playerAttack_UI = std::make_unique<UIObject>( "UI2.png", Vector2{ 0.5f,0.5f } );
+	offsetPos_ = { 105.0f,-50.0f };
 }
 
 void PlayerUI::Update(const Vector3& playerPos, const Matrix4x4& vpMatrix, const bool& isAttack) {
@@ -26,13 +27,13 @@ void PlayerUI::Update(const Vector3& playerPos, const Matrix4x4& vpMatrix, const
 	Matrix4x4 matViewprojection = vpMatrix * matView;
 	Vector3 screenPos = Transform(playerPos, matViewprojection);
 
-	Vector2 playerScreenPosition = { screenPos.x, screenPos.y };
+	Vector2 playerScreenPosition = { screenPos.x , screenPos.y };
 
 	isPlayerAttack_ = isAttack;
 	if (isPlayerAttack_) {
-		playerAttack_UI->Update(Vector2{ 0.3f,0.3f }, playerScreenPosition + offsetPos_);
+		playerAttack_UI->Update(Vector2{ 0.5f,0.5f }, playerScreenPosition + offsetPos_);
 	} else {
-		playerControl_UI->Update(Vector2{ 0.3f,0.3f }, playerScreenPosition + offsetPos_);
+		playerControl_UI->Update(Vector2{ 0.5f,0.5f }, playerScreenPosition + offsetPos_);
 	}
 }
 
