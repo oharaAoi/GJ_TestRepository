@@ -136,6 +136,10 @@ private:
 
 	const std::string kDirectoryPath_ = "./Game/Resources/GameScene/Meteorite/";
 
+	uint32_t meteoAddNum_ = 20;
+
+	float lessThanTargetMeteoNum_ = 0;
+
 	// 隕石の情報が格納されたデータ
 	std::map<std::string, Group> groupMap_;
 	std::vector<Group*> groupRefs_;

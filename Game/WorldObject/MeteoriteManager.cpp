@@ -28,6 +28,7 @@ void MeteoriteManager::Update(const Vector3& playerPosition) {
 		}
 	}
 
+	// 更新処理
 	for (Meteorite& meteo : meteoriteList_) {
 		meteo.Update(playerPosition);
 	}
@@ -56,6 +57,18 @@ void MeteoriteManager::Update(const Vector3& playerPosition) {
 		}
 		return false;
 	});
+
+	// -------------------------------------------------
+	// ↓ 隕石の数がmeteoAddNum_以下だったら
+	// -------------------------------------------------
+	if (sceneMeteoList_.size() < meteoAddNum_) {
+		lessThanTargetMeteoNum_ += GameTimer::DeltaTime();
+
+		if (lessThanTargetMeteoNum_ >= 3.0f) {
+			PopFromGroup(groupMap_[GetRandomKey()]);
+			lessThanTargetMeteoNum_ = 0;
+		}
+	}
 }
 
 void MeteoriteManager::StartPop() {
