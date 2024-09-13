@@ -141,7 +141,7 @@ private:
 	// ------------------- emitterを保存する際に使用する変数 ------------------- //
 	std::map<std::string, Group> emitterData_;
 
-	const std::string kDirectoryPath_ = "./Engine/Resources/Effect/Emitter/";
+	const std::string kDirectoryPath_ = "./Game/Resources/Effect/Emitter/";
 
 	// ------------------- emitterに関する変数 ------------------- //
 	Vector3 centerPos_ = {0,0,0};			// emitterの中心位置
