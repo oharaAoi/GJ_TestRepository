@@ -14,6 +14,7 @@
 #include "Engine/Game/GameTimer/GameTimer.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
 #include "Game/Easing.h"
+#include "Game/GameCharacter/Player.h"
 
 /// <summary>
 /// TitleScene
@@ -60,6 +61,8 @@ private:
 	// ------------------- object ------------------- //
 	std::unique_ptr<GameObject> titleObject_ = nullptr;
 	std::unique_ptr<GameObject> skydome_ = nullptr;
+
+	std::unique_ptr<Player> player_ = nullptr;
 
 	// ------------------- sprite ------------------- //
 

@@ -77,6 +77,9 @@ void ClearScene::initialize() {
 	choice_SE_->initialize("meteOnigiri_choice1.wav", 0.5f, false);
 
 	clear_BGM_->play();
+
+	nextGame_ = true;
+	preNextGame_ = false;
 }
 
 void ClearScene::load() {

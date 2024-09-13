@@ -62,7 +62,7 @@ public:	// accessor
 	const Vector3 GetVelocity() const { return velocity_; }
 
 	// ----------- 半径 ----------- //
-	const float GetRadius() const { return radius_; }
+	const float GetRadius() const { return sphereCollider_->get_radius(); }
 
 	// ----------- 死亡フラグ ----------- //
 	void SetIsDead(const bool& isDead) { isDead_ = isDead; }

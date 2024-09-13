@@ -13,8 +13,6 @@ void EnemyManager::Init() {
 
 	//SelectArrange();
 	//AddEnemy(Vector3{ 2.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);
-
-	fieldOnEnemyNum_ = 0;
 }
 
 void EnemyManager::Update(const Vector3& playerPosition) {
@@ -25,7 +23,11 @@ void EnemyManager::Update(const Vector3& playerPosition) {
 	// -------------------------------------------------
 	// ↓ 敵の上限設定
 	// -------------------------------------------------
-	if (CheckConstrainToField() >= 5) {
+	if (CheckConstrainToField() >= 4) {
+		return;
+	}
+
+	if (sceneEnemyList_.size() >= 8) {
 		return;
 	}
 
@@ -52,7 +54,7 @@ uint32_t EnemyManager::CheckConstrainToField(){
 		// 中心からの長さ
 		float lenght = Vector3::Length(translate, Vector3(0, translate.y, 0));
 		if (lenght < 5.7f) {
-			fieldOnEnemyNum_++;
+			fieldOnEnemyNum++;
 		}
 	}
 

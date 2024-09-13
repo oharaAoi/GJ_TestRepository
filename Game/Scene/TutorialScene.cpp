@@ -401,7 +401,7 @@ void TutorialScene::CheckMeteoToField() {
 			if (meteo->get_transform().get_translate().y < 12.5f && meteo->get_transform().get_translate().y > 10.0f) {
 				meteo->SetIsDead(true);
 				field_->SetVelocityY(-3.0f);
-				boss_->OnCollision();
+				boss_->OnCollision(meteo->GetRadius());
 				boss_->PlayFieldPushSE();
 			}
 		}
@@ -447,7 +447,7 @@ void TutorialScene::CheckBossCollision() {
 
 			if (length < meteo->GetRadius()) {
 				meteo->SetIsDead(true);
-				boss_->OnCollision();
+				boss_->OnCollision(meteo->GetRadius());
 			}
 		}
 	}
@@ -502,11 +502,23 @@ void TutorialScene::RodPutOnContent() {
 
 void TutorialScene::MeteoCollisionContent() {
 	// 隕石同士がぶつかることを教える
-	player_->SetIsAttack(true);
+	player_->Update(field_->GetRadius());
 
+	bool isFalling = false;
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		meteo->Update(player_->get_transform().get_translate());
-		meteo->get_transform().set_translate_z(player_->GetGravityRodOrigine().z);
+
+		if (meteo->GetIsFalling()) {
+			isFalling = true;
+		}
+	}
+
+	if (meteoriteList_.size() == 0) {
+		if (!isFalling) {
+			meteoriteManager_->AddMeteo(Vector3{ 20, 0, RandomFloat(-3, 5) });
+			meteoriteManager_->AddMeteo(Vector3{ 24, 0, RandomFloat(-3, 5) });
+			frameCount_ = 0;
+		}
 	}
 
 	// 死亡フラグのチェックを行う
@@ -521,7 +533,7 @@ void TutorialScene::MeteoCollisionContent() {
 	CheckMeteoToField();
 	CheckBossCollision();
 
-	if (meteoriteList_.size() == 0) {
+	if (isFalling) {
 		success_SE_->restart();
 		content_ = TutorialContent::CantMoveCanRotate_Content;
 		tutorialUI_->ChangeContentUI(int(content_));
@@ -533,7 +545,7 @@ void TutorialScene::MeteoCollisionContent() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void TutorialScene::CantMoveCanRotateContent() {
-	// Playerがスティックを回していたら
+	// 攻撃をやめたら
 	player_->Update(field_->GetRadius());
 
 	if (!player_->GetIsAttack()) {

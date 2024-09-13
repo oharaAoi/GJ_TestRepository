@@ -35,6 +35,10 @@ void TitleScene::initialize() {
 	skydome_ = std::make_unique<GameObject>();
 	skydome_->reset_object("skydome.obj");
 
+	player_ = std::make_unique<Player>();
+	player_->get_transform().set_translate({ 2.6f, -2.0f, -2.0f});
+	player_->get_transform().set_rotate(Quaternion::EulerDegree({ 0.0f, -140.0f, 0.0f }));
+
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
@@ -87,6 +91,9 @@ void TitleScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/TitleScene/Title", "Title.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/PlayerBody", "playerBody.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/PlayerArm", "playerArm.obj");
+
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "startKey.png");
 
@@ -106,6 +113,8 @@ void TitleScene::update() {
 	// -------------------------------------------------
 	fadePanel_->Update();
 	startUI_->Update({ 0.4f, 0.4f }, { 640.0f, 520.0f }, 1.0f);
+	player_->Floating();
+
 	if (!fadePanel_->GetIsFadeFinish()) {
 		return;
 	}
@@ -141,6 +150,7 @@ void TitleScene::begin_rendering() {
 
 	skydome_->begin_rendering(*camera3D_);
 	titleObject_->begin_rendering(*camera3D_);
+	player_->Begin_Rendering(camera3D_.get());
 
 	startUI_->begin_rendering();
 	fadePanel_->Begin_Rendering();
@@ -153,6 +163,7 @@ void TitleScene::draw() const {
 	RenderPathManager::BeginFrame();
 	skydome_->draw();
 	titleObject_->draw();
+	player_->Draw();
 	RenderPathManager::Next();
 	outlineNode->draw();
 	RenderPathManager::Next();
@@ -188,6 +199,6 @@ void TitleScene::debug_update() {
 	fadePanel_->Debug_gui();
 	ImGui::End();
 
-
+	player_->Debug_Gui();
 }
 #endif

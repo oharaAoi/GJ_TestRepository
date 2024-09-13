@@ -56,7 +56,7 @@ public:	// メンバ変数
 
 	void FaceMove();
 
-	void OnCollision();
+	void OnCollision(const float& meteoRadius);
 
 	bool GetIsClear();
 
@@ -73,6 +73,8 @@ public:	// メンバ変数
 	void MouthClose();
 
 	void Burp();	// げっぷ
+
+	void SetParentTransform(const std::string& groupName);
 
 #ifdef _DEBUG
 	void EditImGui();

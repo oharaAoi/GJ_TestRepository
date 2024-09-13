@@ -38,7 +38,7 @@ void FollowCamera::initialize() {
 		CameraMoveDara data{
 		adjustmentItem_->GetValue<Vector3>(groupName, itemNamePos),
 		adjustmentItem_->GetValue<Vector3>(groupName, itemNameRotate),
-		adjustmentItem_->GetValue<uint32_t>(groupName, itemNameTime),
+		adjustmentItem_->GetValue<float>(groupName, itemNameTime),
 		};
 		cameraMove_.push_back(data);
 	}
@@ -70,14 +70,15 @@ void FollowCamera::GameStartPerformance() {
 		return;
 	}
 
-	if (++frameCount_ <= cameraMove_[nowIndex_].moveTime) {
-		float t = static_cast<float>(frameCount_) / static_cast<float>(cameraMove_[nowIndex_].moveTime);
-		transform->set_translate(Vector3::Lerp(cameraMove_[nowIndex_].pos, cameraMove_[nowIndex_ + 1].pos, EaseIn::Sine(t)));
+	if (moveT_ <= 1.0f) {
+		moveT_ += cameraMove_[nowIndex_].moveTime * GameTimer::DeltaTime();
+		transform->set_translate(Vector3::Lerp(cameraMove_[nowIndex_].pos, cameraMove_[nowIndex_ + 1].pos, EaseIn::Sine(moveT_)));
 		transform->set_rotate(Quaternion::Slerp(Quaternion::EulerDegree(cameraMove_[nowIndex_].rotateDegree),
-												Quaternion::EulerDegree(cameraMove_[nowIndex_ + 1].rotateDegree), EaseIn::Sine(t)));
+												Quaternion::EulerDegree(cameraMove_[nowIndex_ + 1].rotateDegree), EaseIn::Sine(moveT_)));
 	} else {
 		nowIndex_++;
 		frameCount_ = 0;
+		moveT_ = 0;
 
 		if (nowIndex_ == pauseIndex_) {
 			isStop_ = true;
@@ -91,24 +92,25 @@ void FollowCamera::GameStartPerformance() {
 }
 
 void FollowCamera::GameOverPerformance() {
-	if (++frameCount_ <= 120) {
+	if (moveT_ <= 1.0f) {
 		isPerformanceFinish_ = false;
-		float t = static_cast<float>(frameCount_) / 120.0f;
-		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, 80, -40 }, EaseOut::Quint(t)));
+		moveT_ += cameraMove_[nowIndex_].moveTime * GameTimer::DeltaTime();
+		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, 80, -40 }, EaseOut::Quint(moveT_)));
 	} else {
 		isPerformanceFinish_ = true;
 		frameCount_ = 0;
+		moveT_ = 0;
 	}
 }
 
 void FollowCamera::GameClearPerformance() {
-	if (++frameCount_ < 180) {
+	if (moveT_ <= 1.0f) {
 		isPerformanceFinish_ = false;
-		float t = static_cast<float>(frameCount_) / 180.0f;
+		moveT_ += cameraMove_[nowIndex_].moveTime * GameTimer::DeltaTime();
 		// cameraMove_[4].posは開始時の最後の位置
-		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, -18, 14 }, EaseOut::Quint(t)));
+		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, -18, 14 }, EaseOut::Quint(moveT_)));
 		transform->set_rotate(Quaternion::Slerp(Quaternion::EulerDegree(cameraMove_[4].rotateDegree),
-												Quaternion::EulerDegree({90, 0,0 }), EaseOut::Quint(t)));
+												Quaternion::EulerDegree({90, 0,0 }), EaseOut::Quint(moveT_)));
 	} else {
 		isPerformanceFinish_ = true;
 		frameCount_ = 0;

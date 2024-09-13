@@ -18,6 +18,8 @@ void GameOverScene::finalize() {
 void GameOverScene::initialize() {
 	input_ = Input::GetInstance();
 
+	AdjustmentItem::GetInstance()->Init("GameOver");
+
 	Camera2D::Initialize();
 	camera3D_ = std::make_unique<Camera3D>();
 	camera3D_->initialize();
@@ -29,6 +31,7 @@ void GameOverScene::initialize() {
 
 	gameOverUI_ = std::make_unique<GameOverUI>();
 
+	nextGame_ = true;
 	preNextGame_ = false;
 
 	gameOverTitle_ = std::make_unique<GameObject>();
@@ -36,6 +39,12 @@ void GameOverScene::initialize() {
 
 	skydome_ = std::make_unique<GameObject>();
 	skydome_->reset_object("skydome.obj");
+
+	boss_ = std::make_unique<Boss>();
+	boss_->get_transform().set_translate({-11.0f, -6.6f, 34.7f});
+	boss_->get_transform().set_scale({0.1f, 0.1f, 0.1f });
+	boss_->get_transform().set_rotate(Quaternion::EulerDegree(-90.0f, 0.0f, 0.0f));
+	boss_->SetParentTransform("GameOverBoss");
 
 	// -------------------------------------------------
 	// ↓ 
@@ -90,6 +99,14 @@ void GameOverScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "gameoverTitleKey.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "gameoverCursolKey.png");
 
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossFace", "bossFace.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/LowerJaw", "lowerJaw.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/UpperJaw", "upperJaw.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/InMouth", "InMouth.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyes", "bossEyes.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/BossEyesbrows", "bossEyebrows.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/OverLine", "OverLine.obj");
+
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/gameOver", "meteOnigiri_start.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/gameOver", "meteOnigiri_choice1.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/gameOver", "meteOnigiri_AfterGameBGM2.wav");
@@ -101,6 +118,8 @@ void GameOverScene::begin() {
 void GameOverScene::update() {
 	camera3D_->update();
 	Camera2D::CameraUpdate();
+
+	AdjustmentItem::GetInstance()->Update();
 
 	// -------------------------------------------------
 	// ↓ 
@@ -152,6 +171,9 @@ void GameOverScene::update() {
 	gameOverTitle_->update();
 	skydome_->update();
 
+	bossMoveRotate_ = boss_->get_transform().get_quaternion();
+	boss_->get_transform().set_rotate(bossMoveRotate_ * Quaternion::AngleAxis({ 0,0,1 }, (1.0f * ToRadian)));
+
 	preNextGame_ = nextGame_;
 }
 
@@ -161,6 +183,8 @@ void GameOverScene::begin_rendering() {
 
 	gameOverTitle_->begin_rendering(*camera3D_);
 	skydome_->begin_rendering(*camera3D_);
+
+	boss_->Begin_Rendering(camera3D_.get());
 	
 	gameOverUI_->Begin_Rendering();
 
@@ -174,6 +198,7 @@ void GameOverScene::draw() const {
 	RenderPathManager::BeginFrame();
 	gameOverTitle_->draw();
 	skydome_->draw();
+	boss_->Draw();
 	RenderPathManager::Next();
 	outlineNode->draw();
 	RenderPathManager::Next();
@@ -194,5 +219,11 @@ void GameOverScene::debug_update() {
 	ImGui::Begin("Panel");
 	fadePanel_->Debug_gui();
 	ImGui::End();
+
+	boss_->EditImGui();
+
+	if (ImGui::Button("get")) {
+		boss_->SetParentTransform("GameOverBoss");
+	}
 }
 #endif

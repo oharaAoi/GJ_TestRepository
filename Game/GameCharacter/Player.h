@@ -20,6 +20,14 @@ class Player :
 
 public:
 
+	struct FloatingGimmick {
+		float parameter;
+		float amplitude;
+		uint32_t period;
+	};
+
+public:
+
 	Player();
 	~Player();
 
@@ -34,6 +42,11 @@ public:
 	void On_Collision(const BaseCollider* const other);
 	void On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAttack);
 	void On_Collision_Exit(const BaseCollider* const);
+
+#ifdef _DEBUG
+	void Debug_Gui();
+#endif // _DEBUG
+
 
 public:	// メンバ関数
 
@@ -57,6 +70,11 @@ public:	// メンバ関数
 	/// 範囲内で抑える
 	/// </summary>
 	void ConstrainToField(Vector3& translate);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void Floating();
 
 public:
 
@@ -117,6 +135,8 @@ private:
 	uint32_t stanTime_ = 60;
 
 	float radius_ = 1.0f;
+
+	FloatingGimmick floatinGimmick_;
 
 	// Arm
 	std::unique_ptr<GameObject> playerArm_ = nullptr;
