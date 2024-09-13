@@ -36,6 +36,9 @@ void Player::Init() {
 	floatinGimmick_.period = 120;
 	floatinGimmick_.amplitude = 0.01f;
 
+	invincibleCount_ = 0;
+	invincibleTime_ = 120;
+
 	input_ = Input::GetInstance();
 	Vector3 translate = transform->get_translate();
 	transform->set_translate_y(12.5f);
@@ -69,7 +72,6 @@ void Player::Update(const float& fieldRadius) {
 
 	if (isAttack_) {
 		gravityRod_->Update();
-
 		//playerArm_->get_transform().set_rotate(Quaternion::EulerDegree(-70, 0, 0));
 	}
 }
@@ -203,7 +205,7 @@ void Player::Attack() {
 }
 
 void Player::KnockBack(const Vector3& dire) {
-	preFrameVelocity_ = (dire * 4.0f);
+	preFrameVelocity_ = (-dire * 4.0f);
 }
 
 void Player::ConstrainToField(Vector3& translate) {

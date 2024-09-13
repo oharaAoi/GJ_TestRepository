@@ -402,7 +402,9 @@ void GameScene::late_update() {
 	collisionManager_->update();
 
 	// 敵とPlayer --------------------------------------------------
-	collisionManager_->collision("Enemy", "Player");
+	if (!player_->GetIsStan()) {
+		collisionManager_->collision("Enemy", "Player");
+	}
 	// メテオ同士 ---------------------------------------------------
 	collisionManager_->collision("Meteo", "Meteo");
 	// Enemy同士 ---------------------------------------------------
