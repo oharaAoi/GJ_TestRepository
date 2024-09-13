@@ -27,6 +27,7 @@ void Meteorite::Init(const Vector3& pos) {
 	sphereCollider_->initialize();
 	sphereCollider_->get_hierarchy().set_parent(this->get_hierarchy());
 	sphereCollider_->set_on_collision(std::bind(&Meteorite::On_Collision, this, std::placeholders::_1, &this->get_materials()[0].color));
+	sphereCollider_->set_on_collision(std::bind(&Meteorite::On_Collision_Enter, this, std::placeholders::_1, &this->get_materials()[0].color));
 	sphereCollider_->set_radius(1.0f);
 
 	velocity_ = { -2, 0, 0 };
@@ -101,7 +102,24 @@ void Meteorite::Falling() {
 }
 
 void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
-	
+	if (other->group() == "Meteo") {
+		if (!isFalling_) {
+			velocity_ += (other->world_position() - world_position()).normalize_safe() * -2.0f;
+		}
+		isFalling_ = true;
+		meteoHit_SE_->play();
+		
+	} else if (other->group() == "Enemy") { // Enemy
+		isEnemyHit_ = true;
+		*object = { 1.0f,0,0,1.0f };
+		meteoHitToEnemy_SE_->restart();
+		sphereCollider_->set_radius(sphereCollider_->get_radius() + 0.1f);
+		Vector3 scale = transform->get_scale();
+		scale = { scale.x + 0.2f,scale.y + 0.2f, scale.z + 0.2f };
+		if (scale.x <= 1.6f) {
+			transform->set_scale(scale);
+		}
+	}
 }
 
 void Meteorite::On_Collision_Enter(const BaseCollider* const other, Color* object) {
