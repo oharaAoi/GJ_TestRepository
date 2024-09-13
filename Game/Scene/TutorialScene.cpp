@@ -548,6 +548,18 @@ void TutorialScene::CantMoveCanRotateContent() {
 	// 攻撃をやめたら
 	player_->Update(field_->GetRadius());
 
+	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		meteo->Update(player_->get_transform().get_translate());
+	}
+
+	// 死亡フラグのチェックを行う
+	meteoriteList_.remove_if([](const std::unique_ptr<Meteorite>& meteo) {
+		if (meteo->GetIsDead()) {
+			return true;
+		}
+		return false;
+	});
+
 	if (!player_->GetIsAttack()) {
 		success_SE_->restart();
 		content_ = TutorialContent::FirstEnemy_Content;
