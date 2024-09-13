@@ -10,7 +10,7 @@
 #include "Engine/Game/Collision/Collider/SphereCollider.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
-
+#include "Game/Effect/EffectManager.h"
 
 class Transform3D;
 class Color;
@@ -108,6 +108,10 @@ public:
 
 	// ----------- スタン中か ----------- //
 	bool GetIsStan() const { return isStan_; };
+
+private:
+
+	EffectManager* effectManager_ = nullptr;
 
 private:
 

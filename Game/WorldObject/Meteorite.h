@@ -6,6 +6,7 @@
 #include "Engine/Game/Audio/AudioPlayer.h"
 #include "Engine/Game/Audio/AudioResource.h"
 #include "Engine/Game/GameTimer/GameTimer.h"
+#include "Game/Effect/EffectManager.h"
 
 class Color;
 
@@ -81,6 +82,8 @@ public:	// accessor
 	const float GetAttractRange() const { return attractionRange_; }
 
 private:
+
+	EffectManager* effectManager_ = nullptr;
 
 	std::shared_ptr<SphereCollider> sphereCollider_ = nullptr;
 
