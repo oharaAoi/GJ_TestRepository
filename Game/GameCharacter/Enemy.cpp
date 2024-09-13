@@ -40,7 +40,7 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 	fieldOutCount_ = 0;
 
-	behaviorRequest_ = EnemyState::Approach_State;
+	behaviorRequest_ = EnemyState::Root_State;
 
 	enemyAttack_SE_ = std::make_unique<AudioPlayer>();
 	enemyAttack_SE_->initialize("SE_enemyAttack.wav", 0.5f, false);
