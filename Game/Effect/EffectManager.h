@@ -87,7 +87,8 @@ public:	// メンバ関数
 	/// リストにParticleを追加する
 	/// </summary>
 	void AddParticleList(const Vector3& translation, const Vector3& scale,
-						 const Vector3& velocity, const uint32_t& lifeTime, const float& speed);
+						 const Vector3& velocity, const uint32_t& lifeTime,
+						 const float& speed, const std::string& useObjName);
 
 private:
 

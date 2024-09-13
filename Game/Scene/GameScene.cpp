@@ -187,6 +187,8 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach9.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomachPercent.obj");
 
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "kometubu.obj");
+
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI1.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI2.png");
 
@@ -230,6 +232,8 @@ void GameScene::update() {
 	Input::GetInstance()->Update();
 
 	AdjustmentItem::GetInstance()->Update();
+
+	effectManager_->Update();
 
 	// -------------------------------------------------
 	// ↓ 演出が始まるかどうか
@@ -340,8 +344,6 @@ void GameScene::update() {
 	meteoriteManager_->Update(player_->get_transform().get_translate());
 
 	enemyManager_->Update(player_->get_transform().get_translate());
-
-	effectManager_->Update();
 
 	posteffectManager->update();
 

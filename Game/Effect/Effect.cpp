@@ -62,7 +62,7 @@ void Effect::EditImGui() {
 
 // ------------------- Effectの情報を読み込む ------------------- //
 void Effect::LoadEffectFile(const std::string& fileName) {
-	std::string filePath = kDirectoryPath_ + fileName;
+	std::string filePath = kDirectoryPath_ + fileName + ".json";
 	std::ifstream file(filePath);
 	if (file.is_open()) {
 		nlohmann::json json;
@@ -72,7 +72,12 @@ void Effect::LoadEffectFile(const std::string& fileName) {
 		// std::list<std::string>に変換
 		useEmitterNameList_.clear();
 		for (const auto& name : json) {
-			useEmitterNameList_.push_back(name.get<std::string>());
+			std::string fileNameWithExtension = name.get<std::string>();
+			size_t lastDotPos = fileNameWithExtension.find_last_of(".");
+			if (lastDotPos != std::string::npos) {
+				fileNameWithExtension = fileNameWithExtension.substr(0, lastDotPos);  // 拡張子を削除
+			}
+			useEmitterNameList_.push_back(fileNameWithExtension);
 		}
 	} else {
 		assert("can not file open");

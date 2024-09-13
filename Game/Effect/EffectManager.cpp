@@ -85,7 +85,7 @@ void EffectManager::AddEffect(const std::string& effectName,
 	//　引数のEffectが存在するか探索する
 	for (const std::string& effect : effectNameList_) {
 		if (effect == path) {
-			effectList_.emplace_back(this, path, pos, direction);
+			effectList_.emplace_back(this, effectName, pos, direction);
 		}
 	}
 }
@@ -311,7 +311,7 @@ void EffectManager::CreateEffect(const std::string& effectName) {
 // ------------------- Particleをリストに追加する処理 ------------------- //
 void EffectManager::AddParticleList(const Vector3& translation, const Vector3& scale,
 									const Vector3& velocity, const uint32_t& lifeTime,
-									const float& speed) {
-	particleList_.emplace_back(translation, scale, velocity, lifeTime, speed);
+									const float& speed, const std::string& useObjName) {
+	particleList_.emplace_back(translation, scale, velocity, lifeTime, speed, useObjName);
 }
 
