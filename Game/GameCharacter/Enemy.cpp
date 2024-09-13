@@ -21,6 +21,8 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 		reset_object("kariSpEnemy.obj");
 	}
 
+	effectManager_ = EffectManager::GetInstance();
+
 	sphereCollider_ = std::make_unique<SphereCollider>();
 	sphereCollider_->initialize();
 	sphereCollider_->get_hierarchy().set_parent(this->get_hierarchy());
@@ -294,6 +296,8 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 		if (isAttack_) {
 			velocity_ *= -0.05f;	// 値を小さくしておく
 			enemyAttack_SE_->restart();
+			effectManager_->AddEffect("enemyHitPlayer", transform->get_translate(), velocity_);
+
 			return;
 		} else {
 			isKickToPlayer_ = true;
@@ -301,10 +305,13 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			velocity_ = (other->world_position() - world_position()).normalize_safe() * -5.0f;
 			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -8.0f;
 			behaviorRequest_ = EnemyState::Blown_State;
+
+			effectManager_->AddEffect("meteo", transform->get_translate() , velocity_);
 		}
 
 	} else if (other->group() == "Meteo") { // 隕石
 		isDead_ = true;
+		effectManager_->AddEffect("meteoEachOther", other->get_transform().get_translate(), {0, 1, 0});
 
 	} else if (other->group() == "Enemy") { // 敵同士
 		velocity_ = (other->world_position() - world_position()).normalize_safe() * -0.5f;
@@ -321,6 +328,8 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			fieldOutCount_ = 0;
 			fieldOutTime_ = 120;
 		}
+
+		effectManager_->AddEffect("meteo", other->get_transform().get_translate(), velocity_);
 	}
 }
 

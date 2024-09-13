@@ -15,7 +15,7 @@
         ],
         "emitCount": 1,
         "emitterName": "meteo",
-        "lifeTime": 40,
+        "lifeTime": 30,
         "radius": 1.0,
         "range": [
             1.0,

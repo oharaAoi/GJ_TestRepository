@@ -54,7 +54,7 @@ public:	// メンバ関数
 	/// </summary>
 	/// <param name="effectName"></param>
 	void AddEffect(const std::string& effectName,
-				   const Vector3& pos = { 0,0,0 }, const Vector3& direction = { 0, 1, 0 });
+				   const Vector3& pos, const Vector3& direction);
 
 #ifdef _DEBUG
 	/// <summary>
