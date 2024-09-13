@@ -16,6 +16,9 @@ void SatisFactionLevel::Init() {
 	satisFaction_->get_transform().set_scale({ 0.7f, 0.7f, 0.7f });
 	satisFaction_->get_transform().set_translate({ -12.0f, 16.0f, -13.0f });
 	percent_->get_transform().set_translate({ -2.5f, 16.0f, -13.0f });
+
+	DigitCreate();
+	ScoreChange();
 }
 
 void SatisFactionLevel::Update(const int& satisFaction, const int& satisFactionLevel) {

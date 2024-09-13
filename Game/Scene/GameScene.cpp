@@ -77,6 +77,7 @@ void GameScene::initialize() {
 	collisionManager_->register_collider("Player", player_->GetCollider());
 	meteoriteManager_ = std::make_unique<MeteoriteManager>(meteoriteList_, collisionManager_.get());
 	enemyManager_ = std::make_unique<EnemyManager>(enemyList_, collisionManager_.get(), player_->GetIsAttackofEnmey(), field_->get_hierarchy());
+	effectManager_->Init();
 
 	// -------------------------------------------------
 	// ↓ 
@@ -339,6 +340,8 @@ void GameScene::update() {
 	meteoriteManager_->Update(player_->get_transform().get_translate());
 
 	enemyManager_->Update(player_->get_transform().get_translate());
+
+	effectManager_->Update();
 
 	posteffectManager->update();
 

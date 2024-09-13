@@ -32,7 +32,7 @@
 #include "Engine/Game/GameTimer/GameTimer.h"
 #include "Engine/Game/Audio/AudioPlayer.h"
 #include "Game/UI/SatisFactionLevel.h"
-
+#include "Game/Effect/EffectManager.h"
 
 class EditorController;
 
