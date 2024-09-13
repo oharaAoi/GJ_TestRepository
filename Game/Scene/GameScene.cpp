@@ -345,8 +345,6 @@ void GameScene::update() {
 
 	enemyManager_->Update(player_->get_transform().get_translate());
 
-	effectManager_->Update();
-
 	posteffectManager->update();
 
 	// -------------------------------------------------
