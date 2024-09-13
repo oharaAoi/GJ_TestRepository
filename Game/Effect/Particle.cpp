@@ -21,12 +21,16 @@ void Particle::Init(const Vector3& pos, const Vector3& scale, const Vector3& vel
 	isDead_ = false;
 
 	reset_object(useObjName);
+
+	transform->set_scale(RandomVector3(0.5f, 0.8f));
 }
 
 void Particle::Update() {
 	Vector3 translate = transform->get_translate();
 	translate += velocity_ * speed_;
 	transform->set_translate(translate);
+
+
 	
 	if (--lifeTime_ <= 0) {
 		isDead_ = true;

@@ -242,6 +242,8 @@ void GameScene::update() {
 
 	AdjustmentItem::GetInstance()->Update();
 
+	effectManager_->Update();
+
 	// -------------------------------------------------
 	// ↓ 演出が始まるかどうか
 	// -------------------------------------------------
@@ -529,6 +531,7 @@ void GameScene::CheckBossCollision() {
 			if (length < meteo->GetRadius()) {
 				meteo->SetIsDead(true);
 				boss_->OnCollision(meteo->GetRadius());
+				effectManager_->AddEffect("bossHit", meteo->get_transform().get_translate(), {0,1,0});
 			}
 		}
 	}

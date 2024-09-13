@@ -133,7 +133,7 @@ void Enemy::Update(const Vector3& playerPosition) {
 			if (lenght < 4.0f) {
 				fieldOutCount_ = 0;
 				isFieldOut_ = false;
-				behaviorRequest_ = EnemyState::Approach_State;
+				behaviorRequest_ = EnemyState::Root_State;
 
 			}
 			translate.y = 13.0f;
