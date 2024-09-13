@@ -46,7 +46,7 @@ public:
 	
 private:
 
-	const std::string kDirectoryPath_ = "./Engine/Resources/Effect/";
+	const std::string kDirectoryPath_ = "./Game/Resources/Effect/";
 
 	EffectManager* effectManager_ = nullptr;
 	// effect名

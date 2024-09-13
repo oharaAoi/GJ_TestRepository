@@ -1,0 +1,28 @@
+{
+    "meteo": {
+        "angle": 180.0,
+        "centerPos": [
+            0.0,
+            12.09000015258789,
+            0.0
+        ],
+        "createCount": 4,
+        "createTime": 80,
+        "direction": [
+            0.5,
+            1.2400000095367432,
+            0.18000000715255737
+        ],
+        "emitCount": 1,
+        "emitterName": "meteo",
+        "lifeTime": 40,
+        "radius": 1.0,
+        "range": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "speed": 8.0,
+        "useObjectName": "kometubu.obj"
+    }
+}

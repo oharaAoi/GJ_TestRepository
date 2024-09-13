@@ -63,9 +63,10 @@ void Emitter::Emit() {
 		particleScale_ = { radius_, radius_, radius_ };
 
 		particleVelocity_ = GetEmitDirectionRandom(radius_, direction_);
-		particleVelocity_.normalize();
+		particleVelocity_.normalize_safe();
 
-		effectManager_->AddParticleList(particleTranslation_, particleScale_, particleVelocity_, lifeTime_, speed_);
+		effectManager_->AddParticleList(particleTranslation_, particleScale_,
+										particleVelocity_, lifeTime_, speed_, useObjName_);
 	}
 
 	emitCount_--;
@@ -211,14 +212,14 @@ void Emitter::SaveFileEmitter(const std::string& groupName) {
 // ------------------- Emitterの情報を読み込む ------------------- //
 void Emitter::LoadEmitter(const std::string& groupName) {
 	// 読み込むjsonファイルのフルパスを合成する
-	std::string filePath = kDirectoryPath_ + groupName;
+	std::string filePath = kDirectoryPath_ + groupName + ".json";
 	// 読み込み用ファイルストリーム
 	std::ifstream ifs;
 	// ファイルを読み込みように開く
 	ifs.open(filePath);
 
 	if (ifs.fail()) {
-		std::string message = "not Exist " + groupName + ".json";
+		std::string message = "not Exist " + groupName;
 
 		return;
 	}

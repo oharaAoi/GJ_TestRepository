@@ -87,12 +87,13 @@ public:	// メンバ関数
 	/// リストにParticleを追加する
 	/// </summary>
 	void AddParticleList(const Vector3& translation, const Vector3& scale,
-						 const Vector3& velocity, const uint32_t& lifeTime, const float& speed);
+						 const Vector3& velocity, const uint32_t& lifeTime,
+						 const float& speed, const std::string& useObjName);
 
 private:
 
-	const std::string kEffectDirectoryPath_ = "./Engine/Resources/Effect/";
-	const std::string kEmitterDirectoryPath_ = "./Engine/Resources/Effect/Emitter/";
+	const std::string kEffectDirectoryPath_ = "./Game/Resources/Effect/";
+	const std::string kEmitterDirectoryPath_ = "./Game/Resources/Effect/Emitter/";
 
 	// ------------------- ゲームで使用するリスト ------------------- //
 	std::list<Particle> particleList_;

@@ -1,5 +1,5 @@
 {
-    "default.json": {
+    "default": {
         "angle": 30.0,
         "centerPos": [
             0.0,
@@ -14,7 +14,7 @@
             0.0
         ],
         "emitCount": 1,
-        "emitterName": "default.json",
+        "emitterName": "default",
         "lifeTime": 120,
         "radius": 1.0,
         "range": [

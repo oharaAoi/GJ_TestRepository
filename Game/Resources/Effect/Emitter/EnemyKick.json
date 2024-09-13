@@ -1,0 +1,28 @@
+{
+    "EnemyKick": {
+        "angle": 20.0,
+        "centerPos": [
+            0.0,
+            16.520000457763672,
+            0.0
+        ],
+        "createCount": 5,
+        "createTime": 10,
+        "direction": [
+            0.30000001192092896,
+            1.0,
+            0.0
+        ],
+        "emitCount": 1,
+        "emitterName": "EnemyKick",
+        "lifeTime": 40,
+        "radius": 1.0,
+        "range": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "speed": 6.0,
+        "useObjectName": "particle.obj"
+    }
+}
