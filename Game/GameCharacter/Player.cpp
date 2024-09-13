@@ -3,6 +3,7 @@
 #include "Engine/Game/Color/Color.h"
 #include <externals/imgui/imgui.h>
 #include "Game/Enviroment.h"
+#include "Game/Effect/EffectManager.h"
 
 
 Player::Player() {
@@ -14,6 +15,8 @@ Player::~Player() {
 
 void Player::Init() {
 	reset_object("playerBody.obj");
+
+	effectManager_ = EffectManager::GetInstance();
 
 	sphereCollider_ = std::make_unique<SphereCollider>();
 	sphereCollider_->initialize();
@@ -111,9 +114,13 @@ void Player::On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAt
 		this->get_materials()[0].color = { 1,0.0f,0.0f,1 };
 
 		Vector3 direction = (other->world_position() - world_position()).normalize_safe();
-		KnockBack(direction);
+		KnockBack(-direction);
+
 	} else {
 		enemyKick_SE_->restart();
+
+		//effectManager_->AddEffect("syouma", world_position(), { 0,1,0 });
+
 	}
 }
 

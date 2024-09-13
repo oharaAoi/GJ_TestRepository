@@ -24,11 +24,14 @@ void SatisFactionLevel::Init() {
 void SatisFactionLevel::Update(const int& satisFaction, const int& satisFactionLevel) {
 	raito_ = float(satisFaction) / float(satisFactionLevel);
 
-	if (raito_ != 0) {
+	// 当たりが非常に小さいと時
+	if (raito_ > 0.0f) {
 		digit_ = static_cast<int>(std::log10f(static_cast<float>(raito_ * 100.0f)) + 1);
 		if (digit_ != score_.size()) {
 			DigitCreate();
 		}
+	} else {
+		digit_ = 1;
 	}
 
 	ScoreChange();
@@ -59,8 +62,11 @@ void SatisFactionLevel::ScoreChange() {
 
 	for (int oi = static_cast<int>(score_.size()) - 1; oi >= 0; oi--) {
 		// 頭からスコアの数値を取り出し10で割ったあまりから数値割り出す(123で2桁目を取り出したい時12にして10で割る)
-		num = (int(raito_ * 100.0f) / nowDigite) % 10;
-
+		if (raito_ * 100.0f < 0) {
+			NumberChange(0, oi);
+		} else {
+			num = (int(raito_ * 100.0f) / nowDigite) % 10;
+		}
 		// 描画する画像を切り替える
 		NumberChange(num, oi);
 
@@ -71,6 +77,10 @@ void SatisFactionLevel::ScoreChange() {
 
 void SatisFactionLevel::DigitCreate() {
 	int num = digit_ - static_cast<int>(score_.size());
+	if (num < 0) {
+		// 以下の場合何もしない
+		return;
+	}
 	while (num != 0) {
 		// 初期化した値を実際に描画する変数に入れる
 		auto& newScore = score_.emplace_back(std::make_unique<GameObject>());
