@@ -113,7 +113,7 @@ void Player::On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAt
 		isStan_ = true;
 		this->get_materials()[0].color = { 1,0.0f,0.0f,1 };
 
-		Vector3 direction = -(other->world_position() - world_position()).normalize_safe();
+		Vector3 direction = (other->world_position() - world_position()).normalize_safe();
 		KnockBack(direction);
 
 	} else {

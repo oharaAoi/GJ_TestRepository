@@ -40,7 +40,7 @@ void Enemy::Init(const Vector3& position, const EnemyType& enemyType) {
 
 	fieldOutCount_ = 0;
 
-	behaviorRequest_ = EnemyState::Root_State;
+	behaviorRequest_ = EnemyState::Approach_State;
 
 	enemyAttack_SE_ = std::make_unique<AudioPlayer>();
 	enemyAttack_SE_->initialize("SE_enemyAttack.wav", 0.5f, false);
@@ -294,9 +294,11 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 
 	if (other->group() == "Player") { // player
 		if (isAttack_) {
-			velocity_ *= -0.05f;	// 値を小さくしておく
+			velocity_ *= -0.01f;	// 値を小さくしておく
 			enemyAttack_SE_->restart();
 			effectManager_->AddEffect("enemyHitPlayer", transform->get_translate(), velocity_);
+			isAttack_ = false;
+			behaviorRequest_ = EnemyState::Root_State;
 
 			return;
 		} else {
