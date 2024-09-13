@@ -78,7 +78,10 @@ void SatisFactionLevel::DigitCreate() {
 }
 
 void SatisFactionLevel::NumberChange(const int& number, const int& index) {
-	if (number == 1) {
+	if (number == 0) {
+		score_[index]->reset_object("fullStomach0.obj");
+	}
+	else if (number == 1) {
 		score_[index]->reset_object("fullStomach1.obj");
 	} else if (number == 2) {
 		score_[index]->reset_object("fullStomach2.obj");

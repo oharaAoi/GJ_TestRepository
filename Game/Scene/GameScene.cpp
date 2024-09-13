@@ -172,6 +172,7 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach0.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach1.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach2.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach3.obj");

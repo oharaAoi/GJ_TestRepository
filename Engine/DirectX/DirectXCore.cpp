@@ -79,6 +79,10 @@ void DirectXCore::Set3DLight() {
 	DirectXCommand::GetCommandList()->SetGraphicsRootConstantBufferView(3, GetInstance().light->get_resource()->GetGPUVirtualAddress());
 }
 
+DirectionalLightData& DirectXCore::Get3DLight() {
+	return *GetInstance().light->get_data();
+}
+
 #ifdef _DEBUG
 void DirectXCore::ShowDebugTools() {
 	GetInstance().show_debug_tools();
