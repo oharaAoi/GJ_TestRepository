@@ -63,7 +63,7 @@ void WinApp::Initialize(const std::string& programName, int32_t width, int32_t h
 #ifdef _DEBUG
 	GameTimer::IsFixDeltaTime(true);
 #else
-	GameTimer::IsFixDeltaTime(false);
+	GameTimer::IsFixDeltaTime(true);
 #endif // _DEBUG
 
 	// ウィンドウ表示

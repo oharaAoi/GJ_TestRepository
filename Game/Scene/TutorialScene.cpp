@@ -374,11 +374,11 @@ void TutorialScene::draw() const {
 	outlineNode->draw();
 	RenderPathManager::Next();
 	tutorialUI_->Draw();
-	fadePanel_->Draw();
 
 	if (playerUI) {
 		playerUI->Draw();
 	}
+	fadePanel_->Draw();
 
 	RenderPathManager::Next();
 	chromaticAberrationNode->draw();
