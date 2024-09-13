@@ -1,5 +1,7 @@
 #include "FadePanel.h"
 
+#include <algorithm>
+
 FadePanel::FadePanel() {
 	Init();
 }
@@ -47,25 +49,27 @@ void FadePanel::SetFadeFadeStart(const FadeType& type) {
 	isFadeFisnish_ = false;
 	fadeType_ = type;
 	frameCount_ = 0;
+	moveT_ = 0;
 }
 
 void FadePanel::FadeIn() {
-	if (moveT_ <= 1.0f) {
+	if (moveT_ < 1.0f) {
 		moveT_ += 1.0f * GameTimer::DeltaTime();
-		panelAlpha_ = std::lerp(0.0f, 1.0f, moveT_);
+		panelAlpha_ = std::lerp(0.0f, 1.0f, std::clamp(moveT_, 0.0f, 1.0f));
 	} else {
-		moveT_ = 0;
+		//moveT_ = 0;
 		isFade_ = false;
 		isFadeFisnish_ = true;
 	}
 }
 
 void FadePanel::FadeOut() {
-	if (moveT_ <= 1.0f) {
+	if (moveT_ < 1.0f) {
 		moveT_ += 1.0f * GameTimer::DeltaTime();
-		panelAlpha_ = std::lerp(1.0f, 0.0f, moveT_);
+		panelAlpha_ = std::lerp(1.0f, 0.0f, std::clamp(moveT_, 0.0f, 1.0f));
+		//panelAlpha_ = std::lerp(1.0f, 0.0f, moveT_);
 	} else {
-		moveT_ = 0;
+		//moveT_ = 0;
 		isFade_ = false;
 		isFadeFisnish_ = true;
 	}
