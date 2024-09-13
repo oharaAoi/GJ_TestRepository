@@ -120,9 +120,7 @@ void Player::On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAt
 
 	} else {
 		enemyKick_SE_->restart();
-
-		//effectManager_->AddEffect("syouma", world_position(), { 0,1,0 });
-
+		effectManager_->AddEffect("enemyHitPlayer", transform->get_translate(), {0,1,1});
 	}
 }
 

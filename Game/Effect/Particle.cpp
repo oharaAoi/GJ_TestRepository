@@ -13,10 +13,10 @@ void Particle::Init(const Vector3& pos, const Vector3& scale, const Vector3& vel
 					const uint32_t& lifeTime, const float& speed, const std::string& useObjName) {
 	transform->set_translate(pos);
 	transform->set_scale(scale);
-	velocity_ = velocity;
+	velocity_ = velocity.normalize_safe();
 	lifeTime_ = lifeTime;
 
-	speed_ = true;
+	speed_ = 0.1f;
 
 	isDead_ = false;
 
@@ -25,8 +25,7 @@ void Particle::Init(const Vector3& pos, const Vector3& scale, const Vector3& vel
 
 void Particle::Update() {
 	Vector3 translate = transform->get_translate();
-	Vector3 preVelocity = velocity_;
-	translate += (velocity_.normalize_safe());
+	translate += velocity_ * speed_;
 	transform->set_translate(translate);
 	
 	if (--lifeTime_ <= 0) {

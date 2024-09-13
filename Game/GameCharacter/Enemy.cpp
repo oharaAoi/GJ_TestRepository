@@ -299,6 +299,7 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			effectManager_->AddEffect("enemyHitPlayer", transform->get_translate(), velocity_);
 			isAttack_ = false;
 			behaviorRequest_ = EnemyState::Root_State;
+			effectManager_->AddEffect("enemyHitPlayer", transform->get_translate(), { 0,1,1 });
 
 			return;
 		} else {
@@ -307,7 +308,6 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			velocity_ = (other->world_position() - world_position()).normalize_safe() * -5.0f;
 			acceleration_ = (other->world_position() - world_position()).normalize_safe() * -8.0f;
 			behaviorRequest_ = EnemyState::Blown_State;
-
 			effectManager_->AddEffect("meteo", transform->get_translate() , velocity_);
 		}
 
@@ -331,7 +331,7 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			fieldOutTime_ = 120;
 		}
 
-		effectManager_->AddEffect("meteo", other->get_transform().get_translate(), velocity_);
+		effectManager_->AddEffect("meteo", transform->get_translate(), {0.0f,1.0f,0.0f});
 	}
 }
 

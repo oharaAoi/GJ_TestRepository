@@ -107,7 +107,7 @@ void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
 		}
 		isFalling_ = true;
 		meteoHit_SE_->play();
-		//effectManager_->AddEffect("meteoEachOther", transform->get_translate(),velocity_);
+		effectManager_->AddEffect("meteoEachOther", transform->get_translate(), {0, 1, 0});
 
 	} else if (other->group() == "Enemy") { // Enemy
 		isEnemyHit_ = true;
@@ -119,6 +119,7 @@ void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
 		if (scale.x <= 1.6f) {
 			transform->set_scale(scale);
 		}
+		effectManager_->AddEffect("meteoEachOther", transform->get_translate(), { 0, 1, 0 });
 	}
 }
 
