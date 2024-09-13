@@ -28,6 +28,8 @@ private:
 
 	uint32_t lifeTime_;
 
+	Vector3 axisVector_;
+
 	bool isDead_;
 
 	float speed_;

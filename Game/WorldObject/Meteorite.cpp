@@ -101,13 +101,17 @@ void Meteorite::Falling() {
 }
 
 void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
+	
+}
+
+void Meteorite::On_Collision_Enter(const BaseCollider* const other, Color* object) {
 	if (other->group() == "Meteo") {
 		if (!isFalling_) {
 			velocity_ += (other->world_position() - world_position()).normalize_safe() * -2.0f;
 		}
 		isFalling_ = true;
 		meteoHit_SE_->play();
-		effectManager_->AddEffect("meteoEachOther", transform->get_translate(), {0, 1, 0});
+		effectManager_->AddEffect("meteoEachOther", transform->get_translate(), { 0, 1, 0 });
 
 	} else if (other->group() == "Enemy") { // Enemy
 		isEnemyHit_ = true;
@@ -121,9 +125,6 @@ void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
 		}
 		effectManager_->AddEffect("meteoEachOther", transform->get_translate(), { 0, 1, 0 });
 	}
-}
-
-void Meteorite::On_Collision_Enter(const BaseCollider* const) {
 }
 
 void Meteorite::On_Collision_Exit(const BaseCollider* const) {

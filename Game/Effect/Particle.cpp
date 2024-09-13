@@ -20,6 +20,8 @@ void Particle::Init(const Vector3& pos, const Vector3& scale, const Vector3& vel
 
 	isDead_ = false;
 
+	axisVector_ = RandomVector3(-1, 1);
+
 	reset_object(useObjName);
 
 	transform->set_scale(RandomVector3(0.5f, 0.8f));
@@ -30,7 +32,9 @@ void Particle::Update() {
 	translate += velocity_ * speed_;
 	transform->set_translate(translate);
 
-
+	Quaternion rotation = transform->get_quaternion();
+	Quaternion rotateValue = Quaternion::AngleAxis(axisVector_, (8.0f * ToRadian));
+	transform->set_rotate(rotateValue * rotation);
 	
 	if (--lifeTime_ <= 0) {
 		isDead_ = true;

@@ -41,7 +41,7 @@ public:	// メンバ関数
 	void Falling();
 
 	void On_Collision(const BaseCollider* const other, Color* object);
-	void On_Collision_Enter(const BaseCollider* const);
+	void On_Collision_Enter(const BaseCollider* const other, Color* object);
 	void On_Collision_Exit(const BaseCollider* const);
 
 #ifdef _DEBUG

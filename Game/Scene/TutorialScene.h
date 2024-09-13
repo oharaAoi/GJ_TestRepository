@@ -28,6 +28,8 @@
 #include "Engine/Game/GameObject/SpriteObject.h"
 #include "Game/UI/PlayerUI.h"
 
+#include "Game/Effect/EffectManager.h"
+
 /// <summary>
 /// 内容
 /// </summary>
@@ -109,6 +111,8 @@ public:	// チュートリアルの内容
 private:
 
 	Input* input_ = nullptr;
+
+	EffectManager* effectManager_;
 
 	bool isStop_ = false;
 	float contentTimer;
