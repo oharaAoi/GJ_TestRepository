@@ -220,7 +220,7 @@ void Player::Floating() {
 	float upTranslate = transform->get_translate().y;
 	// 口を動かすアニメーションを行う
 	const float step = (2.0f * PI) / static_cast<float>(floatinGimmick_.period);
-	floatinGimmick_.parameter += step * GameTimer::DeltaTime();
+	floatinGimmick_.parameter += step;
 	floatinGimmick_.parameter = std::fmod(floatinGimmick_.parameter, 2.0f * PI);
 	// 移動させる量を動かす
 	upTranslate += std::sin(floatinGimmick_.parameter) * 0.01f;

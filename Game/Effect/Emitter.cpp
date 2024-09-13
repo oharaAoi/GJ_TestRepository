@@ -63,7 +63,7 @@ void Emitter::Emit() {
 		particleScale_ = { radius_, radius_, radius_ };
 
 		particleVelocity_ = GetEmitDirectionRandom(radius_, direction_);
-		particleVelocity_.normalize();
+		particleVelocity_.normalize_safe();
 
 		effectManager_->AddParticleList(particleTranslation_, particleScale_,
 										particleVelocity_, lifeTime_, speed_, useObjName_);

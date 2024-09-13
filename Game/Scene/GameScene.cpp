@@ -234,7 +234,7 @@ void GameScene::update() {
 
 	AdjustmentItem::GetInstance()->Update();
 
-	effectManager_->Update();
+	//effectManager_->Update();
 
 	// -------------------------------------------------
 	// ↓ 演出が始まるかどうか
@@ -586,29 +586,29 @@ void GameScene::GameClearPerformance() {
 }
 
 void GameScene::CreateBillBoard() {
-	// 攻撃していないなら早期リターン
-	if (!player_->GetIsAttack()) {
-		return;
-	}
+	//// 攻撃していないなら早期リターン
+	//if (!player_->GetIsAttack()) {
+	//	return;
+	//}
 
-	billboardPopT_ += GameTimer::DeltaTime();
+	//billboardPopT_ += GameTimer::DeltaTime();
 
-	if (billboardPopT_ > 1.0f) {
-		int engineOrEnd = RandomInt(0, 1);
-		// ビルボードを生成する
-		if (engineOrEnd == 0) { // 原点の方出す
-			billboardPopT_ = 0;
-			auto& newBillborad = billboardList_.emplace_back(
-				std::make_unique<Billboard>(player_->GetGravityRodOrigine()));
+	//if (billboardPopT_ > 1.0f) {
+	//	int engineOrEnd = RandomInt(0, 1);
+	//	// ビルボードを生成する
+	//	if (engineOrEnd == 0) { // 原点の方出す
+	//		billboardPopT_ = 0;
+	//		auto& newBillborad = billboardList_.emplace_back(
+	//			std::make_unique<Billboard>(player_->GetGravityRodOrigine()));
 
-		} else if(engineOrEnd == 1) { // 終点の方出す
-			billboardPopT_ = 0;
-			auto& newBillborad = billboardList_.emplace_back(
-				std::make_unique<Billboard>(player_->GetGravityRodEnd()));
-		}
-	} else {
+	//	} else if(engineOrEnd == 1) { // 終点の方出す
+	//		billboardPopT_ = 0;
+	//		auto& newBillborad = billboardList_.emplace_back(
+	//			std::make_unique<Billboard>(player_->GetGravityRodEnd()));
+	//	}
+	//} else {
 
-	}
+	//}
 }
 
 #ifdef _DEBUG
