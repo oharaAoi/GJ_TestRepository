@@ -340,13 +340,8 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ 当たり判定系
 	// -------------------------------------------------
-	if (player_->GetIsAttack()) {
-		CheckMeteoAttraction();
-	} else {
-		for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
-			meteo->SetIsAttraction(false);
-		}
-	}
+	
+	CheckMeteoAttraction();
 
 	CheckBossCollision();
 
@@ -469,6 +464,10 @@ void GameScene::CheckMeteoToField() {
 
 void GameScene::CheckMeteoAttraction() {
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		if (!player_->GetIsAttack()) {
+			meteo->SetIsAttraction(false);
+			continue;
+		}
 		Vector3 direction{};
 		float length = 0;
 		// 引き寄せる2つの球体との距離を測る
