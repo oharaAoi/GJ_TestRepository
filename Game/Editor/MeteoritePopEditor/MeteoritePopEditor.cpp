@@ -204,8 +204,11 @@ std::string MeteoritePopEditor::save(const std::string& fileName) {
 void MeteoritePopEditor::compress() {
 	editGroup.items.clear();
 	manager->AddItem(editGroup, "Adjustment", MeteoriteManager::Adjustment{ repopTime, popWidth,static_cast<uint32_t>(popList.size()) });
+	std::sort(popList.begin(), popList.end(), [](const Vector3& lhs, const Vector3& rhs) { return lhs.x < rhs.x; });
+	float distance = 22.0f - popList.front().x;
 	for (int i = 0; i < popList.size(); ++i) {
 		//editGroup.items.emplace(, );
+		popList[i].x += distance;
 		manager->AddItem(editGroup, "Position" + std::to_string(i), popList[i]);
 	}
 }
@@ -219,6 +222,11 @@ void MeteoritePopEditor::decompress() {
 	for (uint32_t i = 0; i < adj.numMeteorites; ++i) {
 		popList.emplace_back(manager->GetValue<Vector3>(editGroup, "Position" + std::to_string(i)));
 		auto& newObj = debugDrawObject.emplace_back("particle.obj");
+	}
+	std::sort(popList.begin(), popList.end(), [](const Vector3& lhs, const Vector3& rhs) { return lhs.x < rhs.x; });
+	float distance = -14.5f - popList.front().x;
+	for (int i = 0; i < popList.size(); ++i) {
+		popList[i].x += distance;
 	}
 }
 void MeteoritePopEditor::get_group_map_keys() {
