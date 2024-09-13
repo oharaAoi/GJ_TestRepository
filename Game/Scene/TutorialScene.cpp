@@ -410,6 +410,10 @@ void TutorialScene::CheckMeteoToField() {
 
 void TutorialScene::CheckMeteoAttraction() {
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
+		if (!player_->GetIsAttack()) {
+			meteo->SetIsAttraction(false);
+			continue;
+		}
 		Vector3 direction{};
 		float length = 0;
 		// 引き寄せる2つの球体との距離を測る
@@ -529,7 +533,7 @@ void TutorialScene::MeteoCollisionContent() {
 		return false;
 							 });
 
-	if (player_->GetIsAttack()) { CheckMeteoAttraction(); }
+	CheckMeteoAttraction();
 	CheckMeteoToField();
 	CheckBossCollision();
 
