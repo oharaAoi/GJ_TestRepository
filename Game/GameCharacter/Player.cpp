@@ -113,8 +113,8 @@ void Player::On_Collision_Enter(const BaseCollider* const other, bool* isEnemyAt
 		isStan_ = true;
 		this->get_materials()[0].color = { 1,0.0f,0.0f,1 };
 
-		Vector3 direction = (other->world_position() - world_position()).normalize_safe();
-		KnockBack(-direction);
+		Vector3 direction = -(other->world_position() - world_position()).normalize_safe();
+		KnockBack(direction);
 
 	} else {
 		enemyKick_SE_->restart();
@@ -203,7 +203,7 @@ void Player::Attack() {
 }
 
 void Player::KnockBack(const Vector3& dire) {
-	preFrameVelocity_ = -(dire * 4.0f);
+	preFrameVelocity_ = (dire * 4.0f);
 }
 
 void Player::ConstrainToField(Vector3& translate) {

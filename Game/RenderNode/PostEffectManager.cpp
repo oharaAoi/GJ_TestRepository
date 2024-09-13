@@ -8,10 +8,12 @@
 #include "Game/GameCharacter/Player.h"
 
 void PostEffectManager::initialize(const std::shared_ptr<VignetteNode>& vignetteNode_, const std::shared_ptr<ChromaticAberrationNode>& chromaticAberrationNode_) {
-	assert(vignetteNode_ && chromaticAberrationNode_);
+	//assert(vignetteNode_ && chromaticAberrationNode_);
 	vignetteNode = vignetteNode_;
 	chromaticAberrationNode = chromaticAberrationNode_;
-	vignetteNode->set_level(0);
+	if (vignetteNode) {
+		vignetteNode->set_level(0);
+	}
 	isActiveVignette = false;
 	vignetteTimer = 0;
 	vignetteResetCall = {
@@ -50,9 +52,11 @@ void PostEffectManager::restart_vignette() {
 
 void PostEffectManager::vignette_update() {
 	vignetteTimer += GameTimer::DeltaTime();
-	vignetteNode->set_level(
-		1 - (std::cos(vignetteTimer * PI2) + 1) / 2
-	);
+	if (vignetteNode) {
+		vignetteNode->set_level(
+			1 - (std::cos(vignetteTimer * PI2) + 1) / 2
+		);
+	}
 }
 
 void PostEffectManager::active_vignette() {

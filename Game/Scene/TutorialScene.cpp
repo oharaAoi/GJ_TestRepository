@@ -79,13 +79,28 @@ void TutorialScene::initialize() {
 
 	spriteNode = std::make_unique<SpriteNode>();
 	spriteNode->initialize();
+	//spriteNode->set_background_texture(outlineNode->result_stv_handle());
 	spriteNode->set_background_texture(outlineNode->result_stv_handle());
-	spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+	spriteNode->set_render_target();
+	//spriteNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+
+	chromaticAberrationNode = std::make_unique<ChromaticAberrationNode>();
+	chromaticAberrationNode->initialize();
+	chromaticAberrationNode->set_render_target_SC(DirectXSwapChain::GetRenderTarget());
+	chromaticAberrationNode->set_texture_resource(spriteNode->result_stv_handle());
+
 	DirectXSwapChain::GetRenderTarget()->set_depth_stencil(nullptr);
 
-	path.initialize({ object3DNode, outlineNode, spriteNode });
+	path.initialize({ object3DNode, outlineNode, spriteNode, chromaticAberrationNode });
 	RenderPathManager::RegisterPath("TutorialScene", std::move(path));
 	RenderPathManager::SetPath("TutorialScene");
+
+	posteffectManager = std::make_unique<PostEffectManager>();
+	posteffectManager->initialize(
+		nullptr, chromaticAberrationNode
+	);
+	posteffectManager->set_boss(boss_.get());
+	posteffectManager->set_player(player_.get());
 
 	fadePanel_ = std::make_unique<FadePanel>();
 	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
@@ -126,26 +141,21 @@ void TutorialScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "skipKey.png");
 
 	// content
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "appearance.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "attract.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "attractEnemy.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "move.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "putOut.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "collision.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "putAway.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "kick.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "collisionEnemy.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "complete.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "fall.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "kick.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "move.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "practiceRange.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "putAway.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "putOut.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "rotate.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scrollEnd.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scrollStart.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "tips.png");
+
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "tutorial.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "woodBoard.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scroll.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scrollEnd.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "scrollStart.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "null.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "practiceRange.png");
 
 	// ゲームと共有
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
@@ -179,6 +189,7 @@ void TutorialScene::update() {
 	tutorialUI_->Update(static_cast<int>(content_));
 	if (!fadePanel_->GetIsFadeFinish()) {
 		return;
+
 	}
 
 	// -------------------------------------------------
@@ -254,6 +265,7 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	meteoriteManager_->Update(player_->get_transform().get_translate());
 	enemyManager_->Update(player_->get_transform().get_translate());
+	posteffectManager->update();
 
 	// -------------------------------------------------
 	// ↓ 当たり判定系
@@ -332,6 +344,8 @@ void TutorialScene::draw() const {
 	RenderPathManager::Next();
 	tutorialUI_->Draw();
 	fadePanel_->Draw();
+	RenderPathManager::Next();
+	chromaticAberrationNode->draw();
 	RenderPathManager::Next();
 }
 

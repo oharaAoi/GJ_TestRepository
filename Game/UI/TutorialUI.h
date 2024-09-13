@@ -47,14 +47,12 @@ private:
 
 	AdjustmentItem* adjustmentItem_;
 
-	Vector2 tipsPos_;
 	Vector2 taskPos_;
 	Vector2 basePos_;
 	Vector2 scale_;
 
 	std::unique_ptr<UIObject> skip_;
-
-	std::unique_ptr<UIObject> tips_;
+	
 	std::unique_ptr<UIObject> task_;
 
 	std::unique_ptr<UIObject> content_UI = nullptr; // チュートリアルか練習か

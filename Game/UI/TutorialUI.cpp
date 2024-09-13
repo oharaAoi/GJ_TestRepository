@@ -12,10 +12,8 @@ void TutorialUI::Finalize() {
 }
 
 void TutorialUI::Init() {
-	tipsPos_ = { 0,0 };
-	taskPos_ = { 0,0 };
-
-	basePos_ = { 320.0f, 530.0f };
+	basePos_ = { 320.0f, 560.0f };
+	taskPos_ = basePos_;
 
 	skip_ = std::make_unique<UIObject>("skipKey.png", ancherPoint);
 
@@ -28,29 +26,26 @@ void TutorialUI::Init() {
 	makimono_UI = std::make_unique<UIObject>("scroll.png", ancherPoint);
 	makimono_UI->Update({ 0.5f, 0.5f }, basePos_);
 
-	tips_ = std::make_unique<UIObject>("null.png", ancherPoint);
 	task_ = std::make_unique<UIObject>("scroll.png", ancherPoint);
 
 	adjustmentItem_ = AdjustmentItem::GetInstance();
 	const char* groupName = "TutorialUI";
-	adjustmentItem_->AddItem(groupName, "move", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "appearance", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "attract", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "attractEnemy", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "collision", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "collisionEnemy", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "collisionEnemy", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "fall", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "fall", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "fall", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "kick", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "putAway", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "putOut", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "rotate", tipsPos_);
-	adjustmentItem_->AddItem(groupName, "complete", tipsPos_);
-	
-	uiMoveStartPos = basePos_;
-	uiMoveEndPos = { -320.0f, basePos_.y };
+	adjustmentItem_->AddItem(groupName, "move", Vector2{300.0f,580.0f});
+	adjustmentItem_->AddItem(groupName, "appearance", taskPos_);
+	adjustmentItem_->AddItem(groupName, "attract", taskPos_);
+	adjustmentItem_->AddItem(groupName, "attractEnemy", taskPos_);
+	adjustmentItem_->AddItem(groupName, "collision", taskPos_);
+	adjustmentItem_->AddItem(groupName, "collisionEnemy", taskPos_);
+	adjustmentItem_->AddItem(groupName, "collisionEnemy", taskPos_);
+	adjustmentItem_->AddItem(groupName, "fall", taskPos_);
+	adjustmentItem_->AddItem(groupName, "kick", taskPos_);
+	adjustmentItem_->AddItem(groupName, "putAway", taskPos_);
+	adjustmentItem_->AddItem(groupName, "putOut", taskPos_);
+	adjustmentItem_->AddItem(groupName, "rotate", taskPos_);
+	adjustmentItem_->AddItem(groupName, "complete", taskPos_);
+
+	uiMoveStartPos = taskPos_;
+	uiMoveEndPos = { -320.0f, taskPos_.y };
 }
 
 void TutorialUI::Update(const int& contentNum) {
@@ -93,13 +88,11 @@ void TutorialUI::Update(const int& contentNum) {
 	//}
 	if (isEndTask) {
 		endTaskAnimationTimer += GameTimer::DeltaTime();
-		float parametric = endTaskAnimationTimer / EndTaskAnimationTime;
-		tipsPos_ = Vector2::Lerp(uiMoveStartPos, uiMoveEndPos, EaseIn::Back(parametric));
+		float parametric = (std::min)(1.0f, endTaskAnimationTimer / EndTaskAnimationTime);
 		taskPos_ = Vector2::Lerp(uiMoveStartPos, uiMoveEndPos, EaseIn::Back(parametric));
-		makimono_UI->Update({ 0.5f, 0.5f },  Vector2::Lerp(uiMoveStartPos, uiMoveEndPos, EaseIn::Back(parametric)));
+		makimono_UI->Update({ 0.5f, 0.5f }, Vector2::Lerp(uiMoveStartPos, uiMoveEndPos, EaseIn::Back(parametric)));
 	}
-	tips_->Update(scale_, tipsPos_);
-	//task_->Update(scale_, taskPos_);
+	task_->Update(scale_, taskPos_);
 }
 
 void TutorialUI::BeginRendering() {
@@ -111,7 +104,6 @@ void TutorialUI::BeginRendering() {
 	makimono_UI->begin_rendering();
 
 	task_->begin_rendering();
-	tips_->begin_rendering();
 }
 
 void TutorialUI::Draw() const {
@@ -122,7 +114,6 @@ void TutorialUI::Draw() const {
 	makimonoEnd_UI->draw();*/
 	makimono_UI->draw();
 
-	tips_->draw();
 	task_->draw();
 }
 
@@ -130,60 +121,45 @@ void TutorialUI::ChangeContentUI(const int& contentNum) {
 	const char* groupName = "TutorialUI";
 	switch (contentNum) {
 	case TutorialContent::FirstMove_Content:
-		tips_.reset(new UIObject("null.png", ancherPoint));
 		task_.reset(new UIObject("move.png", ancherPoint));
 		scale_ = { 0.4f, 0.4f };
-		tipsPos_ = { 0.0f,0.0f };
-		taskPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "move");
+		taskPos_ = {300.0f,580 };
 		break;
 
 	case TutorialContent::RodPutOn_Content:
-		tips_.reset(new UIObject("attract.png", ancherPoint));
 		task_.reset(new UIObject("putOut.png", ancherPoint));
 		scale_ = { 0.4f, 0.4f };
-		tipsPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "attract");
-		taskPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "putOut");
+		taskPos_ = { 320.0f,575.0f };
 		break;
 	case TutorialContent::MeteoCollision_Content:
-		tips_.reset(new UIObject("fall.png", ancherPoint));
 		task_.reset(new UIObject("collision.png", ancherPoint));
 		scale_ = { 0.4f, 0.4f };
-		tipsPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "fall");
-		taskPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "collision");
+		taskPos_ = { 320.0f,575.0f };
 		break;
 	case TutorialContent::CantMoveCanRotate_Content:
-		tips_.reset(new UIObject("rotate.png", ancherPoint));
 		task_.reset(new UIObject("putAway.png", ancherPoint));
 		scale_ = { 0.4f, 0.4f };
-		tipsPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "rotate");
-		taskPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "putAway");
+		taskPos_ = { 320.0f,575.0f };
 		break;
 
 	case TutorialContent::FirstEnemy_Content:
-		tips_.reset(new UIObject("appearance.png", ancherPoint));
 		task_.reset(new UIObject("kick.png", ancherPoint));
 		scale_ = { 0.4f, 0.4f };
-		tipsPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "appearance");
-		taskPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "kick");
+		taskPos_ = { 320.0f,575.0f };
 
 		break;
 	case TutorialContent::EnemyCollisionToMeteo_Content:
-		tips_.reset(new UIObject("attractEnemy.png", ancherPoint));
-		task_.reset(new UIObject("collisionEnemy.png", ancherPoint));
-		scale_ = { 0.3f, 0.3f };
-		tipsPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "attractEnemy");
-		taskPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "collisionEnemy");
-		break;
-	case TutorialContent::MeteoAttract_Content:
-		tips_.reset(new UIObject("complete.png", ancherPoint));
 		task_.reset(new UIObject("collisionEnemy.png", ancherPoint));
 		scale_ = { 0.4f, 0.4f };
-		tipsPos_ = adjustmentItem_->GetValue<Vector2>(groupName, "complete");
-		taskPos_ = {-300.0f, -400.0f};
+		taskPos_ = { 320.0f,575.0f };
+		break;
+	case TutorialContent::MeteoAttract_Content:
+		task_.reset(new UIObject("complete.png", ancherPoint));
+		scale_ = { 0.4f, 0.4f };
+		taskPos_ = { 320.0f, 560.0f };
 		content_UI.reset(new UIObject("practiceRange.png", ancherPoint));
 		break;
 	}
-	tips_->Update(scale_, tipsPos_);
 	task_->Update(scale_, taskPos_);
 }
 
@@ -193,7 +169,6 @@ void TutorialUI::SetEndTask() {
 
 #ifdef _DEBUG
 void TutorialUI::EditGui() {
-	ImGui::DragFloat2("TipsPos", &tipsPos_.x);
 	ImGui::DragFloat2("TaskPos", &taskPos_.x);
 	ImGui::DragFloat2("BasePos", &basePos_.x);
 	skip_->debug_gui();

@@ -19,6 +19,8 @@
 #include "Engine/Render/RenderNode/Object3DNode/Object3DNode.h"
 #include "Engine/Render/RenderNode/Sprite/SpriteNode.h"
 #include "Engine/Render/RenderNode/Outline/OutlineNode.h"
+#include "Engine/Render/RenderNode/ChromaticAberration/ChromaticAberrationNode.h"
+#include "Game/RenderNode/PostEffectManager.h"
 #include "Engine/DirectX/DirectXSwapChain/DirectXSwapChain.h"
 #include "Game/UI/TutorialUI.h"
 #include "Game/UI/FadePanel.h"
@@ -144,7 +146,10 @@ private:
 	std::shared_ptr<Object3DNode> object3DNode;
 	std::shared_ptr<SpriteNode> spriteNode;
 	std::shared_ptr<OutlineNode> outlineNode;
+	std::shared_ptr<ChromaticAberrationNode> chromaticAberrationNode;
 	RenderPath path;
+
+	std::unique_ptr<PostEffectManager> posteffectManager;
 
 	// ------------------- 内容に関する変数 ------------------- //
 	bool isTutorialFinish_;
