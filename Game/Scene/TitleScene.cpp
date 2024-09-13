@@ -4,6 +4,8 @@
 #include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
 #include "Engine/Game/Managers/AudioManager/AudioManager.h"
 
+#include "Engine/DirectX/DirectXCore.h"
+
 void TitleScene::finalize() {
 	object3DNode->finalize();
 	outlineNode->finalize();
@@ -15,6 +17,7 @@ void TitleScene::finalize() {
 }
 
 void TitleScene::initialize() {
+	DirectXCore::Get3DLight().direction = CVector3::BASIS_Z;
 	input_ = Input::GetInstance();
 
 	Camera2D::Initialize();

@@ -29,6 +29,7 @@ void GameScene::finalize() {
 }
 
 void GameScene::initialize() {
+	DirectXCore::Get3DLight().direction = -CVector3::BASIS_Y;
 	EffectManager::GetInstance()->Init();
 	AdjustmentItem::GetInstance()->Init("GameScene");
 

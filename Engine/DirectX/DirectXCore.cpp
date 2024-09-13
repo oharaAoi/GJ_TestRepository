@@ -36,14 +36,6 @@
 #include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
 #include "externals/imgui/imgui.h"
 
-// ----------要修正----------
-struct DirectionalLightData {
-	Color color; // 色
-	Vector3 direction; // 向き
-	float intensity; // 輝度
-};
-// ----------要修正----------
-
 static HRESULT hr;
 
 DirectXCore::DirectXCore() = default;

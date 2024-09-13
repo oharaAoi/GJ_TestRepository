@@ -4,6 +4,8 @@
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
 #include "Engine/Game/Managers/AudioManager/AudioManager.h"
 
+#include "Engine/DirectX/DirectXCore.h"
+
 void ClearScene::finalize() {
 	object3DNode->finalize();
 	outlineNode->finalize();
@@ -12,6 +14,7 @@ void ClearScene::finalize() {
 }
 
 void ClearScene::initialize() {
+	DirectXCore::Get3DLight().direction = CVector3::BASIS_Z;
 	input_ = Input::GetInstance();
 	Camera2D::Initialize();
 	camera3D_ = std::make_unique<Camera3D>();

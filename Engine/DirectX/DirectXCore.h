@@ -4,8 +4,19 @@
 #include <memory>
 #include "Engine/DirectX/DirectXResourceObject/ConstantBuffer/ConstantBuffer.h"
 
+#include "Engine/Math/Vector3.h"
+#include "Engine/Game/Color/Color.h"
+
 class GameObject;
-struct DirectionalLightData;
+
+// ----------要修正----------
+struct DirectionalLightData {
+	Color color; // 色
+	Vector3 direction; // 向き
+	float intensity; // 輝度
+};
+// ----------要修正----------
+
 class Camera3D;
 
 class DirectXCore final {

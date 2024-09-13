@@ -3,6 +3,8 @@
 #include "Engine/Game/Managers/TextureManager/TextureManager.h"
 #include "Engine/Render/RenderTargetGroup/SwapChainRenderTargetGroup.h"
 
+#include "Engine/DirectX/DirectXCore.h"
+
 
 void GameOverScene::finalize() {
 	object3DNode->finalize();
@@ -16,6 +18,7 @@ void GameOverScene::finalize() {
 }
 
 void GameOverScene::initialize() {
+	DirectXCore::Get3DLight().direction = -CVector3::BASIS_Y;
 	input_ = Input::GetInstance();
 
 	AdjustmentItem::GetInstance()->Init("GameOver");
