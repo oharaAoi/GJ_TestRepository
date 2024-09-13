@@ -6,7 +6,7 @@
             12.09000015258789,
             0.0
         ],
-        "createCount": 3,
+        "createCount": 4,
         "createTime": 80,
         "direction": [
             0.5,
@@ -15,14 +15,14 @@
         ],
         "emitCount": 1,
         "emitterName": "meteo",
-        "lifeTime": 20,
+        "lifeTime": 40,
         "radius": 1.0,
         "range": [
             1.0,
             1.0,
             1.0
         ],
-        "speed": 5.0,
+        "speed": 8.0,
         "useObjectName": "kometubu.obj"
     }
 }
