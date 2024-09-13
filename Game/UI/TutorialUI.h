@@ -49,6 +49,8 @@ private:
 	Vector2 basePos_;
 	Vector2 scale_;
 
+	std::unique_ptr<UIObject> skip_;
+
 	std::unique_ptr<UIObject> tips_;
 	std::unique_ptr<UIObject> task_;
 

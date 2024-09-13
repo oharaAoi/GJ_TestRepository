@@ -37,7 +37,7 @@ void ClearScene::initialize() {
 	// ↓ 
 	// -------------------------------------------------
 	clearTitle_ = std::make_unique<GameObject>();
-	clearTitle_->reset_object("Title.obj");
+	clearTitle_->reset_object("clear.obj");
 
 	skydome_ = std::make_unique<GameObject>();
 	skydome_->reset_object("skydome.obj");
@@ -80,13 +80,13 @@ void ClearScene::initialize() {
 }
 
 void ClearScene::load() {
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/TitleScene/Title", "Title.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/ClearScene/Clear", "clear.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_goGame.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_goTitle.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_arrow.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "gameoverRetryKey.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "gameoverTitleKey.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "gameoverCursolKey.png");
 
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/clear", "meteOnigiri_start.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/clear", "meteOnigiri_AfterGameBGM4.wav");

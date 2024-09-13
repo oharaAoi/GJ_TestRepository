@@ -41,6 +41,8 @@ void TitleScene::initialize() {
 	fadePanel_ = std::make_unique<FadePanel>();
 	fadePanel_->SetFadeFadeStart(FadeType::Fade_Out);
 
+	startUI_ = std::make_unique<UIObject>("startKey.png", Vector2{0.5f, 0.5f});
+
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
@@ -86,6 +88,7 @@ void TitleScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "startKey.png");
 
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/title", "meteOnigiri_start.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/title", "meteOnigiri_titleBGM.wav");
@@ -102,6 +105,7 @@ void TitleScene::update() {
 	// ↓ 
 	// -------------------------------------------------
 	fadePanel_->Update();
+	startUI_->Update({ 0.4f, 0.4f }, { 640.0f, 520.0f }, 1.0f);
 	if (!fadePanel_->GetIsFadeFinish()) {
 		return;
 	}
@@ -138,6 +142,7 @@ void TitleScene::begin_rendering() {
 	skydome_->begin_rendering(*camera3D_);
 	titleObject_->begin_rendering(*camera3D_);
 
+	startUI_->begin_rendering();
 	fadePanel_->Begin_Rendering();
 }
 
@@ -151,6 +156,7 @@ void TitleScene::draw() const {
 	RenderPathManager::Next();
 	outlineNode->draw();
 	RenderPathManager::Next();
+	startUI_->draw();
 	fadePanel_->Draw();
 	RenderPathManager::Next();
 }

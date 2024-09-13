@@ -64,6 +64,7 @@ private:
 	// ------------------- sprite ------------------- //
 
 	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
+	std::unique_ptr<UIObject> startUI_ = nullptr;
 
 	// ------------------- Audio ------------------- //
 	std::unique_ptr<AudioPlayer> start_SE_ = nullptr;

@@ -12,6 +12,8 @@ void TutorialUI::Finalize() {
 }
 
 void TutorialUI::Init() {
+	skip_ = std::make_unique<UIObject>("skipKey.png", ancherPoint);
+
 	content_UI = std::make_unique<UIObject>("tutorial.png", ancherPoint);
 	woodBord_UI = std::make_unique<UIObject>("woodBoard.png", ancherPoint);
 
@@ -50,6 +52,7 @@ void TutorialUI::Init() {
 }
 
 void TutorialUI::Update(const int& contentNum) {
+	skip_->Update({ 0.4f,0.4f }, { 1070, 630 });
 	content_UI->Update({ 0.4f,0.4f }, { 640, 87 });
 	woodBord_UI->Update({ 0.4f, 0.4f }, { 640, 87 });
 	makimono_UI->Update({ 0.5f, 0.5f }, basePos_);
@@ -91,6 +94,7 @@ void TutorialUI::Update(const int& contentNum) {
 }
 
 void TutorialUI::BeginRendering() {
+	skip_->begin_rendering();
 	content_UI->begin_rendering();
 	woodBord_UI->begin_rendering();
 	/*makimonoOrigine_UI->begin_rendering();
@@ -102,6 +106,7 @@ void TutorialUI::BeginRendering() {
 }
 
 void TutorialUI::Draw() const {
+	skip_->draw();
 	woodBord_UI->draw();
 	content_UI->draw();
 	/*makimonoOrigine_UI->draw();
@@ -176,6 +181,7 @@ void TutorialUI::EditGui() {
 	ImGui::DragFloat2("TipsPos", &tipsPos_.x);
 	ImGui::DragFloat2("TaskPos", &taskPos_.x);
 	ImGui::DragFloat2("BasePos", &basePos_.x);
+	skip_->debug_gui();
 	//woodBord_UI->debug_gui();
 	makimono_UI->debug_gui();
 }

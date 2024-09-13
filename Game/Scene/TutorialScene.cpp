@@ -123,9 +123,7 @@ void TutorialScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Field", "nattomaki.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
-	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_kari.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "skipKey.png");
 
 	// content
 	TextureManager::RegisterLoadQue("./Game/Resources/TutorialScene", "appearance.png");

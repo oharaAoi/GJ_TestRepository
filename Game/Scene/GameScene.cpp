@@ -181,8 +181,8 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomach9.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomachPercent.obj");
 
-	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_move.png");
-	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI_PlayerControl_attack.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI1.png");
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI2.png");
 
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_brap.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyAtract.wav");//
@@ -349,7 +349,7 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ UI
 	// -------------------------------------------------
-	//playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
+	playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
 }
 
 void GameScene::begin_rendering() {

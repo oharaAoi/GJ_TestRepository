@@ -8,20 +8,20 @@ GameOverUI::~GameOverUI() {
 }
 
 void GameOverUI::Init() {
-	goTitle_ = std::make_unique<UIObject>("UI_goTitle.png", Vector2{ 0.5f, 0.5f });
-	goGame_ = std::make_unique<UIObject>("UI_goGame.png", Vector2{ 0.5f, 0.5f });
-	arrow_ = std::make_unique<UIObject>("UI_arrow.png", Vector2{ 0.5f, 0.5f });
+	goTitle_ = std::make_unique<UIObject>("gameoverTitleKey.png", Vector2{ 0.5f, 0.5f });
+	goGame_ = std::make_unique<UIObject>("gameoverRetryKey.png", Vector2{ 0.5f, 0.5f });
+	arrow_ = std::make_unique<UIObject>("gameoverCursolKey.png", Vector2{ 0.5f, 0.5f });
 }
 
 void GameOverUI::Update(const bool& nextGame) {
 	if (nextGame) {
-		arrow_->Update({ 1,1 }, { 780, 400 });
+		arrow_->Update({ 0.4f,0.4f }, { 640, 500 });
 	} else {
-		arrow_->Update({ 1,1 }, { 780, 540 });
+		arrow_->Update({ 0.4f,0.4f }, { 640, 580 });
 	}
 
-	goTitle_->Update({ 1,1 }, { 640, 540 });
-	goGame_->Update({ 1,1 }, { 640, 400 });
+	goTitle_->Update({ 0.4f,0.4f }, { 640, 580 });
+	goGame_->Update({ 0.4f,0.4f }, { 640, 500 });
 }
 
 void GameOverUI::Begin_Rendering() {

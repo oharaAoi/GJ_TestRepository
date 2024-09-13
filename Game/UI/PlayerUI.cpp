@@ -14,8 +14,8 @@ void PlayerUI::Finalize() {
 }
 
 void PlayerUI::Init() {
-	playerControl_UI = std::make_unique<UIObject>( "UI_PlayerControl_move.png", Vector2{ 0,0 } );
-	playerAttack_UI = std::make_unique<UIObject>( "UI_PlayerControl_attack.png", Vector2{ 0,0 } );
+	playerControl_UI = std::make_unique<UIObject>( "UI1.png", Vector2{ 0.5f,0.5f } );
+	playerAttack_UI = std::make_unique<UIObject>( "UI2.png", Vector2{ 0.5f,0.5f } );
 }
 
 void PlayerUI::Update(const Vector3& playerPos, const Matrix4x4& vpMatrix, const bool& isAttack) {
@@ -30,9 +30,9 @@ void PlayerUI::Update(const Vector3& playerPos, const Matrix4x4& vpMatrix, const
 
 	isPlayerAttack_ = isAttack;
 	if (isPlayerAttack_) {
-		playerAttack_UI->Update(Vector2{ 1,1 }, playerScreenPosition + offsetPos_);
+		playerAttack_UI->Update(Vector2{ 0.3f,0.3f }, playerScreenPosition + offsetPos_);
 	} else {
-		playerControl_UI->Update(Vector2{ 1,1 }, playerScreenPosition + offsetPos_);
+		playerControl_UI->Update(Vector2{ 0.3f,0.3f }, playerScreenPosition + offsetPos_);
 	}
 }
 
