@@ -103,6 +103,7 @@ private:
 	uint32_t frameCount_ = 0;
 
 	PerformanceType performanceType_ = PerformanceType::None_Type;
+	bool doneEndAnimationPerformance = false;
 
 	// ------------------- WorldObject ------------------- //
 	std::unique_ptr<Field> field_ = nullptr;

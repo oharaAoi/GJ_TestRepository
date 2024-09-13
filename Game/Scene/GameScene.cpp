@@ -146,6 +146,8 @@ void GameScene::initialize() {
 }
 
 void GameScene::load() {
+	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
+
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
 	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
@@ -253,16 +255,18 @@ void GameScene::update() {
 			break;
 		
 		case PerformanceType::GameOver_Type:
-			GameOverPerformance();
-
+			if (!doneEndAnimationPerformance) {
+				GameOverPerformance();
+			}
 			// 終わったらフェードアウトする
 
 
 			break;
 
 		case PerformanceType::GameClear_Type:
-			GameClearPerformance();
-
+			if (!doneEndAnimationPerformance) {
+				GameClearPerformance();
+			}
 			// 終わったらフェードアウトする
 			break;
 		}
@@ -531,6 +535,7 @@ void GameScene::GameOverPerformance() {
 		boss_->MouthClose();
 		camera3D_->GameOverPerformance();
 	} else {
+		doneEndAnimationPerformance = true;
 		// ゲームオーバーの終了
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(),
@@ -544,6 +549,7 @@ void GameScene::GameClearPerformance() {
 		boss_->GameClearFaceSet();
 		camera3D_->GameClearPerformance();
 	} else {
+		doneEndAnimationPerformance = true;
 		boss_->Burp();	// げっぷをする
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<ClearScene>(),

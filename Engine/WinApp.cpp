@@ -66,7 +66,6 @@ void WinApp::Initialize(const std::string& programName, int32_t width, int32_t h
 	GameTimer::IsFixDeltaTime(false);
 #endif // _DEBUG
 
-
 	// ウィンドウ表示
 	ShowWindow(instance->hWnd, SW_SHOW);
 	Log("Complete Create Window\n");
