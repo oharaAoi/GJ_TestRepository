@@ -64,7 +64,7 @@ void MeteoriteManager::Update(const Vector3& playerPosition) {
 	if (sceneMeteoList_.size() < meteoAddNum_) {
 		lessThanTargetMeteoNum_ += GameTimer::DeltaTime();
 
-		if (lessThanTargetMeteoNum_ >= 5.0f) {
+		if (lessThanTargetMeteoNum_ >= 5.5f) {
 			PopFromGroup(groupMap_[GetRandomKey()]);
 			lessThanTargetMeteoNum_ = 0;
 		}

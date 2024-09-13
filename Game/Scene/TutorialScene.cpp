@@ -24,6 +24,9 @@ void TutorialScene::initialize() {
 	AdjustmentItem::GetInstance()->Init("TutorialScene");
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+	effectManager_ = EffectManager::GetInstance();
+	effectManager_->Init();
+
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
@@ -141,6 +144,11 @@ void TutorialScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Field", "nattomaki.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Skydome", "skydome.obj");
 
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "kometubu.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "enemyMeteoHit.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "triangle.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "sisui.obj");
+
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "skipKey.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI1.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI2.png");
@@ -172,6 +180,7 @@ void TutorialScene::load() {
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_fieldPush.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_playerKick.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyEachOther.wav");
+
 
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/tutorial", "meteOnigiri_tutorialTheme1.wav");
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/tutorial", "meteOnigiri_tutorialOk.wav");
@@ -276,6 +285,7 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	// ↓ Manager系の更新
 	// -------------------------------------------------
+	effectManager_->Update();
 	meteoriteManager_->Update(player_->get_transform().get_translate());
 	enemyManager_->Update(player_->get_transform().get_translate());
 	posteffectManager->update();
@@ -317,6 +327,8 @@ void TutorialScene::begin_rendering() {
 		enemy->begin_rendering(*camera3D_);
 	}
 
+	effectManager_->BeginRendering(*camera3D_);
+
 	tutorialUI_->BeginRendering();
 
 	fadePanel_->Begin_Rendering();
@@ -352,6 +364,8 @@ void TutorialScene::draw() const {
 	for (const std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->draw();
 	}
+
+	effectManager_->Draw();
 
 #ifdef _DEBUG
 
@@ -497,6 +511,7 @@ void TutorialScene::CheckBossCollision() {
 			if (length < meteo->GetRadius()) {
 				meteo->SetIsDead(true);
 				boss_->OnCollision(meteo->GetRadius());
+				effectManager_->AddEffect("bossHit", meteo->get_transform().get_translate(), { 0,1,0 });
 			}
 		}
 	}
