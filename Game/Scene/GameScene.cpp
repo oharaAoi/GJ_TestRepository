@@ -188,6 +188,7 @@ void GameScene::load() {
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/FullStomach", "fullStomachPercent.obj");
 
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "kometubu.obj");
+	PolygonMeshManager::RegisterLoadQue("./Game/Resources/Particle", "attract.obj");
 
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI1.png");
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "UI2.png");
@@ -358,8 +359,21 @@ void GameScene::update() {
 	CheckMeteoToField();
 
 	// -------------------------------------------------
-	// ↓ UI
+	// ↓ Particle
 	// -------------------------------------------------
+
+	for (std::unique_ptr<Billboard>& billboard : billboardList_) {
+		billboard->Update(camera3D_->world_position());
+	}
+
+	billboardList_.remove_if([](const std::unique_ptr<Billboard>& billboard) {
+		if (billboard->GetIsDead()) {
+			return true;
+		}
+		return false;
+	});
+	
+	CreateBillBoard();
 }
 
 void GameScene::begin_rendering() {
@@ -379,6 +393,10 @@ void GameScene::begin_rendering() {
 
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->begin_rendering(*camera3D_);
+	}
+
+	for (std::unique_ptr<Billboard>& billboard : billboardList_) {
+		billboard->Begine_Rendering(*camera3D_);
 	}
 
 	effectManager_->BeginRendering(*camera3D_);
@@ -422,6 +440,10 @@ void GameScene::draw() const {
 
 	for (const std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->draw();
+	}
+
+	for (const std::unique_ptr<Billboard>& billboard : billboardList_) {
+		billboard->Draw();
 	}
 
 	effectManager_->Draw();
@@ -560,6 +582,32 @@ void GameScene::GameClearPerformance() {
 		SceneManager::SetSceneChange(CreateUnique<ClearScene>(),
 									 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
 									 false);
+	}
+}
+
+void GameScene::CreateBillBoard() {
+	// 攻撃していないなら早期リターン
+	if (!player_->GetIsAttack()) {
+		return;
+	}
+
+	billboardPopT_ += GameTimer::DeltaTime();
+
+	if (billboardPopT_ > 1.0f) {
+		int engineOrEnd = RandomInt(0, 1);
+		// ビルボードを生成する
+		if (engineOrEnd == 0) { // 原点の方出す
+			billboardPopT_ = 0;
+			auto& newBillborad = billboardList_.emplace_back(
+				std::make_unique<Billboard>(player_->GetGravityRodOrigine()));
+
+		} else if(engineOrEnd == 1) { // 終点の方出す
+			billboardPopT_ = 0;
+			auto& newBillborad = billboardList_.emplace_back(
+				std::make_unique<Billboard>(player_->GetGravityRodEnd()));
+		}
+	} else {
+
 	}
 }
 
