@@ -45,7 +45,7 @@ void GameScene::initialize() {
 		CVector3::BASIS,
 		Quaternion::EulerDegree(55, 0, 0),
 		{ 0, 30, -13.0 }
-							 });
+		});
 	camera3D_->begin_rendering(*camera3D_);
 	camera3D_->update_matrix();
 
@@ -213,9 +213,14 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ 
 	// -------------------------------------------------
+#ifdef _DEBUG
 	if (!camera3D_->isActiveDebugCamera()) {
 		playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
 	}
+#else
+	playerUI_->Update(player_->world_position(), camera3D_->vp_matrix(), player_->GetIsAttack());
+#endif // _DEBUG
+
 
 	fadePanel_->Update();
 
@@ -253,7 +258,7 @@ void GameScene::update() {
 			}
 
 			break;
-		
+
 		case PerformanceType::GameOver_Type:
 			if (!doneEndAnimationPerformance) {
 				GameOverPerformance();
@@ -318,7 +323,7 @@ void GameScene::update() {
 			return true;
 		}
 		return false;
-							 });
+	});
 
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->Update(player_->get_transform().get_translate());
@@ -329,7 +334,7 @@ void GameScene::update() {
 			return true;
 		}
 		return false;
-						 });
+	});
 
 	// -------------------------------------------------
 	// ↓ Manager系の更新
@@ -345,7 +350,7 @@ void GameScene::update() {
 	// -------------------------------------------------
 	// ↓ 当たり判定系
 	// -------------------------------------------------
-	
+
 	CheckMeteoAttraction();
 
 	CheckBossCollision();
@@ -404,7 +409,7 @@ void GameScene::draw() const {
 	RenderPathManager::BeginFrame();
 	//DirectXCore::ShowGrid(*camera3D_);
 	skydome_->draw();
-	if (performanceType_ == PerformanceType::None_Type){
+	if (performanceType_ == PerformanceType::None_Type) {
 		satisFaction_->Draw();
 	}
 	field_->draw();
@@ -491,13 +496,15 @@ void GameScene::CheckMeteoAttraction() {
 				length = origineLength;
 				direction = Vector3::Normalize(meteoToAttractOrigine);
 				meteo->SetTargetPosition(player_->GetGravityRodOrigine());
-			} else {
+			}
+			else {
 				meteo->SetAcceleration(Vector3::Normalize(meteoToAttractEnd));
 				length = endLength;
 				direction = Vector3::Normalize(meteoToAttractEnd);
 				meteo->SetTargetPosition(player_->GetGravityRodEnd());
 			}
-		} else {
+		}
+		else {
 			meteo->SetIsAttraction(false);
 		}
 	}
@@ -534,13 +541,14 @@ void GameScene::GameOverPerformance() {
 	if (!camera3D_->GetIsPerformanceFinish()) {
 		boss_->MouthClose();
 		camera3D_->GameOverPerformance();
-	} else {
+	}
+	else {
 		doneEndAnimationPerformance = true;
 		// ゲームオーバーの終了
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(),
-									 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
-									 false);
+			static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+			false);
 	}
 }
 
@@ -548,13 +556,14 @@ void GameScene::GameClearPerformance() {
 	if (!camera3D_->GetIsPerformanceFinish()) {
 		boss_->GameClearFaceSet();
 		camera3D_->GameClearPerformance();
-	} else {
+	}
+	else {
 		doneEndAnimationPerformance = true;
 		boss_->Burp();	// げっぷをする
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<ClearScene>(),
-									 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
-									 false);
+			static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+			false);
 	}
 }
 
@@ -564,7 +573,7 @@ void GameScene::GameClearPerformance() {
 
 void GameScene::debug_update() {
 	ImGui::Begin("Camera3D");
-	if(ImGui::Button("restart")) {
+	if (ImGui::Button("restart")) {
 		camera3D_->Restart();
 	}
 	camera3D_->debug_gui();

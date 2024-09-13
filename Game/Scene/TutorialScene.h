@@ -107,6 +107,8 @@ private:
 	Input* input_ = nullptr;
 
 	bool isStop_ = false;
+	float contentTimer;
+	static constexpr float MinContentTime = 5.0f;
 
 	std::unique_ptr<FadePanel> fadePanel_ = nullptr;
 

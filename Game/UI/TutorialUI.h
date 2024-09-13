@@ -38,6 +38,9 @@ public:
 
 	void ChangeContentUI(const int& contentNum);
 
+public:
+	void SetEndTask();
+
 private:
 
 	Vector2 ancherPoint{ 0.5f, 0.5f };
@@ -62,5 +65,9 @@ private:
 	std::unique_ptr<UIObject> makimonoEnd_UI = nullptr;
 	std::unique_ptr<UIObject> makimono_UI = nullptr;
 
+	bool isEndTask;
+	Vector2 uiMoveStartPos;
+	Vector2 uiMoveEndPos;
+	float endTaskAnimationTimer;
+	static constexpr float EndTaskAnimationTime = 1.0f;
 };
-

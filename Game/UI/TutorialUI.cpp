@@ -12,6 +12,11 @@ void TutorialUI::Finalize() {
 }
 
 void TutorialUI::Init() {
+	tipsPos_ = { 0,0 };
+	taskPos_ = { 0,0 };
+
+	basePos_ = { 320.0f, 530.0f };
+
 	skip_ = std::make_unique<UIObject>("skipKey.png", ancherPoint);
 
 	content_UI = std::make_unique<UIObject>("tutorial.png", ancherPoint);
@@ -21,14 +26,10 @@ void TutorialUI::Init() {
 	makimonoEnd_UI = std::make_unique<UIObject>("scrollEnd.png", ancherPoint);
 
 	makimono_UI = std::make_unique<UIObject>("scroll.png", ancherPoint);
+	makimono_UI->Update({ 0.5f, 0.5f }, basePos_);
 
 	tips_ = std::make_unique<UIObject>("null.png", ancherPoint);
 	task_ = std::make_unique<UIObject>("scroll.png", ancherPoint);
-
-	tipsPos_ = { 0,0 };
-	taskPos_ = { 0,0 };
-
-	basePos_ = { 320.0f, 530.0f };
 
 	adjustmentItem_ = AdjustmentItem::GetInstance();
 	const char* groupName = "TutorialUI";
@@ -48,49 +49,57 @@ void TutorialUI::Init() {
 	adjustmentItem_->AddItem(groupName, "rotate", tipsPos_);
 	adjustmentItem_->AddItem(groupName, "complete", tipsPos_);
 	
-
+	uiMoveStartPos = basePos_;
+	uiMoveEndPos = { -320.0f, basePos_.y };
 }
 
 void TutorialUI::Update(const int& contentNum) {
 	skip_->Update({ 0.4f,0.4f }, { 1070, 630 });
-	content_UI->Update({ 0.4f,0.4f }, { 640, 87 });
-	woodBord_UI->Update({ 0.4f, 0.4f }, { 640, 87 });
-	makimono_UI->Update({ 0.5f, 0.5f }, basePos_);
+	content_UI->Update({ 0.4f,0.4f }, { 250, 87 });
+	woodBord_UI->Update({ 0.4f, 0.4f }, { 250, 87 });
+	//makimono_UI->Update({ 0.5f, 0.5f }, basePos_);
 
 	adjustmentItem_->Update();
 
-	switch (contentNum) {
-	case TutorialContent::FirstMove_Content:
-		tips_->Update(scale_, tipsPos_);
-		task_->Update(scale_, taskPos_);
-	break;
+	//switch (contentNum) {
+	//case TutorialContent::FirstMove_Content:
+	//	tips_->Update(scale_, tipsPos_);
+	//	task_->Update(scale_, taskPos_);
+	//break;
 
-	case TutorialContent::RodPutOn_Content:
-		tips_->Update(scale_, tipsPos_);
-		task_->Update(scale_, taskPos_);
-		break;
-	case TutorialContent::MeteoCollision_Content:
-		tips_->Update(scale_, tipsPos_);
-		task_->Update(scale_, taskPos_);
-		break;
-	case TutorialContent::CantMoveCanRotate_Content:
-		tips_->Update(scale_, tipsPos_);
-		task_->Update(scale_, taskPos_);
-		break;
+	//case TutorialContent::RodPutOn_Content:
+	//	tips_->Update(scale_, tipsPos_);
+	//	task_->Update(scale_, taskPos_);
+	//	break;
+	//case TutorialContent::MeteoCollision_Content:
+	//	tips_->Update(scale_, tipsPos_);
+	//	task_->Update(scale_, taskPos_);
+	//	break;
+	//case TutorialContent::CantMoveCanRotate_Content:
+	//	tips_->Update(scale_, tipsPos_);
+	//	task_->Update(scale_, taskPos_);
+	//	break;
 
-	case TutorialContent::FirstEnemy_Content:
-		tips_->Update(scale_, tipsPos_);
-		task_->Update(scale_, taskPos_);
-		break;
-	case TutorialContent::EnemyCollisionToMeteo_Content:
-		tips_->Update(scale_, tipsPos_);
-		task_->Update(scale_, taskPos_);
-		break;
-	case TutorialContent::MeteoAttract_Content:
-		tips_->Update(scale_, tipsPos_);
-		task_->Update(scale_, taskPos_);
-		break;
+	//case TutorialContent::FirstEnemy_Content:
+	//	tips_->Update(scale_, tipsPos_);
+	//	task_->Update(scale_, taskPos_);
+	//	break;
+	//case TutorialContent::EnemyCollisionToMeteo_Content:
+	//	tips_->Update(scale_, tipsPos_);
+	//	task_->Update(scale_, taskPos_);
+	//	break;
+	//case TutorialContent::MeteoAttract_Content:
+	//	break;
+	//}
+	if (isEndTask) {
+		endTaskAnimationTimer += GameTimer::DeltaTime();
+		float parametric = endTaskAnimationTimer / EndTaskAnimationTime;
+		tipsPos_ = Vector2::Lerp(uiMoveStartPos, uiMoveEndPos, EaseIn::Back(parametric));
+		taskPos_ = Vector2::Lerp(uiMoveStartPos, uiMoveEndPos, EaseIn::Back(parametric));
+		makimono_UI->Update({ 0.5f, 0.5f },  Vector2::Lerp(uiMoveStartPos, uiMoveEndPos, EaseIn::Back(parametric)));
 	}
+	tips_->Update(scale_, tipsPos_);
+	//task_->Update(scale_, taskPos_);
 }
 
 void TutorialUI::BeginRendering() {
@@ -174,6 +183,12 @@ void TutorialUI::ChangeContentUI(const int& contentNum) {
 		content_UI.reset(new UIObject("practiceRange.png", ancherPoint));
 		break;
 	}
+	tips_->Update(scale_, tipsPos_);
+	task_->Update(scale_, taskPos_);
+}
+
+void TutorialUI::SetEndTask() {
+	isEndTask = true;
 }
 
 #ifdef _DEBUG
@@ -182,7 +197,7 @@ void TutorialUI::EditGui() {
 	ImGui::DragFloat2("TaskPos", &taskPos_.x);
 	ImGui::DragFloat2("BasePos", &basePos_.x);
 	skip_->debug_gui();
-	//woodBord_UI->debug_gui();
+	woodBord_UI->debug_gui();
 	makimono_UI->debug_gui();
 }
 #endif // DEBUG

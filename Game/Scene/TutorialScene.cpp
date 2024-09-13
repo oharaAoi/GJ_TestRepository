@@ -31,7 +31,7 @@ void TutorialScene::initialize() {
 		CVector3::BASIS,
 		Quaternion::EulerDegree(55, 0, 0),
 		{ 0, 50, -28.0 }
-							 });
+		});
 
 	// -------------------------------------------------
 	// ↓ 
@@ -165,6 +165,7 @@ void TutorialScene::load() {
 }
 
 void TutorialScene::begin() {
+	contentTimer += GameTimer::DeltaTime();
 }
 
 void TutorialScene::update() {
@@ -194,8 +195,8 @@ void TutorialScene::update() {
 			tutorial_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<GameScene>(),
-										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
-										 false);
+				static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+				false);
 		}
 	}
 
@@ -210,6 +211,11 @@ void TutorialScene::update() {
 		field_->Update();
 		ExecuteTutorialContent(content_);
 		return;
+	}
+
+	// 巻物を削除するためにやる
+	if (contentTimer >= 3.0f) {
+		tutorialUI_->SetEndTask();
 	}
 
 	// -------------------------------------------------
@@ -230,7 +236,7 @@ void TutorialScene::update() {
 			return true;
 		}
 		return false;
-							 });
+	});
 
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		enemy->Update(player_->get_transform().get_translate());
@@ -241,7 +247,7 @@ void TutorialScene::update() {
 			return true;
 		}
 		return false;
-						 });
+	});
 
 	// -------------------------------------------------
 	// ↓ Manager系の更新
@@ -254,7 +260,8 @@ void TutorialScene::update() {
 	// -------------------------------------------------
 	if (player_->GetIsAttack()) {
 		CheckMeteoAttraction();
-	} else {
+	}
+	else {
 		for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 			meteo->SetIsAttraction(false);
 		}
@@ -432,13 +439,15 @@ void TutorialScene::CheckMeteoAttraction() {
 				length = origineLength;
 				direction = meteoToAttractOrigine.normalize_safe();
 				meteo->SetTargetPosition(player_->GetGravityRodOrigine());
-			} else {
+			}
+			else {
 				meteo->SetAcceleration(meteoToAttractEnd.normalize_safe());
 				length = endLength;
 				direction = meteoToAttractEnd.normalize_safe();
 				meteo->SetTargetPosition(player_->GetGravityRodEnd());
 			}
-		} else {
+		}
+		else {
 			meteo->SetIsAttraction(false);
 		}
 	}
@@ -474,7 +483,8 @@ void TutorialScene::FirstMoveContent() {
 		++frameCount_;
 	}
 
-	if (frameCount_ > 100) {
+	if (frameCount_ > 100 && contentTimer >= MinContentTime) {
+		contentTimer = 0;
 		content_ = TutorialContent::RodPutOn_Content;
 		tutorialUI_->ChangeContentUI(int(content_));
 		frameCount_ = 0;
@@ -490,7 +500,8 @@ void TutorialScene::RodPutOnContent() {
 	// 棒を取り出したら終わり
 	player_->Update(field_->GetRadius());
 
-	if (player_->GetIsAttack()) {
+	if (player_->GetIsAttack() && contentTimer >= MinContentTime) {
+		contentTimer = 0;
 		success_SE_->restart();
 		content_ = TutorialContent::MeteoCollision_Content;
 		tutorialUI_->ChangeContentUI(int(content_));
@@ -508,22 +519,40 @@ void TutorialScene::MeteoCollisionContent() {
 	// 隕石同士がぶつかることを教える
 	player_->Update(field_->GetRadius());
 
+	bool isOutRange = false;
 	bool isFalling = false;
+	int numInRange = 0;
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		meteo->Update(player_->get_transform().get_translate());
 
 		if (meteo->GetIsFalling()) {
 			isFalling = true;
 		}
-	}
-
-	if (meteoriteList_.size() == 0) {
-		if (!isFalling) {
-			meteoriteManager_->AddMeteo(Vector3{ 20, 0, RandomFloat(-3, 5) });
-			meteoriteManager_->AddMeteo(Vector3{ 24, 0, RandomFloat(-3, 5) });
-			frameCount_ = 0;
+		if (meteo->get_transform().get_translate().x <= -5) {
+			isOutRange = true;
+		}
+		else {
+			++numInRange;
 		}
 	}
+
+	if (!isFalling && isOutRange && numInRange <= 1) {
+		if (numInRange == 1) {
+			meteoriteManager_->AddMeteo(Vector3{ 20, 0, RandomFloat(-3, 5) });
+		}
+		else {
+			meteoriteManager_->AddMeteo(Vector3{ 20, 0, RandomFloat(-3, 5) });
+			meteoriteManager_->AddMeteo(Vector3{ 24, 0, RandomFloat(-3, 5) });
+		}
+	}
+
+	//if (meteoriteList_.size() <= 1) {
+	//	if (!isFalling) {
+	//		meteoriteManager_->AddMeteo(Vector3{ 20, 0, RandomFloat(-3, 5) });
+	//		meteoriteManager_->AddMeteo(Vector3{ 24, 0, RandomFloat(-3, 5) });
+	//		frameCount_ = 0;
+	//	}
+	//}
 
 	// 死亡フラグのチェックを行う
 	meteoriteList_.remove_if([](const std::unique_ptr<Meteorite>& meteo) {
@@ -531,13 +560,14 @@ void TutorialScene::MeteoCollisionContent() {
 			return true;
 		}
 		return false;
-							 });
+	});
 
 	CheckMeteoAttraction();
 	CheckMeteoToField();
 	CheckBossCollision();
 
 	if (isFalling) {
+		contentTimer = 0;
 		success_SE_->restart();
 		content_ = TutorialContent::CantMoveCanRotate_Content;
 		tutorialUI_->ChangeContentUI(int(content_));
@@ -554,6 +584,9 @@ void TutorialScene::CantMoveCanRotateContent() {
 
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
 		meteo->Update(player_->get_transform().get_translate());
+		if (meteo->get_transform().get_translate().y < -2.0f) {
+			meteo->SetIsDead(true);
+		}
 	}
 
 	// 死亡フラグのチェックを行う
@@ -564,12 +597,16 @@ void TutorialScene::CantMoveCanRotateContent() {
 		return false;
 	});
 
-	if (!player_->GetIsAttack()) {
+	if (!player_->GetIsAttack() && contentTimer >= MinContentTime) {
+		contentTimer = 0;
 		success_SE_->restart();
 		content_ = TutorialContent::FirstEnemy_Content;
 		tutorialUI_->ChangeContentUI(int(content_));
 		frameCount_ = 0;
-		enemyManager_->AddEnemy(player_->get_transform().get_translate() + Vector3{ 2.0f, 0.0f, 2.0f }, EnemyType::Normal_Type);
+		Vector3 playerPos = player_->get_transform().get_translate();
+		playerPos.y = 0;
+		Vector3 popDirection = -playerPos.normalize_safe();
+		enemyManager_->AddEnemy(playerPos + popDirection * 4.0f, EnemyType::Normal_Type);
 	}
 }
 
@@ -587,6 +624,7 @@ void TutorialScene::FirstEnemyContent() {
 		if (enemy->GetIsKickToPlayer()) {
 			// 速度が0になったら
 			if (enemy->GetVelocity() == Vector3{ 0,0,0 }) {
+				contentTimer = 0;
 				success_SE_->restart();
 				content_ = TutorialContent::EnemyCollisionToMeteo_Content;
 				tutorialUI_->ChangeContentUI(int(content_));
@@ -600,7 +638,7 @@ void TutorialScene::FirstEnemyContent() {
 			return true;
 		}
 		return false;
-						 });
+	});
 
 }
 
@@ -622,7 +660,7 @@ void TutorialScene::EnemyCollisionToMeteoContent() {
 			return true;
 		}
 		return false;
-							 });
+	});
 
 	for (std::unique_ptr<Enemy>& enemy : enemyList_) {
 		Quaternion rotation = enemy->get_transform().get_quaternion();
@@ -635,9 +673,10 @@ void TutorialScene::EnemyCollisionToMeteoContent() {
 			return true;
 		}
 		return false;
-						 });
+	});
 
-	if (enemyList_.size() == 0) {
+	if (enemyList_.size() == 0 && contentTimer >= MinContentTime) {
+		contentTimer = 0;
 		success_SE_->restart();
 		content_ = TutorialContent::MeteoAttract_Content;
 		isTutorialFinish_ = true;
@@ -679,9 +718,11 @@ void TutorialScene::MeteoAttractContent() {
 			return true;
 		}
 		return false;
-							 });
+	});
 
-	if (player_->GetIsAttack()) { CheckMeteoAttraction(); }
+	if (player_->GetIsAttack()) {
+		CheckMeteoAttraction();
+	}
 	CheckMeteoToField();
 	CheckBossCollision();
 }
