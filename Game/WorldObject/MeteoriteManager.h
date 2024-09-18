@@ -23,7 +23,7 @@ using json = nlohmann::json;
 class GameScene;
 class EditorController;
 
-static const uint32_t kAppearanceTime_ = 300;
+static const uint32_t kAppearanceTime_ = 490;
 
 class MeteoriteManager {
 #ifdef _DEBUG
@@ -93,7 +93,13 @@ public:	// メンバ関数
 
 	void PopFromGroup(const MeteoriteManager::Group& group);
 
+	/// <summary>
+	/// 数が足りない時に出現させる関数
+	/// </summary>
+	void PopRadomFromGroup(const MeteoriteManager::Group& group);
+
 	std::string GetRandomKey();
+
 
 #ifdef _DEBUG
 	void DebugGui();

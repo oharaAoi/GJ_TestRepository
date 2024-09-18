@@ -65,7 +65,7 @@ void MeteoriteManager::Update(const Vector3& playerPosition) {
 		lessThanTargetMeteoNum_ += GameTimer::DeltaTime();
 
 		if (lessThanTargetMeteoNum_ >= 5.5f) {
-			PopFromGroup(groupMap_[GetRandomKey()]);
+			PopRadomFromGroup(groupMap_[GetRandomKey()]);
 			lessThanTargetMeteoNum_ = 0;
 		}
 	}
@@ -103,8 +103,23 @@ void MeteoriteManager::SelectionArrange() {
 }
 
 void MeteoriteManager::PopFromGroup(const MeteoriteManager::Group& group) {
+	float randomDiffZ = RandomFloat(-3.0f, 3.0f);
 	for (const auto& item : group.items) {
 		if (item.second.value.index() == 3) {
+			Vector3 popPos = GetValue<Vector3>(group, item.first);
+			popPos.z += randomDiffZ;
+			AddMeteo(GetValue<Vector3>(group, item.first));
+		}
+	}
+}
+
+void MeteoriteManager::PopRadomFromGroup(const MeteoriteManager::Group& group) {
+	float randomDiffZ = RandomFloat(-3.0f, 3.0f);
+	for (const auto& item : group.items) {
+		if (item.second.value.index() == 3) {
+			Vector3 popPos = GetValue<Vector3>(group, item.first);
+			popPos.x += RandomFloat(2.0f, 5.0f);
+			popPos.z += randomDiffZ;
 			AddMeteo(GetValue<Vector3>(group, item.first));
 		}
 	}
