@@ -22,12 +22,16 @@ public:
 public:
 	static float DeltaTime();
 	static float AverageFPS();
-	static const std::chrono::system_clock::time_point& BeginTime();
+	static const std::chrono::high_resolution_clock::time_point& BeginTime();
+
+#ifdef _DEBUG
+public:
 	static void IsFixDeltaTime(bool boolean);
+#endif // _DEBUG
 
 private:
 	float deltaTime;
-	std::chrono::system_clock::time_point startFrameTimePoint;
+	std::chrono::high_resolution_clock::time_point startFrameTimePoint;
 
 	std::list<float> deltaTimeList;
 	float timeSummation;

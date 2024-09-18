@@ -62,8 +62,6 @@ void WinApp::Initialize(const std::string& programName, int32_t width, int32_t h
 	GameTimer::Initialize();
 #ifdef _DEBUG
 	GameTimer::IsFixDeltaTime(true);
-#else
-	GameTimer::IsFixDeltaTime(true);
 #endif // _DEBUG
 
 	// ウィンドウ表示
@@ -155,7 +153,7 @@ void WinApp::begin_frame() {
 
 void WinApp::end_frame() {
 	DirectXCore::EndFrame();
-	wait_frame();
+	//wait_frame();
 }
 
 void WinApp::term_app() {
@@ -163,15 +161,16 @@ void WinApp::term_app() {
 }
 
 void WinApp::wait_frame() {
+	auto& begin = GameTimer::BeginTime();
 	while (true) {
 		using second_f = std::chrono::duration<float, std::ratio<1, 1>>;
-		auto now = std::chrono::system_clock::now();
-		float duration = std::chrono::duration_cast<second_f>(now - GameTimer::BeginTime()).count();
+		auto now = std::chrono::high_resolution_clock::now();
+		float duration = std::chrono::duration_cast<second_f>(now - begin).count();
 		if (duration >= 0.0167f) {
 			break;
 		}
 		else {
-			std::this_thread::sleep_for(std::chrono::nanoseconds(10));
+			std::this_thread::sleep_for(std::chrono::microseconds(100));
 		}
 	}
 }

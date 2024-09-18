@@ -11,10 +11,11 @@ GameTimer& GameTimer::GetInstance() {
 
 void GameTimer::Initialize() {
 	auto& instance = GetInstance();
-	instance.startFrameTimePoint = chrono::system_clock::now();
+	instance.startFrameTimePoint = chrono::high_resolution_clock::now();
 	instance.fps = 60;
 	instance.deltaTimeList = {};
 	instance.timeSummation = 0;
+	instance.isFixDeltaTime = false;
 }
 
 void GameTimer::Update() {
@@ -24,7 +25,7 @@ void GameTimer::Update() {
 	auto&& instance = GetInstance();
 
 	// 現在時刻を取得
-	auto now = chrono::system_clock::now();
+	auto now = chrono::high_resolution_clock::now();
 	// duration算出
 	auto secDuration = chrono::duration_cast<second_f>(now - instance.startFrameTimePoint);
 	// deltaTimeとして記録
@@ -53,10 +54,12 @@ float GameTimer::AverageFPS() {
 	return GetInstance().fps;
 }
 
-const std::chrono::system_clock::time_point& GameTimer::BeginTime() {
+const std::chrono::high_resolution_clock::time_point& GameTimer::BeginTime() {
 	return GetInstance().startFrameTimePoint;
 }
 
+#ifdef _DEBUG
 void GameTimer::IsFixDeltaTime(bool boolean) {
 	GetInstance().isFixDeltaTime = boolean;
 }
+#endif // _DEBUG
