@@ -150,14 +150,8 @@ void GameScene::initialize() {
 void GameScene::load() {
 	TextureManager::RegisterLoadQue("./Game/Resources/UI", "Fade_Panel.png");
 
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "Planet.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "player.obj");
-	PolygonMeshManager::RegisterLoadQue("./Engine/Resources", "particle.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "mouth.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "mob.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "Field.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariEnemy.obj");
-	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/Models", "kariSpEnemy.obj");
 
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/PlayerBody", "playerBody.obj");
 	PolygonMeshManager::RegisterLoadQue("./Game/Resources/GameScene/PlayerArm", "playerArm.obj");
@@ -207,7 +201,6 @@ void GameScene::load() {
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_enemyEachOther.wav");//
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "meteOnigiri_gameBGM.wav");//
 	AudioManager::RegisterLoadQue("./Game/Resources/Audio/game", "SE_bossAppearace.wav");//
-
 }
 
 void GameScene::begin() {
