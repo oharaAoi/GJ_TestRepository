@@ -70,15 +70,17 @@ void FollowCamera::GameStartPerformance() {
 		return;
 	}
 
-	if (moveT_ <= 1.0f) {
-		moveT_ += cameraMove_[nowIndex_].moveTime * GameTimer::DeltaTime();
-		transform->set_translate(Vector3::Lerp(cameraMove_[nowIndex_].pos, cameraMove_[nowIndex_ + 1].pos, EaseIn::Sine(moveT_)));
+	if (parametric < 1.0f) {
+		animationTimer += GameTimer::DeltaTime();
+		parametric = (std::min)(1.0f, animationTimer / cameraMove_[nowIndex_].moveTime);
+		transform->set_translate(Vector3::Lerp(cameraMove_[nowIndex_].pos, cameraMove_[nowIndex_ + 1].pos, EaseIn::Sine(parametric)));
 		transform->set_rotate(Quaternion::Slerp(Quaternion::EulerDegree(cameraMove_[nowIndex_].rotateDegree),
-												Quaternion::EulerDegree(cameraMove_[nowIndex_ + 1].rotateDegree), EaseIn::Sine(moveT_)));
+												Quaternion::EulerDegree(cameraMove_[nowIndex_ + 1].rotateDegree), EaseIn::Sine(parametric)));
 	} else {
 		nowIndex_++;
 		frameCount_ = 0;
-		moveT_ = 0;
+		animationTimer = 0;
+		parametric = 0;
 
 		if (nowIndex_ == pauseIndex_) {
 			isStop_ = true;
@@ -92,28 +94,32 @@ void FollowCamera::GameStartPerformance() {
 }
 
 void FollowCamera::GameOverPerformance() {
-	if (moveT_ <= 1.0f) {
+	if (parametric < 1.0f) {
 		isPerformanceFinish_ = false;
-		moveT_ += cameraMove_[nowIndex_].moveTime * GameTimer::DeltaTime();
-		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, 80, -40 }, EaseOut::Quint(moveT_)));
+		animationTimer += GameTimer::DeltaTime();
+		parametric = (std::min)(1.0f, animationTimer / cameraMove_[nowIndex_].moveTime);
+		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, 80, -40 }, EaseOut::Quint(parametric)));
 	} else {
 		isPerformanceFinish_ = true;
 		frameCount_ = 0;
-		moveT_ = 0;
+		animationTimer = 0;
+		parametric = 0;
 	}
 }
 
 void FollowCamera::GameClearPerformance() {
-	if (moveT_ <= 1.0f) {
+	if (parametric < 1.0f) {
 		isPerformanceFinish_ = false;
-		moveT_ += cameraMove_[nowIndex_].moveTime * GameTimer::DeltaTime();
+		animationTimer += GameTimer::DeltaTime();
+		parametric = (std::min)(1.0f, animationTimer / cameraMove_[nowIndex_].moveTime);
 		// cameraMove_[4].posは開始時の最後の位置
-		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, -18, 14 }, EaseOut::Quint(moveT_)));
+		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, -18, 14 }, EaseOut::Quint(parametric)));
 		transform->set_rotate(Quaternion::Slerp(Quaternion::EulerDegree(cameraMove_[4].rotateDegree),
-												Quaternion::EulerDegree({90, 0,0 }), EaseOut::Quint(moveT_)));
+												Quaternion::EulerDegree({90, 0,0 }), EaseOut::Quint(parametric)));
 	} else {
 		isPerformanceFinish_ = true;
 		frameCount_ = 0;
+		parametric = 0;
 	}
 }
 

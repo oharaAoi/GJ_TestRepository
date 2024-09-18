@@ -62,7 +62,8 @@ private:
 	uint32_t frameCount_ = 0;
 	uint32_t frameTime_ = 200;
 
-	float moveT_ = 0;
+	float animationTimer = 0;
+	float parametric = 0;
 
 	std::unique_ptr<AudioPlayer> boss_Apparance_SE_ = nullptr;
 
