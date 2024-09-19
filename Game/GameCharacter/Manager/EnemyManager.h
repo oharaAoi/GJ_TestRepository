@@ -9,7 +9,7 @@
 #include "Game/GameCharacter/Enemy.h"
 #include "Engine/Game/Camera/Camera3D.h"
 #include "externals/nlohmann/json.hpp"
-#include "Game/Function/TimedCall.h"
+#include "Engine/Utility/TimedCall/TimedCall.h"
 #include "Game/MyRandom.h"
 #include "Engine/Game/Collision/CollisionManager/CollisionManager.h"
 
@@ -96,7 +96,7 @@ private:
 
 	std::vector<std::string> fileNameArray_;
 
-	std::list<Test::TimedCall> timedCalls_;
+	std::list<TimedCall<void(void)>> timedCalls_;
 
 	// 他のクラスが持つポインタ(参照) ----------------------------------------------------
 	std::list<std::unique_ptr<Enemy>>& sceneEnemyList_; // シーンが持っている敵のリスト
@@ -105,7 +105,7 @@ private:
 	const Hierarchy& fieldHierarchy_;
 	// ------------------------------------------------------------------------------
 
-	uint32_t popTime_ = 420;
+	float popTime_ = 7.0f;
 	uint32_t firstPopCount_ = 0;
 	bool isPop_ = false;
 

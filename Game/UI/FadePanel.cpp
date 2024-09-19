@@ -15,9 +15,7 @@ void FadePanel::Init() {
 	isFade_ = false;
 	isFadeFisnish_ = false;
 
-	fadeTime_ = 60;
-
-	moveT_ = 0;
+	fadeTime_ = 1.0f;
 }
 
 void FadePanel::Update() {
@@ -48,15 +46,18 @@ void FadePanel::SetFadeFadeStart(const FadeType& type) {
 	isFade_ = true;
 	isFadeFisnish_ = false;
 	fadeType_ = type;
-	frameCount_ = 0;
-	moveT_ = 0;
+	animationTimer = 0;
 }
 
 void FadePanel::FadeIn() {
-	if (moveT_ < 1.0f) {
-		moveT_ += 1.0f * GameTimer::DeltaTime();
-		panelAlpha_ = std::lerp(0.0f, 1.0f, std::clamp(moveT_, 0.0f, 1.0f));
-	} else {
+	if (animationTimer < fadeTime_) {
+		animationTimer += GameTimer::DeltaTime();
+		if (animationTimer >= fadeTime_) {
+			animationTimer = fadeTime_;
+		}
+		panelAlpha_ = std::lerp(0.0f, 1.0f, animationTimer / fadeTime_);
+	}
+	else {
 		//moveT_ = 0;
 		isFade_ = false;
 		isFadeFisnish_ = true;
@@ -64,11 +65,14 @@ void FadePanel::FadeIn() {
 }
 
 void FadePanel::FadeOut() {
-	if (moveT_ < 1.0f) {
-		moveT_ += 1.0f * GameTimer::DeltaTime();
-		panelAlpha_ = std::lerp(1.0f, 0.0f, std::clamp(moveT_, 0.0f, 1.0f));
-		//panelAlpha_ = std::lerp(1.0f, 0.0f, moveT_);
-	} else {
+	if (animationTimer < fadeTime_) {
+		animationTimer += GameTimer::DeltaTime();
+		if (animationTimer >= fadeTime_) {
+			animationTimer = fadeTime_;
+		}
+		panelAlpha_ = std::lerp(1.0f, 0.0f, animationTimer / fadeTime_);
+	}
+	else {
 		//moveT_ = 0;
 		isFade_ = false;
 		isFadeFisnish_ = true;
@@ -78,6 +82,6 @@ void FadePanel::FadeOut() {
 #ifdef _DEBUG
 #include <externals/imgui/imgui.h>
 void FadePanel::Debug_gui() {
-	ImGui::Text("frameCount: %d / %d", frameCount_, fadeTime_);
+	ImGui::Text("frameCount: %d / %d", animationTimer, fadeTime_);
 }
 #endif // _DEBUG

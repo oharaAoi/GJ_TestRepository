@@ -67,7 +67,7 @@ void TutorialScene::initialize() {
 	// ---------------------------------------------
 	isTutorialFinish_ = false;
 	content_ = TutorialContent::FirstMove_Content;
-	frameCount_ = 0;
+	tutorialTimer = 0;
 	// ---------------------------------------------
 
 	tutorialUI_->ChangeContentUI(int(content_));
@@ -230,7 +230,7 @@ void TutorialScene::update() {
 			tutorial_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<GameScene>(),
-				static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+				fadePanel_->GetFadeTime() + 0.1f,
 				false);
 		}
 	}
@@ -392,7 +392,7 @@ void TutorialScene::debug_update() {
 	ImGui::Text("nowScene: Tutorial");
 	ImGui::Text("nextScene: Game");
 	ImGui::Text("Press: A");
-	ImGui::Text("nextOfFrame: %d / 120", frameCount_);
+	//ImGui::Text("nextOfFrame: %d / 120", frameCount_);
 	ImGui::Checkbox("isStop", &isStop_);
 	ImGui::Separator();
 	ImGui::Text("now content :");
@@ -530,14 +530,14 @@ void TutorialScene::FirstMoveContent() {
 	Vector3 velocity = player_->GetVelocity();
 
 	if (std::abs(velocity.x) > 0.4f || std::abs(velocity.z) > 0.4f) {
-		++frameCount_;
+		tutorialTimer += GameTimer::DeltaTime();
 	}
 
-	if (frameCount_ > 100 && contentTimer >= MinContentTime) {
+	if (tutorialTimer > 1.6f && contentTimer >= MinContentTime) {
 		contentTimer = 0;
 		content_ = TutorialContent::RodPutOn_Content;
 		tutorialUI_->ChangeContentUI(int(content_));
-		frameCount_ = 0;
+		tutorialTimer = 0;
 		success_SE_->restart();
 		playerUI = std::make_unique<PlayerUI>();
 	}
@@ -653,7 +653,7 @@ void TutorialScene::CantMoveCanRotateContent() {
 		success_SE_->restart();
 		content_ = TutorialContent::FirstEnemy_Content;
 		tutorialUI_->ChangeContentUI(int(content_));
-		frameCount_ = 0;
+		tutorialTimer = 0;
 		Vector3 playerPos = player_->get_transform().get_translate();
 		playerPos.y = 0;
 		Vector3 popDirection = -playerPos.normalize_safe();
@@ -733,7 +733,7 @@ void TutorialScene::EnemyCollisionToMeteoContent() {
 		isTutorialFinish_ = true;
 		enemyManager_->StartPop();
 		meteoriteManager_->StartPop();
-		frameCount_ = 0;
+		tutorialTimer = 0;
 		tutorialUI_->ChangeContentUI(int(content_));
 	}
 }
@@ -746,10 +746,11 @@ void TutorialScene::MeteoAttractContent() {
 	// 隕石を引き寄せられることを教える
 	player_->Update(field_->GetRadius());
 
+	tutorialTimer += GameTimer::DeltaTime();
 	// 無視した場合を考慮
-	if (++frameCount_ > 200) {
+	if (tutorialTimer > 3.2) {
 		meteoriteManager_->AddMeteo(Vector3{ 20, 0, RandomFloat(-3, 5) });
-		frameCount_ = 0;
+		tutorialTimer = 0;
 	}
 
 	for (std::unique_ptr<Meteorite>& meteo : meteoriteList_) {
@@ -759,7 +760,7 @@ void TutorialScene::MeteoAttractContent() {
 			isTutorialFinish_ = true;
 			enemyManager_->StartPop();
 			meteoriteManager_->StartPop();
-			frameCount_ = 0;
+			tutorialTimer = 0;
 		}
 	}
 

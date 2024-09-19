@@ -25,7 +25,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Input::GetInstance()->Init(WinApp::GetWNDCLASS(), WinApp::GetWndHandle());
 
 #ifdef _DEBUG
-	auto&& scene = CreateUnique<TitleScene>(); // デバッグ時はこっちを編集
+	auto&& scene = CreateUnique<GameScene>(); // デバッグ時はこっちを編集
 #else
 	auto&& scene = CreateUnique<TitleScene>(); // こっちは変えない
 #endif // _DEBUG

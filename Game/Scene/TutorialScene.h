@@ -161,7 +161,7 @@ private:
 	// ------------------- 内容に関する変数 ------------------- //
 	bool isTutorialFinish_;
 	TutorialContent content_;
-	uint32_t frameCount_ = 0;
+	float tutorialTimer;
 	uint32_t attackCount_ = 0;
 	uint32_t skipCount_ = 0;
 };

@@ -112,7 +112,7 @@ private:
 	Moving movingMouth_;
 	Moving burp_;
 
-	uint32_t frameCount_ = 0;
+	float animationTimer = 0;
 	bool isFinish_ = false;
 
 	float closeStartUp_;

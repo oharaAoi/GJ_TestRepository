@@ -36,7 +36,7 @@ public:
 	void FadeIn();
 	void FadeOut();
 
-	const uint32_t GetFadeTime() const { return fadeTime_; }
+	const float GetFadeTime() const { return fadeTime_; }
 
 	const bool GetIsFade() const { return isFade_; }
 
@@ -50,10 +50,9 @@ private:
 	bool isFadeFisnish_ = false;
 
 	FadeType fadeType_;
-	uint32_t frameCount_ = 0;
-	uint32_t fadeTime_ = 60;
+	float fadeTime_ = 60;
 
-	float moveT_ = 0;
+	float animationTimer;
 
 	float panelAlpha_ = 0.0f;
 };

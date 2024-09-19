@@ -78,7 +78,6 @@ void FollowCamera::GameStartPerformance() {
 												Quaternion::EulerDegree(cameraMove_[nowIndex_ + 1].rotateDegree), EaseIn::Sine(parametric)));
 	} else {
 		nowIndex_++;
-		frameCount_ = 0;
 		animationTimer = 0;
 		parametric = 0;
 
@@ -101,7 +100,6 @@ void FollowCamera::GameOverPerformance() {
 		transform->set_translate(Vector3::Lerp(cameraMove_[4].pos, Vector3{ 0, 80, -40 }, EaseOut::Quint(parametric)));
 	} else {
 		isPerformanceFinish_ = true;
-		frameCount_ = 0;
 		animationTimer = 0;
 		parametric = 0;
 	}
@@ -118,7 +116,6 @@ void FollowCamera::GameClearPerformance() {
 												Quaternion::EulerDegree({90, 0,0 }), EaseOut::Quint(parametric)));
 	} else {
 		isPerformanceFinish_ = true;
-		frameCount_ = 0;
 		parametric = 0;
 	}
 }
@@ -126,7 +123,8 @@ void FollowCamera::GameClearPerformance() {
 #ifdef _DEBUG
 void FollowCamera::Restart() {
 	nowIndex_ = 0;
-	frameCount_ = 0;
+	animationTimer = 0;
+	parametric = 0;
 	isPerformanceFinish_ = false;
 	isStop_ = false;
 }

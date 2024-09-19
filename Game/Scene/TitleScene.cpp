@@ -141,7 +141,7 @@ void TitleScene::update() {
 			title_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<TutorialScene>(),
-				static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+				fadePanel_->GetFadeTime() + 0.1f,
 				false);
 		}
 	}

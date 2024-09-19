@@ -145,14 +145,14 @@ void GameOverScene::update() {
 			gameOver_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<GameScene>(),
-										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+										 fadePanel_->GetFadeTime() + 0.1f,
 										 false);
 		} else {
 			start_SE_->play();
 			gameOver_BGM_->stop();
 			fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 			SceneManager::SetSceneChange(CreateUnique<TitleScene>(),
-										 static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+										 fadePanel_->GetFadeTime() + 0.1f,
 										 false);
 		}
 	}

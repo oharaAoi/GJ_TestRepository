@@ -59,7 +59,6 @@ private:
 	uint32_t nowIndex_ = 0;
 	uint32_t pauseIndex_ = 2;
 
-	uint32_t frameCount_ = 0;
 	uint32_t frameTime_ = 200;
 
 	float animationTimer = 0;

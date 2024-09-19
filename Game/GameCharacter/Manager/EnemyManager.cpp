@@ -35,11 +35,11 @@ void EnemyManager::Update(const Vector3& playerPosition) {
 	// ↓ TImedCallの設定
 	// -------------------------------------------------
 	for (auto& times : timedCalls_) {
-		times.Update();
+		times.update();
 	}
 
-	timedCalls_.remove_if([](const Test::TimedCall& timeCalls) {
-		if (timeCalls.IsFinished()) {
+	timedCalls_.remove_if([](const TimedCall<void(void)>& timeCalls) {
+		if (timeCalls.is_finished()) {
 			return true;
 		}
 		return false;
@@ -79,7 +79,7 @@ void EnemyManager::SelectArrange() {
 	PopFromGroup(loadData_[keyArray[randomNum]]);
 
 	// timedCallをリセットする
-	timedCalls_.push_back(Test::TimedCall(std::bind(&EnemyManager::SelectArrange, this), popTime_));
+	timedCalls_.push_back(TimedCall<void(void)>(std::bind(&EnemyManager::SelectArrange, this), popTime_));
 }
 
 #ifdef _DEBUG
@@ -100,7 +100,7 @@ void EnemyManager::Draw() const {
 #include <externals/imgui/imgui.h>
 void EnemyManager::EditImGui() {
 	ImGui::Begin("EnemyManager");
-	ImGui::Text("popTime:%d", popTime_);
+	ImGui::Text("popTime:%f", popTime_);
 
 	if (ImGui::Button("popCenter")) {
 		AddEnemy(Vector3{ 0.0f, 6.0f, 0.0f }, EnemyType::Normal_Type);

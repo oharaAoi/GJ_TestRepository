@@ -11,7 +11,7 @@
 // Game
 #include "Game/WorldObject/Meteorite.h"
 // 
-#include "Game/Function/TimedCall.h"
+#include "Engine/Utility/TimedCall/TimedCall.h"
 // Math
 #include "Engine/Math/Vector2.h"
 #include "Engine/Math/Vector3.h"
@@ -23,7 +23,7 @@ using json = nlohmann::json;
 class GameScene;
 class EditorController;
 
-static const uint32_t kAppearanceTime_ = 300;
+static const float kAppearanceTime_ = 6.0f;
 
 class MeteoriteManager {
 #ifdef _DEBUG
@@ -144,7 +144,7 @@ private:
 	std::map<std::string, Group> groupMap_;
 	std::vector<Group*> groupRefs_;
 
-	std::list<Test::TimedCall> timedCalls_;
+	std::list<TimedCall<void(void)>> timedCalls_;
 
 	std::list<Meteorite> meteoriteList_;
 

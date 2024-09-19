@@ -48,11 +48,11 @@ void MeteoriteManager::Update(const Vector3& playerPosition) {
 #endif // _DEBUG
 
 	for (auto& times : timedCalls_) {
-		times.Update();
+		times.update();
 	}
 
-	timedCalls_.remove_if([](const Test::TimedCall& timeCalls) {
-		if (timeCalls.IsFinished()) {
+	timedCalls_.remove_if([](const TimedCall<void(void)>& timeCalls) {
+		if (timeCalls.is_finished()) {
 			return true;
 		}
 		return false;
@@ -99,7 +99,7 @@ void MeteoriteManager::SelectionArrange() {
 	groupRefs_.push_back(&groupMap_[randomKey]);
 
 	// timedCallをリセットする
-	timedCalls_.push_back(Test::TimedCall(std::bind(&MeteoriteManager::SelectionArrange, this), kAppearanceTime_));
+	timedCalls_.push_back(TimedCall<void(void)>(std::bind(&MeteoriteManager::SelectionArrange, this), kAppearanceTime_));
 }
 
 void MeteoriteManager::PopFromGroup(const MeteoriteManager::Group& group) {
@@ -141,7 +141,7 @@ std::string MeteoriteManager::GetRandomKey() {
 #ifdef _DEBUG
 void MeteoriteManager::DebugGui() {
 	for (auto& times : timedCalls_) {
-		times.DebugGui();
+		times.debug_gui();
 	}
 }
 #endif // _DEBUG

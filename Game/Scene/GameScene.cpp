@@ -561,7 +561,7 @@ void GameScene::GameOverPerformance() {
 		// ゲームオーバーの終了
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<GameOverScene>(),
-			static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+			fadePanel_->GetFadeTime() + 0.1f,
 			false);
 	}
 }
@@ -576,7 +576,7 @@ void GameScene::GameClearPerformance() {
 		boss_->Burp();	// げっぷをする
 		fadePanel_->SetFadeFadeStart(FadeType::Fade_In);
 		SceneManager::SetSceneChange(CreateUnique<ClearScene>(),
-			static_cast<float>((fadePanel_->GetFadeTime() + 10) * GameTimer::DeltaTime()),
+			fadePanel_->GetFadeTime() + 0.1f,
 			false);
 	}
 }

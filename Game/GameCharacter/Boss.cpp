@@ -171,32 +171,36 @@ void Boss::PlayFieldPushSE() {
 }
 
 void Boss::FaceSet() {
-	if (++frameCount_ <= 100) {
+	animationTimer += GameTimer::DeltaTime();
+	if (animationTimer <= 100 / 60.0f) {
 		isFinish_ = false;
-		float t = static_cast<float>(frameCount_) / 2.0f;
+		float t = animationTimer / 2.0f;
 
 		transform->set_translate_y(std::lerp(-130.0f, -2.0f, EaseOut::Expo(t)));
 
 	} else {
 		isFinish_ = true;
-		frameCount_ = 0;
+		animationTimer = 0;
 	}
 }
 
 void Boss::GameClearFaceSet() {
-	if (++frameCount_ < 180) {
+	animationTimer += GameTimer::DeltaTime();
+	if (animationTimer < 3.0f) {
 		isFinish_ = false;
-		float t = static_cast<float>(frameCount_) / 180.0f;
+		float t = animationTimer/ 3;
 		transform->set_translate_y(std::lerp(-2.0f, -150.0f, EaseOut::Quint(t)));
 	} else {
 		isFinish_ = true;
-		frameCount_ = 0;
+		animationTimer = 0;
 	}
 }
 
 void Boss::FaceShake() {
-	if (++frameCount_ <= 180) {
-		float angle = std::sinf(static_cast<float>(frameCount_ * 4.0f) * ToRadian) * ((PI) / 6.0f);
+	animationTimer += GameTimer::DeltaTime();
+	if (animationTimer < 3.0f) {
+		float parametric = animationTimer / 3.0f;
+		float angle = std::sin((parametric * 360.0f) * ToRadian) * ((PI) / 6.0f);
 		Quaternion rotateValue = Quaternion::AngleAxis({ 0,1.0f,0.0f }, angle);
 		Vector3 velocity = (Vector3{ 0.0f, 1.0f, 0.0f }).normalize_safe();
 		float targetAngle = std::atan2f(velocity.x, velocity.z);
@@ -204,7 +208,7 @@ void Boss::FaceShake() {
 		transform->set_rotate(rotateValue * targetRotateValue);
 	} else {
 		isFinish_ = true;
-		frameCount_ = 0;
+		animationTimer = 0;
 	}
 }
 
@@ -214,9 +218,10 @@ void Boss::MouthClose() {
 	float inMouthScale = faceParts_[InMouth_Parts]->get_transform().get_scale().z;
 	
 	// 口を閉じるアニメーションを行う
-	if (++frameCount_ < 120) {
+	animationTimer += GameTimer::DeltaTime();
+	if (animationTimer < 2.0f) {
 		isFinish_ = false;
-		float t = static_cast<float>(frameCount_) / 120.0f;
+		float t = animationTimer / 2.0f;
 		// 上-6, 下1.4, 口内0.5
 		upTranslate = std::lerp(closeStartUp_, -6.0f, EaseInOut::Elastic(t));
 		lowerTranslate = std::lerp(closeStartLow_, 1.4f, EaseInOut::Elastic(t));
