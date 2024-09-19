@@ -56,7 +56,7 @@ void Meteorite::Update(const Vector3& playerPosition) {
 	attractionRange_ = 3.0f;
 	if (isEnemyHit_) {
 		speed_ = 0.5f;
-		attractionedStrength_ = 150.0f;
+		attractionedStrength_ = 160.0f;
 	}
 
 	if (!isFalling_) {
