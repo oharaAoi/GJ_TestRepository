@@ -23,7 +23,7 @@ using json = nlohmann::json;
 class GameScene;
 class EditorController;
 
-static const float kAppearanceTime_ = 6.0f;
+static const float kAppearanceTime_ = 8.0f;
 
 class MeteoriteManager {
 #ifdef _DEBUG

@@ -61,14 +61,14 @@ void MeteoriteManager::Update(const Vector3& playerPosition) {
 	// -------------------------------------------------
 	// ↓ 隕石の数がmeteoAddNum_以下だったら
 	// -------------------------------------------------
-	if (sceneMeteoList_.size() < meteoAddNum_) {
+	/*if (sceneMeteoList_.size() < meteoAddNum_) {
 		lessThanTargetMeteoNum_ += GameTimer::DeltaTime();
 
 		if (lessThanTargetMeteoNum_ >= 5.5f) {
 			PopRadomFromGroup(groupMap_[GetRandomKey()]);
 			lessThanTargetMeteoNum_ = 0;
 		}
-	}
+	}*/
 }
 
 void MeteoriteManager::StartPop() {
