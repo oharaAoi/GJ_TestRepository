@@ -127,8 +127,8 @@ private:
 	uint32_t frameCount_;
 	const uint32_t attackTime_ = 50;
 
-	uint32_t fieldOutCount_ = 0;
-	uint32_t fieldOutTime_ = 100;
+	float fieldOutCount_ = 0;
+	float fieldOutTime_ = 1.0f;
 
 	Vector3 rotateAxis_;
 

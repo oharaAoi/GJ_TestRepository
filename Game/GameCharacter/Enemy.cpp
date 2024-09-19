@@ -59,7 +59,8 @@ void Enemy::Update(const Vector3& playerPosition) {
 		switch (fieldOutMove_) {
 		case FieldOutMove::Rotate_Move:	// 回転
 			translate += velocity_ * GameTimer::DeltaTime();
-			if (++fieldOutCount_ < fieldOutTime_) {
+			fieldOutCount_ += GameTimer::DeltaTime();
+			if (fieldOutCount_ < fieldOutTime_) {
 				// 回転して飛ばされる処理
 				Quaternion rotation = transform->get_quaternion();
 				float t = float(fieldOutCount_) / float(fieldOutTime_);
@@ -69,13 +70,14 @@ void Enemy::Update(const Vector3& playerPosition) {
 				transform->set_translate(translate);
 			} else {
 				fieldOutCount_ = 0;
-				fieldOutTime_ = 120;
+				fieldOutTime_ = 2.0f;
 				fieldOutMove_ = FieldOutMove::Stop_Move;
 				velocity_ = {0,0,0};
 			}
 			break;
 		case FieldOutMove::Stop_Move: // 空中でとどまる
-			if (++fieldOutCount_ < fieldOutTime_) {
+			fieldOutCount_ += GameTimer::DeltaTime();
+			if (fieldOutCount_ < fieldOutTime_) {
 				// ついでに回転を正しい方向に戻す処理
 				Quaternion rotation = transform->get_quaternion();
 				float t = float(fieldOutCount_) / float(fieldOutTime_);
@@ -90,7 +92,7 @@ void Enemy::Update(const Vector3& playerPosition) {
 
 			} else {
 				fieldOutCount_ = 0;
-				fieldOutTime_ = 180;
+				fieldOutTime_ = 3.0f;
 				fieldOutMove_ = FieldOutMove::Struggle_Move;
 				transform->set_scale({ 1.0f, 1.0f, 1.0f });
 				Vector3 velocity = (Vector3{ 0.0f, translate.y, 0.0f } - translate).normalize_safe();
@@ -98,9 +100,10 @@ void Enemy::Update(const Vector3& playerPosition) {
 			}
 			break;
 		case FieldOutMove::Struggle_Move: // ワタワタ
-			if (++fieldOutCount_ < fieldOutTime_) {
+			fieldOutCount_ += GameTimer::DeltaTime();
+			if (fieldOutCount_ < fieldOutTime_) {
 				// sin波を使ってY軸中心で左右に向かせる
-				float angle = std::sinf(static_cast<float>(fieldOutCount_ * 4.0f) * ToRadian) * ((PI) / 6.0f);
+				float angle = std::sinf(static_cast<float>(fieldOutCount_ * 60.0f * 4.0f) * ToRadian) * ((PI) / 6.0f);
 				Quaternion rotateValue = Quaternion::AngleAxis({ 0,1.0f,0.0f }, angle);
 				velocity_ = (Vector3{ 0.0f, translate.y, 0.0f } - translate).normalize_safe();
 				float targetAngle = std::atan2f(velocity_.x, velocity_.z);
@@ -110,15 +113,15 @@ void Enemy::Update(const Vector3& playerPosition) {
 			} else {
 				isKickToPlayer_ = false;
 				fieldOutCount_ = 0;
-				fieldOutTime_ = 100;
+				fieldOutTime_ = 1.0f;
 				fieldOutMove_ = FieldOutMove::GoField_Move;
 				velocity_ = (Vector3{ 0.0f, translate.y, 0.0f } - translate).normalize_safe();
 			}
 			break;
 		case FieldOutMove::GoField_Move:
-			++fieldOutCount_;
+			fieldOutCount_ += GameTimer::DeltaTime();
 			// sin波を使ってY軸中心で左右に向かせる
-			float angle = std::sinf(static_cast<float>(fieldOutCount_ * 8) * ToRadian) * ((PI) / 12.0f);
+			float angle = std::sinf(static_cast<float>(fieldOutCount_ * 60.0f * 8.0f) * ToRadian) * ((PI) / 12.0f);
 			Quaternion rotateValue = Quaternion::AngleAxis({ 0,1.0f,0.0f }, angle);
 			float targetAngle = std::atan2f(velocity_.x, velocity_.z);
 			Quaternion targetRotateValue = Quaternion::EulerRadian({ 0,targetAngle,0 });
@@ -279,7 +282,7 @@ void Enemy::On_Collision(const BaseCollider* const other) {
 			behaviorRequest_ = EnemyState::Blown_State;
 			fieldOutMove_ = FieldOutMove::Rotate_Move;
 			fieldOutCount_ = 0;
-			fieldOutTime_ = 120;
+			fieldOutTime_ = 1.5f;
 		}
 	}
 }
@@ -328,7 +331,7 @@ void Enemy::On_Collision_Enter(const BaseCollider* const other) {
 			behaviorRequest_ = EnemyState::Blown_State;
 			fieldOutMove_ = FieldOutMove::Rotate_Move;
 			fieldOutCount_ = 0;
-			fieldOutTime_ = 120;
+			fieldOutTime_ = 1.0f;
 		}
 
 		effectManager_->AddEffect("meteo", transform->get_translate(), {0.0f,1.0f,0.0f});
