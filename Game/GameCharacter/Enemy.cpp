@@ -110,7 +110,7 @@ void Enemy::Update(const Vector3& playerPosition) {
 			} else {
 				isKickToPlayer_ = false;
 				fieldOutCount_ = 0;
-				fieldOutTime_ = 140;
+				fieldOutTime_ = 100;
 				fieldOutMove_ = FieldOutMove::GoField_Move;
 				velocity_ = (Vector3{ 0.0f, translate.y, 0.0f } - translate).normalize_safe();
 			}

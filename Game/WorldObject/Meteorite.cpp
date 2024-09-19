@@ -2,7 +2,7 @@
 #include "Engine/Game/Color/Color.h"
 #include "Game/Enviroment.h"
 
-float Meteorite::kAttractionedStrength_ = 100;
+float Meteorite::kAttractionedStrength_ = 130;
 float Meteorite::kSpeed_ = -2.0f;
 float Meteorite::radius_ = 1.0f;
 
@@ -56,7 +56,7 @@ void Meteorite::Update(const Vector3& playerPosition) {
 	attractionRange_ = 3.0f;
 	if (isEnemyHit_) {
 		speed_ = 0.5f;
-		attractionedStrength_ = 120.0f;
+		attractionedStrength_ = 150.0f;
 	}
 
 	if (!isFalling_) {
@@ -136,8 +136,8 @@ void Meteorite::On_Collision_Enter(const BaseCollider* const other, Color* objec
 		meteoHitToEnemy_SE_->restart();
 		sphereCollider_->set_radius(sphereCollider_->get_radius() + 0.1f);
 		Vector3 scale = transform->get_scale();
-		scale = { scale.x + 0.2f,scale.y + 0.2f, scale.z + 0.2f };
-		if (scale.x <= 1.6f) {
+		scale = { scale.x + 0.3f,scale.y + 0.3f, scale.z + 0.3f };
+		if (scale.x <= 1.8f) {
 			transform->set_scale(scale);
 		}
 		effectManager_->AddEffect("meteoEachOther", transform->get_translate(), { 0, 1, 0 });

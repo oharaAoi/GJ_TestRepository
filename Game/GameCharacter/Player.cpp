@@ -182,7 +182,7 @@ void Player::Move() {
 		moveRotation = Quaternion::EulerRadian({0,targetAngle,0});
 		// 攻撃中は滑らかに移動
 		if (isAttack_) {
-			Quaternion slerp = Quaternion::Slerp(playerQuaternion, moveRotation, 0.05f);
+			Quaternion slerp = Quaternion::Slerp(playerQuaternion, moveRotation, 0.075f);
 			playerQuaternion = moveRotation;
 			forwordRotation = slerp;
 			transform->set_rotate(slerp);
