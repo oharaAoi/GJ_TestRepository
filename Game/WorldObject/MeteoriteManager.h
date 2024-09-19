@@ -93,7 +93,13 @@ public:	// メンバ関数
 
 	void PopFromGroup(const MeteoriteManager::Group& group);
 
+	/// <summary>
+	/// 数が足りない時に出現させる関数
+	/// </summary>
+	void PopRadomFromGroup(const MeteoriteManager::Group& group);
+
 	std::string GetRandomKey();
+
 
 #ifdef _DEBUG
 	void DebugGui();

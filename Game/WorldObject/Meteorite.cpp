@@ -30,7 +30,7 @@ void Meteorite::Init(const Vector3& pos) {
 	sphereCollider_->set_on_collision(std::bind(&Meteorite::On_Collision_Enter, this, std::placeholders::_1, &this->get_materials()[0].color));
 	sphereCollider_->set_radius(1.0f);
 
-	velocity_ = { -2, 0, 0 };
+	velocity_ = { -2.3f, 0, 0 };
 
 	attractionedStrength_ = kAttractionedStrength_;
 	speed_ = kSpeed_;
@@ -85,7 +85,7 @@ void Meteorite::Move(const Vector3& playerPosition) {
 	}
 
 	// 範囲外に出たら削除する処理
-	if (std::abs(translate.x) > 25 || std::abs(translate.y) > 25 || std::abs(translate.z) > 25) {
+	if (translate.x < -25 || std::abs(translate.y) > 25 || std::abs(translate.z) > 25) {
 		isDead_ = true;
 	}
 
@@ -107,7 +107,6 @@ void Meteorite::On_Collision(const BaseCollider* const other, Color* object) {
 			velocity_ += (other->world_position() - world_position()).normalize_safe() * -2.0f;
 		}
 		isFalling_ = true;
-		meteoHit_SE_->play();
 		
 	} else if (other->group() == "Enemy") { // Enemy
 		isEnemyHit_ = true;
@@ -126,10 +125,10 @@ void Meteorite::On_Collision_Enter(const BaseCollider* const other, Color* objec
 	if (other->group() == "Meteo") {
 		if (!isFalling_) {
 			velocity_ += (other->world_position() - world_position()).normalize_safe() * -2.0f;
+			meteoHit_SE_->play();
+			effectManager_->AddEffect("meteoEachOther", transform->get_translate(), { 0, 1, 0 });
 		}
 		isFalling_ = true;
-		meteoHit_SE_->play();
-		effectManager_->AddEffect("meteoEachOther", transform->get_translate(), { 0, 1, 0 });
 
 	} else if (other->group() == "Enemy") { // Enemy
 		isEnemyHit_ = true;

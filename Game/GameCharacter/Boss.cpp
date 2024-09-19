@@ -113,6 +113,10 @@ void Boss::Move() {
 	if (pushBackValue_ <= 0.0f) {
 		pushBackValue_ = 0.0f;
 	}
+
+	if (translate.y < -10) {
+		translate.y = -10;
+	}
 	
 	transform->set_translate(translate);
 }
